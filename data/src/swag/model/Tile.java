@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -72,9 +74,12 @@ public class Tile {
 	private Id id = new Id();
 
 	@SuppressWarnings("unused")
-	@ManyToOne(optional=false)
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "mapId", insertable = false, updatable = false)
 	private Map map;
+
+	@Enumerated(value = EnumType.STRING)
+	private ResourceType special;
 
 	public Tile() {
 	}
@@ -86,5 +91,13 @@ public class Tile {
 		this.id.y = y;
 
 		map.getConsistsOf().add(this);
+	}
+
+	public void setSpecial(ResourceType special) {
+		this.special = special;
+	}
+
+	public ResourceType getSpecial() {
+		return special;
 	}
 }
