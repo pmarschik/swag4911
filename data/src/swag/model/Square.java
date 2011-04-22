@@ -3,6 +3,7 @@ package swag.model;
 import java.io.Serializable;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -65,16 +66,37 @@ public class Square {
 	@EmbeddedId
 	private Id id = new Id();
 
-	@SuppressWarnings("unused")
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "baseId", insertable = false, updatable = false)
 	private Base base;
 	
+	@Embedded
+	private Building building;
+
+	public Square() {
+	}
+
 	public Square(Base base, int position) {
 		this.base = base;
 		this.id.baseId = base.getId();
 		this.id.position = position;
 
 		base.getConsistsOf().add(this);
+	}
+	
+	public Id getId() {
+		return id;
+	}
+
+	public Base getBase() {
+		return base;
+	}
+
+	public void setBuilding(Building building) {
+		this.building = building;
+	}
+
+	public Building getBuilding() {
+		return building;
 	}
 }

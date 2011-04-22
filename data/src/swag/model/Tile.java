@@ -73,7 +73,6 @@ public class Tile {
 	@EmbeddedId
 	private Id id = new Id();
 
-	@SuppressWarnings("unused")
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "mapId", insertable = false, updatable = false)
 	private Map map;
@@ -91,6 +90,14 @@ public class Tile {
 		this.id.y = y;
 
 		map.getConsistsOf().add(this);
+	}
+
+	public Id getId() {
+		return id;
+	}
+
+	public Map getMap() {
+		return map;
 	}
 
 	public void setSpecial(ResourceType special) {
