@@ -1,10 +1,13 @@
 package swag.model;
 
-import java.util.UUID;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Index;
 
@@ -12,7 +15,8 @@ import org.hibernate.annotations.Index;
 public class User {
 
 	@Id
-	private UUID id;
+	@GeneratedValue
+	private Long id;
 
 	@Column(nullable = false, length = 50, unique = true)
 	@Index(name = "username")
@@ -32,12 +36,19 @@ public class User {
 
 	@Column(nullable = false)
 	private Integer utcOffset;
+	
+	@OneToMany(mappedBy = "user")
+	private Set<Player> players = new HashSet<Player>();
 
 	public User() {
 	}
 
-	public UUID getId() {
+	public Long getId() {
 		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getUsername() {
@@ -86,5 +97,13 @@ public class User {
 
 	public void setUtcOffset(Integer utcOffset) {
 		this.utcOffset = utcOffset;
+	}
+
+	public void setPlayers(Set<Player> players) {
+		this.players = players;
+	}
+
+	public Set<Player> getPlayers() {
+		return players;
 	}
 }

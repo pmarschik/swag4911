@@ -1,25 +1,59 @@
 package swag.model;
 
-import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Player {
 
 	@Id
 	@GeneratedValue
-	public UUID id;
+	private Long id;
+
+	@Column(nullable = false)
+	private Boolean online;
 	
 	@Column(nullable = false)
-	public Boolean online;
+	private Boolean deleted;
 	
-	@Column(nullable = false)
-	public Boolean deleted;
+	@ManyToOne(optional = false)
+	private User user;
 	
 	public Player() {
+	}
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Boolean getOnline() {
+		return online;
+	}
+
+	public void setOnline(Boolean online) {
+		this.online = online;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public User getUser() {
+		return user;
 	}
 }
