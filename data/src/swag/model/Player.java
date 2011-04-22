@@ -1,10 +1,15 @@
 package swag.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Player {
@@ -15,16 +20,22 @@ public class Player {
 
 	@Column(nullable = false)
 	private Boolean online;
-	
+
 	@Column(nullable = false)
 	private Boolean deleted;
-	
+
 	@ManyToOne(optional = false)
 	private User user;
-	
+
+	@OneToOne(optional = false)
+	private Map plays;
+
+	@OneToMany(mappedBy = "owner")
+	private Set<Base> owns = new HashSet<Base>();
+
 	public Player() {
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -55,5 +66,21 @@ public class Player {
 
 	public User getUser() {
 		return user;
+	}
+
+	public void setPlays(Map plays) {
+		this.plays = plays;
+	}
+
+	public Map getPlays() {
+		return plays;
+	}
+
+	public void getOwns(Set<Base> bases) {
+		this.owns = bases;
+	}
+
+	public Set<Base> setOwns() {
+		return owns;
 	}
 }

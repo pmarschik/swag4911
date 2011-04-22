@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -19,7 +20,7 @@ public class User {
 	private Long id;
 
 	@Column(nullable = false, length = 50, unique = true)
-	@Index(name = "username")
+	@Index(name = "idx_username")
 	private String username;
 
 	@Column(nullable = false, length = 50)
@@ -36,9 +37,12 @@ public class User {
 
 	@Column(nullable = false)
 	private Integer utcOffset;
-	
+
 	@OneToMany(mappedBy = "user")
 	private Set<Player> players = new HashSet<Player>();
+
+	@Embedded
+	private Address address;
 
 	public User() {
 	}
@@ -46,7 +50,7 @@ public class User {
 	public Long getId() {
 		return id;
 	}
-	
+
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -105,5 +109,13 @@ public class User {
 
 	public Set<Player> getPlayers() {
 		return players;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	public Address getAddress() {
+		return address;
 	}
 }
