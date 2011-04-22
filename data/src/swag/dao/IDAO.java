@@ -1,6 +1,6 @@
 package swag.dao;
 
-public interface IDAO<T> {
+public interface IDao<T> {
 
 	public T get(Long id);
 	public void create(T model);

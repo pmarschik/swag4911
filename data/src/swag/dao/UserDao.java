@@ -1,12 +1,15 @@
 package swag.dao;
 
+import javax.persistence.EntityManager;
+import javax.persistence. EntityTransaction;
+
 import swag.model.User;
 
-public class UserDao implements IDAO<User> {
+public class UserDao implements IDao<User> {
 
-	private javax.persistence.EntityManager em;
+	private EntityManager em;
 
-	public UserDao(javax.persistence.EntityManager em) {
+	public UserDao(EntityManager em) {
 		this.em = em;
 	}
 
@@ -16,7 +19,7 @@ public class UserDao implements IDAO<User> {
 
 	public void create(User user) {
 
-		javax.persistence.EntityTransaction tx = em.getTransaction();
+		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 
 		em.persist(user);
@@ -27,7 +30,7 @@ public class UserDao implements IDAO<User> {
 
 	public void update(User user) {
 
-		javax.persistence.EntityTransaction tx = em.getTransaction();
+		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 
 		em.merge(user);
@@ -38,7 +41,7 @@ public class UserDao implements IDAO<User> {
 
 	public void delete(User user) {
 
-		javax.persistence.EntityTransaction tx = em.getTransaction();
+		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 
 		em.remove(user);

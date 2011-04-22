@@ -1,64 +1,90 @@
 package swag.model;
 
-@javax.persistence.Entity
+import java.util.UUID;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import org.hibernate.annotations.Index;
+
+@Entity
 public class User {
 
-	@javax.persistence.Id
-	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO)
-	private Long id;
+	@Id
+	private UUID id;
 
-	private String name;
+	@Column(nullable = false, length = 50, unique = true)
+	@Index(name = "username")
+	private String username;
 
-	@javax.persistence.Transient
-	protected User related;
+	@Column(nullable = false, length = 50)
+	private String password;
 
-	@javax.persistence.Transient
-	public java.util.Set<User> friends;
+	@Column(length = 255)
+	private String firstName;
 
-	@javax.persistence.ElementCollection
-	private java.util.Set<String> usernames;
+	@Column(length = 255)
+	private String lastName;
+
+	@Column(length = 100)
+	private String email;
+
+	@Column(nullable = false)
+	private Integer utcOffset;
 
 	public User() {
 	}
 
-	public Long getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public String getName() {
-		return name;
+	public String getUsername() {
+		return username;
 	}
 
-	public User getRelated() {
-		return related;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
-	public java.util.Set<User> getFriends() {
-		return friends;
+	public String getPassword() {
+		return password;
 	}
 
-	public java.util.Set<String> getUsernames() {
-		return usernames;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public void setRelated(User related) {
-		this.related = related;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setFriends(java.util.Set<User> friends) {
-		this.friends = friends;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
-	public void setUsernames(java.util.Set<String> usernames) {
-		this.usernames = usernames;
+	public String getEmail() {
+		return email;
 	}
 
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Integer getUtcOffset() {
+		return utcOffset;
+	}
+
+	public void setUtcOffset(Integer utcOffset) {
+		this.utcOffset = utcOffset;
+	}
 }
