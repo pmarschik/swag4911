@@ -1,5 +1,6 @@
 package swag.model;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
@@ -12,6 +13,7 @@ public class Building {
 	private BuildingLevel isOfLevel;
 
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private BuildingType type;
 
 	public void setIsOfLevel(BuildingLevel isOfLevel) {

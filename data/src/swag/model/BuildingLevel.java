@@ -15,6 +15,7 @@ public class BuildingLevel {
 	private Float factor_per_time;
 	
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private ResourceType cost;
 
 	public Integer getLevel() {
