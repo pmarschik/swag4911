@@ -11,7 +11,8 @@ public class TileDao implements IDao<Tile> {
 	@PersistenceContext
 	private EntityManager em;
 
-	public TileDao() {
+	public TileDao(EntityManager em) {
+		this.em = em;
 	}
 
 	public Tile get(Long id) {
@@ -49,6 +50,11 @@ public class TileDao implements IDao<Tile> {
 
 		tx.commit();
 
+	}
+	
+	public boolean contains(Tile tile)
+	{
+		return em.contains(tile);
 	}
 
 }

@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 
+
 import swag.model.Player;
 
 public class PlayerDao implements IDao<Player> {
@@ -11,7 +12,8 @@ public class PlayerDao implements IDao<Player> {
 	@PersistenceContext
 	private EntityManager em;
 
-	public PlayerDao() {
+	public PlayerDao(EntityManager em) {
+		this.em = em;
 	}
 
 	public Player get(Long id) {
@@ -48,7 +50,11 @@ public class PlayerDao implements IDao<Player> {
 		em.remove(Player);
 
 		tx.commit();
-
 	}
 
+	
+	public boolean contains(Player player)
+	{
+		return em.contains(player);
+	}
 }

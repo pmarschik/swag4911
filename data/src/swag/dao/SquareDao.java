@@ -11,7 +11,8 @@ public class SquareDao implements IDao<Square> {
 	@PersistenceContext
 	private EntityManager em;
 
-	public SquareDao() {
+	public SquareDao(EntityManager em) {
+		this.em = em;
 	}
 
 	public Square get(Long id) {
@@ -51,4 +52,8 @@ public class SquareDao implements IDao<Square> {
 
 	}
 
+	public boolean contains(Square square)
+	{
+		return em.contains(square);
+	}
 }

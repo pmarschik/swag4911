@@ -11,7 +11,8 @@ public class BaseDao implements IDao<Base> {
 	@PersistenceContext
 	private EntityManager em;
 
-	public BaseDao() {
+	public BaseDao(EntityManager em) {
+		this.em = em;
 	}
 
 	public Base get(Long id) {
@@ -51,4 +52,8 @@ public class BaseDao implements IDao<Base> {
 
 	}
 
+	public boolean contains(Base base)
+	{
+		return em.contains(base);
+	}
 }

@@ -11,7 +11,8 @@ public class MapDao implements IDao<Map> {
 	@PersistenceContext
 	private EntityManager em;
 
-	public MapDao() {
+	public MapDao(EntityManager em) {
+		this.em = em;
 	}
 
 	public Map get(Long id) {
@@ -51,4 +52,8 @@ public class MapDao implements IDao<Map> {
 
 	}
 
+	public boolean contains(Map map)
+	{
+		return em.contains(map);
+	}
 }

@@ -11,7 +11,8 @@ public class MessageDao implements IDao<Message> {
 	@PersistenceContext
 	private EntityManager em;
 
-	public MessageDao() {
+	public MessageDao(EntityManager em) {
+		this.em = em;
 	}
 
 	public Message get(Long id) {
@@ -49,6 +50,11 @@ public class MessageDao implements IDao<Message> {
 
 		tx.commit();
 
+	}
+	
+	public boolean contains(Message message)
+	{
+		return em.contains(message);
 	}
 
 }

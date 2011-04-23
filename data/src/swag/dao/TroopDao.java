@@ -11,7 +11,8 @@ public class TroopDao implements IDao<Troop> {
 	@PersistenceContext
 	private EntityManager em;
 
-	public TroopDao() {
+	public TroopDao(EntityManager em) {
+		this.em = em;
 	}
 
 	public Troop get(Long id) {
@@ -51,4 +52,8 @@ public class TroopDao implements IDao<Troop> {
 
 	}
 
+	public boolean contains(Troop troop)
+	{
+		return em.contains(troop);
+	}
 }

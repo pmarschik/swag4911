@@ -1,12 +1,14 @@
 package swag.dao;
 
 import javax.persistence.EntityManager;
-import javax.persistence. EntityTransaction;
+import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 
 import swag.model.User;
 
 public class UserDao implements IDao<User> {
 
+	@PersistenceContext
 	private EntityManager em;
 
 	public UserDao(EntityManager em) {
@@ -48,6 +50,11 @@ public class UserDao implements IDao<User> {
 
 		tx.commit();
 
+	}
+	
+	public boolean contains(User user)
+	{
+		return em.contains(user);
 	}
 
 }

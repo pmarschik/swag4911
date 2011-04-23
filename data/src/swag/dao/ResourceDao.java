@@ -11,7 +11,8 @@ public class ResourceDao implements IDao<Resource> {
 	@PersistenceContext
 	private EntityManager em;
 
-	public ResourceDao() {
+	public ResourceDao(EntityManager em) {
+		this.em = em;
 	}
 
 	public Resource get(Long id) {
@@ -49,6 +50,11 @@ public class ResourceDao implements IDao<Resource> {
 
 		tx.commit();
 
+	}
+	
+	public boolean contains(Resource resource)
+	{
+		return em.contains(resource);
 	}
 
 }

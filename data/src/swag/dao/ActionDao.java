@@ -11,7 +11,8 @@ public class ActionDao implements IDao<Action> {
 	@PersistenceContext
 	private EntityManager em;
 
-	public ActionDao() {
+	public ActionDao(EntityManager em) {
+		this.em = em;
 	}
 
 	public Action get(Long id) {
@@ -51,4 +52,8 @@ public class ActionDao implements IDao<Action> {
 
 	}
 
+	public boolean contains(Action action)
+	{
+		return em.contains(action);
+	}
 }
