@@ -52,8 +52,8 @@ public class BaseDao implements IDao<Base> {
 
 	}
 
-	public boolean contains(Base base)
+	public boolean contains(Long id)
 	{
-		return em.contains(base);
+		return em.contains(id);
 	}
 }

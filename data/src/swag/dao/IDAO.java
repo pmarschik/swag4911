@@ -7,5 +7,5 @@ public interface IDao<T> {
 	public void update(T model);
 	public void delete(T model);
 	
-	public boolean contains(T model);
+	public boolean contains(Long id);
 }

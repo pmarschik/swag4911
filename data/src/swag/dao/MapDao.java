@@ -52,8 +52,8 @@ public class MapDao implements IDao<Map> {
 
 	}
 
-	public boolean contains(Map map)
+	public boolean contains(Long id)
 	{
-		return em.contains(map);
+		return em.contains(id);
 	}
 }

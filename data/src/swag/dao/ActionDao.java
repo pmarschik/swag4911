@@ -52,8 +52,8 @@ public class ActionDao implements IDao<Action> {
 
 	}
 
-	public boolean contains(Action action)
+	public boolean contains(Long id)
 	{
-		return em.contains(action);
+		return em.contains(id);
 	}
 }

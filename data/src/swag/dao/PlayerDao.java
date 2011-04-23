@@ -53,8 +53,8 @@ public class PlayerDao implements IDao<Player> {
 	}
 
 	
-	public boolean contains(Player player)
+	public boolean contains(Long id)
 	{
-		return em.contains(player);
+		return em.contains(id);
 	}
 }

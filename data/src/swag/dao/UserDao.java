@@ -52,9 +52,9 @@ public class UserDao implements IDao<User> {
 
 	}
 	
-	public boolean contains(User user)
+	public boolean contains(Long id)
 	{
-		return em.contains(user);
+		return em.contains(id);
 	}
 
 }

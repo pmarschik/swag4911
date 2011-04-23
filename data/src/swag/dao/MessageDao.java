@@ -52,9 +52,9 @@ public class MessageDao implements IDao<Message> {
 
 	}
 	
-	public boolean contains(Message message)
+	public boolean contains(Long id)
 	{
-		return em.contains(message);
+		return em.contains(id);
 	}
 
 }

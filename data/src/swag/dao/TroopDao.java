@@ -52,8 +52,8 @@ public class TroopDao implements IDao<Troop> {
 
 	}
 
-	public boolean contains(Troop troop)
+	public boolean contains(Long id)
 	{
-		return em.contains(troop);
+		return em.contains(id);
 	}
 }
