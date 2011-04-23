@@ -32,6 +32,9 @@ public class Player {
 
 	@OneToMany(mappedBy = "owner")
 	private Set<Base> owns = new HashSet<Base>();
+	
+	@OneToMany(mappedBy = "player")
+	private Set<Resource> resources = new HashSet<Resource>();
 
 	public Player() {
 	}
@@ -82,5 +85,13 @@ public class Player {
 
 	public Set<Base> setOwns() {
 		return owns;
+	}
+
+	public void setResources(Set<Resource> resources) {
+		this.resources = resources;
+	}
+
+	public Set<Resource> getResources() {
+		return resources;
 	}
 }

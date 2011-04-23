@@ -33,40 +33,19 @@ public class Tile {
 		}
 
 		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			Id other = (Id) obj;
-			if (mapId == null) {
-				if (other.mapId != null)
-					return false;
-			} else if (!mapId.equals(other.mapId))
-				return false;
-			if (x == null) {
-				if (other.x != null)
-					return false;
-			} else if (!x.equals(other.x))
-				return false;
-			if (y == null) {
-				if (other.y != null)
-					return false;
-			} else if (!y.equals(other.y))
-				return false;
-			return true;
+		public int hashCode() {
+			return mapId.hashCode() + x.hashCode() + y.hashCode();
 		}
 
 		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((mapId == null) ? 0 : mapId.hashCode());
-			result = prime * result + ((x == null) ? 0 : x.hashCode());
-			result = prime * result + ((y == null) ? 0 : y.hashCode());
-			return result;
+		public boolean equals(Object obj) {
+			if (obj != null && obj instanceof Id) {
+				return this.mapId.equals(((Id) obj).mapId)
+						&& this.x.equals(((Id) obj).x)
+						&& this.y.equals(((Id) obj).y);
+			} else {
+				return false;
+			}
 		}
 	}
 

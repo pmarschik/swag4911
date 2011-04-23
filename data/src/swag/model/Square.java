@@ -31,35 +31,17 @@ public class Square {
 
 		@Override
 		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result
-					+ ((baseId == null) ? 0 : baseId.hashCode());
-			result = prime * result
-					+ ((position == null) ? 0 : position.hashCode());
-			return result;
+			return baseId.hashCode() + position.hashCode();
 		}
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
+			if (obj != null && obj instanceof Id) {
+				return this.position.equals(((Id) obj).position)
+						&& this.position.equals(((Id) obj).position);
+			} else {
 				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			Id other = (Id) obj;
-			if (baseId == null) {
-				if (other.baseId != null)
-					return false;
-			} else if (!baseId.equals(other.baseId))
-				return false;
-			if (position == null) {
-				if (other.position != null)
-					return false;
-			} else if (!position.equals(other.position))
-				return false;
-			return true;
+			}
 		}
 	}
 
