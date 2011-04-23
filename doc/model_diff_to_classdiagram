@@ -1,5 +1,6 @@
 In folgenden Punkten weicht das Model vom Klassendiagram ab:
 
+* Long statt UUID Ids, weil mysql das anscheinend nicht unterstützt
 * Square 1 -> Building 0,1 statt Building 1
 * BuildingLevel -> type fehlt
 * Player.resources statt Player.owns (owns wäre doppelt)
