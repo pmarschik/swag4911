@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+proof of concept configuration,
+for details see http://ehcache.org/documentation/hibernate.html
+-->
+
+<ehcache>
+  <cache
+    name="swag49.model.User"
+    maxElementsInMemory="1000"
+    eternal="false"
+    timeToIdleSeconds="300"
+    timeToLiveSeconds="600"
+    overflowToDisk="false"
+  />
+</ehcache>

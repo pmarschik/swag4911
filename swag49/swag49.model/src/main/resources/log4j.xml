@@ -36,7 +36,9 @@
 		<level value="warn" />
 	</logger>
 
-	
+	<logger name="net.sf.ehcache">
+        <level value="info" />
+	</logger>
 
 	<!-- Root Logger -->
 	<root>

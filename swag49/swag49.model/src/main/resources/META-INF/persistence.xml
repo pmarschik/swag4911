@@ -26,7 +26,9 @@
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.transaction.flush_before_completion" value="true"/>
-            <property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider"/>
+            <property name="hibernate.cache.region.factory_class" value="net.sf.ehcache.hibernate.EhCacheRegionFactory"/>
+            <property name="hibernate.cache.use_second_level_cache">true</property>
+            <property name="hibernate.cache.use_query_cache">true</property>
         </properties>
     </persistence-unit>
 
