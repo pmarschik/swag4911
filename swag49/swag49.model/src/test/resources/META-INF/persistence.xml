@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+             http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+             version="1.0">
+
+    <persistence-unit name="swag49" transaction-type="RESOURCE_LOCAL">
+        <class>swag49.model.Action</class>
+        <class>swag49.model.Address</class>
+        <class>swag49.model.Base</class>
+        <class>swag49.model.BuildAction</class>
+        <class>swag49.model.Building</class>
+        <class>swag49.model.BuildingLevel</class>
+        <class>swag49.model.Map</class>
+        <class>swag49.model.Message</class>
+        <class>swag49.model.Player</class>
+        <class>swag49.model.Resource</class>
+        <class>swag49.model.Square</class>
+        <class>swag49.model.Tile</class>
+        <class>swag49.model.Troop</class>
+        <class>swag49.model.TroopAction</class>
+        <class>swag49.model.User</class>
+
+        <properties>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.transaction.flush_before_completion" value="true"/>
+            <property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider"/>
+        </properties>
+    </persistence-unit>
+
+</persistence>

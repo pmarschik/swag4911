@@ -1,0 +1,59 @@
+package swag49.dao;
+
+import swag49.model.Player;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
+
+public class PlayerDao implements DataAccessObject<Player> {
+
+	@PersistenceContext
+	private EntityManager em;
+
+	public PlayerDao(EntityManager em) {
+		this.em = em;
+	}
+
+	public Player get(Long id) {
+		return em.find(Player.class, id);
+	}
+
+	public void create(Player Player) {
+
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
+
+		em.persist(Player);
+
+		tx.commit();
+
+	}
+
+	public void update(Player Player) {
+
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
+
+		em.merge(Player);
+
+		tx.commit();
+
+	}
+
+	public void delete(Player Player) {
+
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
+
+		em.remove(Player);
+
+		tx.commit();
+	}
+
+	
+	public boolean contains(Long id)
+	{
+		return em.contains(id);
+	}
+}

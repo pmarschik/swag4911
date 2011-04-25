@@ -1,2 +1,6 @@
 .metadata/
+.settings/
 data/bin/
+.idea/
+target/
+*.iml
