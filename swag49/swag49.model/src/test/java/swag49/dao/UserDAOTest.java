@@ -1,5 +1,7 @@
 package swag49.dao;
 
+import java.util.Date;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,7 @@ public class UserDAOTest  {
 		user.setFirstName("test");
 		user.setEmail("testemail");
 		user.setPassword("test");
-		user.setUsername("test");
+		user.setUsername("test" + new Date().toString());
 		user.setUtcOffset(0);
 
 		userDAO.create(user);
@@ -35,7 +37,7 @@ public class UserDAOTest  {
 		user.setFirstName("test2");
 		user.setEmail("testemail2");
 		user.setPassword("test2");
-		user.setUsername("test2");
+		user.setUsername("test2" + new Date().toString());
 		user.setUtcOffset(0);
     	
 		User user2 = userDAO.create(user);		
@@ -51,7 +53,7 @@ public class UserDAOTest  {
 		user.setFirstName("test3");
 		user.setEmail("testemail3");
 		user.setPassword("test3");
-		user.setUsername("test3");
+		user.setUsername("test3" + new Date().toString());
 		user.setUtcOffset(0);
     	
 		User user2 = userDAO.create(user);	
