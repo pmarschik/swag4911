@@ -24,7 +24,7 @@ public class UserDAOTest  {
 		user.setFirstName("test");
 		user.setEmail("testemail");
 		user.setPassword("test");
-		user.setUsername("test" + new Date().toString());
+		user.setUsername("test" + new Date().getTime());
 		user.setUtcOffset(0);
 
 		userDAO.create(user);
@@ -37,7 +37,7 @@ public class UserDAOTest  {
 		user.setFirstName("test2");
 		user.setEmail("testemail2");
 		user.setPassword("test2");
-		user.setUsername("test2" + new Date().toString());
+		user.setUsername("test2" + new Date().getTime());
 		user.setUtcOffset(0);
     	
 		User user2 = userDAO.create(user);		
@@ -53,7 +53,7 @@ public class UserDAOTest  {
 		user.setFirstName("test3");
 		user.setEmail("testemail3");
 		user.setPassword("test3");
-		user.setUsername("test3" + new Date().toString());
+		user.setUsername("test3" + new Date().getTime());
 		user.setUtcOffset(0);
     	
 		User user2 = userDAO.create(user);	
