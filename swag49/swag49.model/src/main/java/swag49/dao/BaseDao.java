@@ -1,54 +1,40 @@
 package swag49.dao;
-
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import swag49.model.Base;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 
+@Repository(value="baseDAO")
 public class BaseDao implements DataAccessObject<Base> {
 
 	@PersistenceContext
 	private EntityManager em;
 
-	public BaseDao(EntityManager em) {
-		this.em = em;
+	public BaseDao() {
 	}
 
 	public Base get(Long id) {
 		return em.find(Base.class, id);
 	}
 
-	public void create(Base Base) {
-
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-
-		em.persist(Base);
-
-		tx.commit();
+	@Transactional
+	public Base create(Base Base) {
+		return em.merge(Base);
 
 	}
 
-	public void update(Base Base) {
-
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-
-		em.merge(Base);
-
-		tx.commit();
+	@Transactional
+	public Base update(Base Base) {
+		return em.merge(Base);
 
 	}
 
+	@Transactional
 	public void delete(Base Base) {
-
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-
 		em.remove(Base);
-
-		tx.commit();
 
 	}
 

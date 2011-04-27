@@ -1,55 +1,38 @@
 package swag49.dao;
-
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import swag49.model.Action;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 
+@Repository(value="actionDAO")
 public class ActionDao implements DataAccessObject<Action> {
 
 	@PersistenceContext
 	private EntityManager em;
 
-	public ActionDao(EntityManager em) {
-		this.em = em;
+	public ActionDao() {
 	}
 
 	public Action get(Long id) {
 		return em.find(Action.class, id);
 	}
 
-	public void create(Action Action) {
-
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-
-		em.persist(Action);
-
-		tx.commit();
-
+	@Transactional
+	public Action create(Action Action) {
+		return em.merge(Action);
 	}
 
-	public void update(Action Action) {
-
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-
-		em.merge(Action);
-
-		tx.commit();
-
+	@Transactional
+	public Action update(Action Action) {
+		return em.merge(Action);
 	}
 
+	@Transactional
 	public void delete(Action Action) {
-
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-
 		em.remove(Action);
-
-		tx.commit();
-
 	}
 
 	public boolean contains(Long id)

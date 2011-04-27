@@ -21,13 +21,13 @@ public class UserDAO implements DataAccessObject<User> {
 	}
 
     @Transactional
-	public void create(User user) {
-		em.persist(user);
+	public User create(User user) {
+		return em.merge(user);
 	}
 
     @Transactional
-	public void update(User user) {
-		em.merge(user);
+	public User update(User user) {
+		return em.merge(user);
 	}
 
     @Transactional

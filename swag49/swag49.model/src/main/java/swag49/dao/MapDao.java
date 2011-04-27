@@ -1,55 +1,38 @@
 package swag49.dao;
-
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import swag49.model.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 
+@Repository(value="mapDAO")
 public class MapDao implements DataAccessObject<Map> {
 
 	@PersistenceContext
 	private EntityManager em;
 
-	public MapDao(EntityManager em) {
-		this.em = em;
+	public MapDao() {
 	}
 
 	public Map get(Long id) {
 		return em.find(Map.class, id);
 	}
 
-	public void create(Map Map) {
-
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-
-		em.persist(Map);
-
-		tx.commit();
-
+	@Transactional
+	public Map create(Map Map) {
+		return em.merge(Map);
 	}
 
-	public void update(Map Map) {
-
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-
-		em.merge(Map);
-
-		tx.commit();
-
+	@Transactional
+	public Map update(Map Map) {
+		return em.merge(Map);
 	}
 
+	@Transactional
 	public void delete(Map Map) {
-
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-
 		em.remove(Map);
-
-		tx.commit();
-
 	}
 
 	public boolean contains(Long id)

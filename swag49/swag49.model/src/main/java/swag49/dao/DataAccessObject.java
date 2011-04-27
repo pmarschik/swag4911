@@ -3,8 +3,8 @@ package swag49.dao;
 public interface DataAccessObject<T> {
 
 	public T get(Long id);
-	public void create(T model);
-	public void update(T model);
+	public T create(T model);
+	public T update(T model);
 	public void delete(T model);
 	
 	public boolean contains(Long id);

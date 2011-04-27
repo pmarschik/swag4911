@@ -1,54 +1,38 @@
 package swag49.dao;
-
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import swag49.model.Player;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 
+@Repository(value="playerDAO")
 public class PlayerDao implements DataAccessObject<Player> {
 
 	@PersistenceContext
 	private EntityManager em;
 
-	public PlayerDao(EntityManager em) {
-		this.em = em;
+	public PlayerDao() {
 	}
 
 	public Player get(Long id) {
 		return em.find(Player.class, id);
 	}
 
-	public void create(Player Player) {
-
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-
-		em.persist(Player);
-
-		tx.commit();
-
+	@Transactional
+	public Player create(Player Player) {
+		return em.merge(Player);
 	}
 
-	public void update(Player Player) {
-
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-
-		em.merge(Player);
-
-		tx.commit();
-
+	@Transactional
+	public Player update(Player Player) {
+		return em.merge(Player);
 	}
 
+	@Transactional
 	public void delete(Player Player) {
-
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-
 		em.remove(Player);
-
-		tx.commit();
 	}
 
 	
