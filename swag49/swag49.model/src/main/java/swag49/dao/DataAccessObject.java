@@ -7,5 +7,5 @@ public interface DataAccessObject<T> {
 	public T update(T model);
 	public void delete(T model);
 	
-	public boolean contains(Long id);
+	public boolean contains(T model);
 }

@@ -22,22 +22,23 @@ public class TroopDao implements DataAccessObject<Troop> {
 	}
 
 	 @Transactional
-	public Troop create(Troop Troop) {
-		return em.merge(Troop);
+	public Troop create(Troop troop) {
+		return em.merge(troop);
 	}
 
 	 @Transactional
-	public Troop update(Troop Troop) {
-		return em.merge(Troop);
+	public Troop update(Troop troop) {
+		return em.merge(troop);
 	}
 
 	 @Transactional
-	public void delete(Troop Troop) {
-		em.remove(Troop);
+	public void delete(Troop troop) {
+		troop = em.merge(troop);
+		em.remove(troop);
 	}
 
-	public boolean contains(Long id)
+	public boolean contains(Troop troop)
 	{
-		return em.contains(id);
+		return em.contains(troop);
 	}
 }

@@ -10,13 +10,13 @@ import swag49.model.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/test-context.xml"})
-public class UserDAOTest {
+public class UserDAOTest  {
     // must use interface, qualifier is optional, use only if several beans that match interface
     @Autowired @Qualifier("userDAO")
     private DataAccessObject<User> userDAO;
 
     @Test
-    public void create_shouldCreate() {
+    public void create_shouldCreate() throws Exception {
 		User user = new User();
 		user.setLastName("test");
 		user.setFirstName("test");
@@ -29,7 +29,7 @@ public class UserDAOTest {
     }
     
     @Test
-    public void delete_shouldDelete() {
+    public void delete_shouldDelete() throws Exception {
 		User user = new User();
 		user.setLastName("test2");
 		user.setFirstName("test2");
@@ -45,7 +45,7 @@ public class UserDAOTest {
     }
     
     @Test
-    public void update_shouldUpdate() {
+    public void update_shouldUpdate() throws Exception{
 		User user = new User();
 		user.setLastName("test3");
 		user.setFirstName("test3");

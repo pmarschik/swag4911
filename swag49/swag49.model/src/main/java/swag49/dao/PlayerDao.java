@@ -21,23 +21,24 @@ public class PlayerDao implements DataAccessObject<Player> {
 	}
 
 	@Transactional
-	public Player create(Player Player) {
-		return em.merge(Player);
+	public Player create(Player player) {
+		return em.merge(player);
 	}
 
 	@Transactional
-	public Player update(Player Player) {
-		return em.merge(Player);
+	public Player update(Player player) {
+		return em.merge(player);
 	}
 
 	@Transactional
-	public void delete(Player Player) {
-		em.remove(Player);
+	public void delete(Player player) {
+		player = em.merge(player);
+		em.remove(player);
 	}
 
 	
-	public boolean contains(Long id)
+	public boolean contains(Player player)
 	{
-		return em.contains(id);
+		return em.contains(player);
 	}
 }

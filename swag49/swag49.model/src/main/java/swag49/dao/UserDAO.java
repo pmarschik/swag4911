@@ -32,11 +32,12 @@ public class UserDAO implements DataAccessObject<User> {
 
     @Transactional
 	public void delete(User user) {
+    	user = em.merge(user);
 		em.remove(user);
 	}
 
-	public boolean contains(Long id)
-	{
-		return em.contains(id);
+	public boolean contains(User user)
+	{		
+		return em.contains(user);
 	}
 }

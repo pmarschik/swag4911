@@ -21,25 +21,26 @@ public class BaseDao implements DataAccessObject<Base> {
 	}
 
 	@Transactional
-	public Base create(Base Base) {
-		return em.merge(Base);
+	public Base create(Base base) {
+		return em.merge(base);
 
 	}
 
 	@Transactional
-	public Base update(Base Base) {
-		return em.merge(Base);
+	public Base update(Base base) {
+		return em.merge(base);
 
 	}
 
 	@Transactional
-	public void delete(Base Base) {
-		em.remove(Base);
+	public void delete(Base base) {
+		base = em.merge(base);
+		em.remove(base);
 
 	}
 
-	public boolean contains(Long id)
+	public boolean contains(Base base)
 	{
-		return em.contains(id);
+		return em.contains(base);
 	}
 }

@@ -21,22 +21,23 @@ public class ActionDao implements DataAccessObject<Action> {
 	}
 
 	@Transactional
-	public Action create(Action Action) {
-		return em.merge(Action);
+	public Action create(Action action) {
+		return em.merge(action);
 	}
 
 	@Transactional
-	public Action update(Action Action) {
-		return em.merge(Action);
+	public Action update(Action action) {
+		return em.merge(action);
 	}
 
 	@Transactional
-	public void delete(Action Action) {
-		em.remove(Action);
+	public void delete(Action action) {
+		action = em.merge(action);
+		em.remove(action);
 	}
 
-	public boolean contains(Long id)
+	public boolean contains(Action action)
 	{
-		return em.contains(id);
+		return em.contains(action);
 	}
 }

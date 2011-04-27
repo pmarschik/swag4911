@@ -21,22 +21,23 @@ public class MapDao implements DataAccessObject<Map> {
 	}
 
 	@Transactional
-	public Map create(Map Map) {
-		return em.merge(Map);
+	public Map create(Map map) {
+		return em.merge(map);
 	}
 
 	@Transactional
-	public Map update(Map Map) {
-		return em.merge(Map);
+	public Map update(Map map) {
+		return em.merge(map);
 	}
 
 	@Transactional
-	public void delete(Map Map) {
-		em.remove(Map);
+	public void delete(Map map) {
+		map = em.merge(map);
+		em.remove(map);
 	}
 
-	public boolean contains(Long id)
+	public boolean contains(Map map)
 	{
-		return em.contains(id);
+		return em.contains(map);
 	}
 }
