@@ -3,6 +3,8 @@ package swag49.model;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -10,12 +12,16 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class Resource {
-	public class Id implements Serializable {
+
+	@Embeddable
+	public static class Id implements Serializable {
+
 		private static final long serialVersionUID = 1L;
 		private Long playerId;
 		private ResourceType resourceType;
 
 		public Id() {
+			super();
 		}
 
 		public Id(long playerId, ResourceType resourceType) {
