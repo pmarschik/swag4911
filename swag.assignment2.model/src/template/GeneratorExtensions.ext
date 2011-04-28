@@ -22,6 +22,10 @@ String daoPackage() :
 	"dao"
 ;
 
+String utilPackage() :
+	"util"
+;
+
 String memberVisibility(Member m) :
 	m.visibility
 ;

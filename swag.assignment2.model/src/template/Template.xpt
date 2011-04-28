@@ -8,6 +8,7 @@
 	«EXPAND daoInterface FOR this»
 	«EXPAND daoClass(isContainerManaged) FOREACH daos»
 	«EXPAND persistenceProperties(name) FOR persistence»
+	«EXPAND persistenceUtil(name) FOR this»
 «ENDDEFINE»
 
 «DEFINE enumClass FOR Enum»
@@ -70,7 +71,7 @@
 «DEFINE entityClassId FOR Entity»
 	«IF embeddedId != null»
 		@javax.persistence.Embeddable
-		public class «embeddedId.name» implements java.io.Serializable {
+		public static class «embeddedId.name» implements java.io.Serializable {
 			private static final long serialVersionUID = 1L;
 			«EXPAND entityClassMemberDefinition FOREACH embeddedId.members»
 			
@@ -376,5 +377,35 @@
    		</properties>
    </persistence-unit>
 </persistence>
+	«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE persistenceUtil(String modelName) FOR Model»
+	«FILE classSourceFolder()+"/"+standardPackage()+"/"+utilPackage()+"/"+"PersistenceHelper.java"»
+		package «standardPackage()».«utilPackage()»;
+
+		public class PersistenceHelper {
+
+		private static PersistenceHelper _instance = null;
+		private javax.persistence.EntityManagerFactory emf;
+		private javax.persistence.EntityManager em;
+
+		public PersistenceHelper() {
+			emf = javax.persistence.Persistence.createEntityManagerFactory("swag");
+			em = emf.createEntityManager();
+		}
+
+		public static PersistenceHelper getInstance() {
+			if (_instance == null)
+				_instance = new PersistenceHelper();
+
+			return _instance;
+		}
+
+		public javax.persistence.EntityManager getEm() {
+			return em;
+		}
+
+		}
 	«ENDFILE»
 «ENDDEFINE»
