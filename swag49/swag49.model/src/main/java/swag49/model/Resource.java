@@ -19,7 +19,6 @@ public class Resource {
 		}
 
 		public Id(long playerId, ResourceType resourceType) {
-			super();
 			this.playerId = playerId;
 			this.resourceType = resourceType;
 		}
@@ -56,9 +55,8 @@ public class Resource {
 	public Resource(Player player, ResourceType resourceType, int amount) {
 		this.player = player;
 		this.amount = amount;
-		this.id.playerId = player.getId();
-		this.id.resourceType = resourceType;
-
+		id = new Id(player.getId(), resourceType);
+		
 		player.getResources().add(this);
 	}
 

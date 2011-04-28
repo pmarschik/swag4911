@@ -1,6 +1,8 @@
 package swag49.model;
 
+import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+
 
 public class BuildAction extends Action {
 
