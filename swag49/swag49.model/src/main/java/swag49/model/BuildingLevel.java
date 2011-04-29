@@ -6,25 +6,14 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 @Embeddable
-public class BuildingLevel {
-
-	@Column(nullable = false)
-	private Integer Level;
+public class BuildingLevel extends LevelBase {
 
 	@Column(nullable = false)
 	private Float factor_per_time;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private ResourceType cost;
-
-	public Integer getLevel() {
-		return Level;
-	}
-
-	public void setLevel(Integer level) {
-		Level = level;
-	}
 
 	public Float getFactor_per_time() {
 		return factor_per_time;

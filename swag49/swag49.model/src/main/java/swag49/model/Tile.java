@@ -1,6 +1,7 @@
 package swag49.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
@@ -9,6 +10,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Tile {
@@ -59,7 +61,18 @@ public class Tile {
 	@Enumerated(value = EnumType.STRING)
 	private ResourceType special;
 
+	@OneToMany(mappedBy = "position")
+	private Set<Troop> troops;
+
 	public Tile() {
+	}
+
+	public Set<Troop> getTroops() {
+		return troops;
+	}
+
+	public void setTroops(Set<Troop> troops) {
+		this.troops = troops;
 	}
 
 	public Tile(Map map, int x, int y) {
