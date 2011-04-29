@@ -1,22 +1,16 @@
 package swag49.model;
 
 import javax.persistence.Column;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class LevelBase {
-
+	
 	@Column(nullable = false)
 	private Long upgradeDuration;
-
-	@Column(nullable = false)
-	private Integer level;
-
-	public Integer getLevel() {
-		return level;
-	}
-
-	public void setLevel(Integer level) {
-		this.level = level;
-	}
+	
+	public abstract Integer getLevel();
 
 	public void setUpgradeDuration(Long upgradeDuration) {
 		this.upgradeDuration = upgradeDuration;

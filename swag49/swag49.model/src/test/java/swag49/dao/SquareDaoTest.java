@@ -88,15 +88,15 @@ public class SquareDaoTest {
 		
     	Square square = new Square(base, 2);
     	
-		Building building = new Building();
-		BuildingLevel buildingLevel = new BuildingLevel();
-		buildingLevel.setCost(ResourceType.CROPS);
-		buildingLevel.setFactor_per_time(1.0F);
-		buildingLevel.setLevel(1);
-		
-		building.setIsOfLevel(buildingLevel);
-		building.setType(BuildingType.BOW_SCHOOL);		
-    	square.setBuilding(building);
+//		Building building = new Building();
+//		BuildingLevel buildingLevel = new BuildingLevel();
+//		buildingLevel.setCost(ResourceType.CROPS);
+//		buildingLevel.setFactor_per_time(1.0F);
+//		buildingLevel.setLevel(1);
+//		
+//		building.setIsOfLevel(buildingLevel);
+//		building.setType(BuildingType.BOW_SCHOOL);		
+//    	square.setBuilding(building);
     	
     	squareDAO.create(square);
     }
@@ -142,15 +142,15 @@ public class SquareDaoTest {
     	
     	Square square = new Square(base, 2);
     	
-		Building building = new Building();
-		BuildingLevel buildingLevel = new BuildingLevel();
-		buildingLevel.setCost(ResourceType.CROPS);
-		buildingLevel.setFactor_per_time(1.0F);
-		buildingLevel.setLevel(1);
-		
-		building.setIsOfLevel(buildingLevel);
-		building.setType(BuildingType.BOW_SCHOOL);		
-    	square.setBuilding(building);
+//		Building building = new Building();
+//		BuildingLevel buildingLevel = new BuildingLevel();
+//		buildingLevel.setCost(ResourceType.CROPS);
+//		buildingLevel.setFactor_per_time(1.0F);
+//		buildingLevel.setLevel(1);
+//		
+//		building.setIsOfLevel(buildingLevel);
+//		building.setType(BuildingType.BOW_SCHOOL);		
+//    	square.setBuilding(building);
     	
     	square = squareDAO.create(square);
     	
@@ -198,17 +198,15 @@ public class SquareDaoTest {
     	
     	Square square = new Square(base, 2);
     	
-		Building building = new Building();
-		BuildingLevel buildingLevel = new BuildingLevel();
-		buildingLevel.setCost(ResourceType.CROPS);
-		buildingLevel.setFactor_per_time(1.0F);
-		buildingLevel.setLevel(1);
-		
-		building.setIsOfLevel(buildingLevel);
-		building.setType(BuildingType.BOW_SCHOOL);		
-		
-		
-    	square.setBuilding(building);
+//		Building building = new Building();
+//		BuildingLevel buildingLevel = new BuildingLevel();
+//		buildingLevel.setCost(ResourceType.CROPS);
+//		buildingLevel.setFactor_per_time(1.0F);
+//		buildingLevel.setLevel(1);
+//		
+//		building.setIsOfLevel(buildingLevel);
+//		building.setType(BuildingType.BOW_SCHOOL);		
+//    	square.setBuilding(building);
     	
     	square = squareDAO.create(square);
     	

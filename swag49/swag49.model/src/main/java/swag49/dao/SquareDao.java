@@ -1,10 +1,19 @@
 package swag49.dao;
 
+import javax.persistence.PersistenceContext;
+
+import org.springframework.stereotype.Repository;
+
 import swag49.model.Square;
 
+@Repository(value = "squareDAO")
 public class SquareDao implements DataAccessObject<Square> {
 
+	@PersistenceContext
 	private javax.persistence.EntityManager em;
+
+	public SquareDao() {
+	}
 
 	public SquareDao(javax.persistence.EntityManager em) {
 		this.em = em;
@@ -15,39 +24,17 @@ public class SquareDao implements DataAccessObject<Square> {
 	}
 
 	public Square create(Square square) {
-		Square temp = null;
-
-		javax.persistence.EntityTransaction tx = em.getTransaction();
-		tx.begin();
-
-		temp = em.merge(square);
-
-		tx.commit();
-
-		return temp;
+		em.merge(square);
+		return square;
 	}
 
 	public Square update(Square square) {
-		Square temp = null;
-
-		javax.persistence.EntityTransaction tx = em.getTransaction();
-		tx.begin();
-
-		temp = em.merge(square);
-
-		tx.commit();
-
-		return temp;
+		em.merge(square);
+		return square;
 	}
 
 	public void delete(Square square) {
-
-		javax.persistence.EntityTransaction tx = em.getTransaction();
-		tx.begin();
-
 		em.remove(square);
-
-		tx.commit();
 
 	}
 

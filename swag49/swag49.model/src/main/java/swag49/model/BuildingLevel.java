@@ -1,33 +1,74 @@
 package swag49.model;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import java.io.Serializable;
 
-@Embeddable
+import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class BuildingLevel extends LevelBase {
 
-	@Column(nullable = false)
-	private Float factor_per_time;
+	@Embeddable
+	public static class Id implements Serializable {
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	private ResourceType cost;
+		private static final long serialVersionUID = 1L;
+		private Integer level;
+		private Long buildingTypeId;
 
-	public Float getFactor_per_time() {
-		return factor_per_time;
+		public Id() {
+			super();
+		}
+
+		public Id(int level, long buildingTypeId) {
+			this.level = level;
+			this.buildingTypeId = buildingTypeId;
+		}
+
+		@Override
+		public int hashCode() {
+			return level.hashCode() + buildingTypeId.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj != null && obj instanceof Id) {
+				return this.level.equals(((Id) obj).level)
+						&& this.buildingTypeId
+								.equals(((Id) obj).buildingTypeId);
+			} else {
+				return false;
+			}
+		}
 	}
 
-	public void setFactor_per_time(Float factorPerTime) {
-		factor_per_time = factorPerTime;
+	@EmbeddedId
+	private Id id = new Id();
+
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "buildingTypeId", insertable = false, updatable = false)
+	private BuildingType buildingType;
+
+	public Id getId() {
+		return id;
 	}
 
-	public void setCost(ResourceType cost) {
-		this.cost = cost;
+	public void setId(Id id) {
+		this.id = id;
 	}
 
-	public ResourceType getCost() {
-		return cost;
+	public BuildingType getBuildingType() {
+		return buildingType;
+	}
+
+	public void setBuildingType(BuildingType buildingType) {
+		this.buildingType = buildingType;
+	}
+
+	@Override
+	public Integer getLevel() {
+		return id.level;
 	}
 }
