@@ -6,6 +6,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Troop {
@@ -29,6 +31,9 @@ public class Troop {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private TroopType type;
+
+	@ManyToOne
+	private Tile position;
 
 	public Long getId() {
 		return id;
@@ -76,6 +81,14 @@ public class Troop {
 
 	public TroopType getType() {
 		return type;
+	}
+
+	public void setPosition(Tile position) {
+		this.position = position;
+	}
+
+	public Tile getPosition() {
+		return position;
 	}
 
 }
