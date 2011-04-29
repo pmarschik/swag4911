@@ -3,11 +3,11 @@ package swag49.model;
 import java.io.Serializable;
 
 import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Square {
@@ -52,7 +52,7 @@ public class Square {
 	@JoinColumn(name = "baseId", insertable = false, updatable = false)
 	private Base base;
 	
-	@Embedded
+	@OneToOne
 	private Building building;
 
 	public Square() {

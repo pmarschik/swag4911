@@ -4,7 +4,6 @@ import org.springframework.transaction.annotation.Transactional;
 import swag49.model.Troop;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 
 //annotate with @Repository because it is a DAO, other components should be annotated with @Component

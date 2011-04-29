@@ -3,7 +3,7 @@ package swag49.model;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
-
+@Entity
 public class BuildAction extends Action {
 
 	@ManyToOne(optional=false)

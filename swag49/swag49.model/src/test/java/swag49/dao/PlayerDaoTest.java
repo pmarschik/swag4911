@@ -3,7 +3,6 @@ package swag49.dao;
 import java.util.Date;
 import swag49.model.Map;
 import swag49.model.Player;
-import swag49.model.Message;
 import swag49.model.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;

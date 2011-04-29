@@ -5,7 +5,6 @@ import java.util.Date;
 import swag49.model.ResourceType;
 import swag49.model.Map;
 import swag49.model.Player;
-import swag49.model.Message;
 import swag49.model.User;
 import swag49.model.Resource;
 import org.junit.Test;

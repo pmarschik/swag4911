@@ -43,6 +43,18 @@ public class BuildingLevel extends LevelBase {
 			}
 		}
 	}
+	
+	public BuildingLevel() {
+	}
+	
+	public BuildingLevel(BuildingType buildingType, int level) {
+		this.buildingType = buildingType;
+		
+		this.id.buildingTypeId = buildingType.getId();
+		this.id.level = level;
+		
+		this.buildingType.getLevels().add(this);
+	}
 
 	@EmbeddedId
 	private Id id = new Id();

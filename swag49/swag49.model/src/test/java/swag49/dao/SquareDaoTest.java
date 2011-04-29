@@ -10,16 +10,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
-import swag49.model.Building;
 import swag49.model.Square;
 import swag49.model.Base;
 import swag49.model.Tile;
 import swag49.model.Map;
 import swag49.model.Player;
 import swag49.model.User;
-import swag49.model.BuildingType;
-import swag49.model.BuildingLevel;
-import swag49.model.ResourceType;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/test-context.xml"})

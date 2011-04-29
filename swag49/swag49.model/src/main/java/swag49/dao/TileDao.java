@@ -4,7 +4,6 @@ import org.springframework.transaction.annotation.Transactional;
 import swag49.model.Tile;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 
 @Repository(value="tileDAO")
