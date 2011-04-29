@@ -2,8 +2,6 @@ package swag49.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -27,8 +25,7 @@ public class Troop {
 	@Column(nullable = false)
 	private Integer level;
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
+	@ManyToOne(optional = false)
 	private TroopType type;
 
 	@ManyToOne
