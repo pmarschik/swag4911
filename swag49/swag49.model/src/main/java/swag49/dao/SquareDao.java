@@ -1,8 +1,10 @@
 package swag49.dao;
 
 import javax.persistence.PersistenceContext;
-
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import swag49.model.Square;
 
@@ -22,17 +24,20 @@ public class SquareDao implements DataAccessObject<Square> {
 	public Square get(Long id) {
 		return em.find(Square.class, id);
 	}
-
+	
+	@Transactional
 	public Square create(Square square) {
 		em.merge(square);
 		return square;
 	}
 
+	@Transactional
 	public Square update(Square square) {
 		em.merge(square);
 		return square;
 	}
 
+	@Transactional
 	public void delete(Square square) {
 		em.remove(square);
 
