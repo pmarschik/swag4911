@@ -40,8 +40,3 @@ public class BuildingDao implements DataAccessObject<Building> {
 		return em.contains(building);
 	}
 }
-package src.main.java;
-
-public class BuildingDao {
-
-}

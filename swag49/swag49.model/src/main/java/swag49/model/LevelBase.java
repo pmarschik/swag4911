@@ -1,6 +1,7 @@
 package swag49.model;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 

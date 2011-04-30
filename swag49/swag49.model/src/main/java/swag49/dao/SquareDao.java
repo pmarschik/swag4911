@@ -39,6 +39,7 @@ public class SquareDao implements DataAccessObject<Square> {
 
 	@Transactional
 	public void delete(Square square) {
+		square = em.merge(square);
 		em.remove(square);
 
 	}
