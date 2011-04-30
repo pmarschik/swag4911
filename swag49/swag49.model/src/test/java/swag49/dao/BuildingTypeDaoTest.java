@@ -23,8 +23,6 @@ public class BuildingTypeDaoTest {
     	buildingType.setName("test");    	
     	
     	buildingType = buildingTypeDAO.create(buildingType);
-    	
-
     }
     
     @Test
