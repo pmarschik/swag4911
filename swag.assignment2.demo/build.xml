@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="swag.assignment2.demo" basedir=".">
+
+	<property name="src.dir" value="src" />
+	<property name="testsrc.dir" value="test" />
+	<property name="zip.name" value="swag.assignment2.demo.zip" />
+
+	<property name="build.dir" value="build" />
+	<property name="classes.dir" value="${build.dir}/classes" />
+	<property name="test-classes.dir" value="${build.dir}/test-classes" />
+
+	<property name="lib.dir" value="lib" />
+
+	<path id="classpath">
+		<fileset dir="${lib.dir}" includes="**/*.jar" />
+	</path>
+
+	<path id="test-classpath">
+		<fileset dir="${lib.dir}" includes="**/*.jar" />
+		<pathelement path="${classes.dir}" />
+	</path>
+
+	<!-- create the zip file: -->
+	<target name="zip" depends="clean">
+		<delete file="${zip.name}" />
+		<zip destfile="${zip.name}">
+			<fileset dir="${basedir}" />
+		</zip>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="compile-main">
+		<mkdir dir="${classes.dir}" />
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath" debug="true" deprecation="true" includeantruntime="false" />
+		<copy todir="${classes.dir}">
+			<fileset dir="${src.dir}" excludes="**/*.java" />
+		</copy>
+	</target>
+
+	<target name="compile-test" depends="compile-main">
+		<mkdir dir="${test-classes.dir}" />
+		<javac srcdir="${testsrc.dir}" destdir="${test-classes.dir}" classpathref="test-classpath" />
+	</target>
+
+	<target name="compile">
+		<ant target="compile-main" />
+		<ant target="compile-test" />
+	</target>
+
+	<target name="build">
+		<ant target="compile" />
+	</target>
+
+	<target name="run" depends="compile-test">
+		<junit printsummary="true" fork="true" haltonfailure="true">
+			<formatter type="plain" />
+			<test name="swag.SWAGTestSuite" />
+			<classpath>
+				<fileset dir="${lib.dir}" includes="**/*.jar" />
+				<pathelement path="${classes.dir}" />
+				<pathelement path="${test-classes.dir}" />
+			</classpath>
+		</junit>
+	</target>
+
+</project>
