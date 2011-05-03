@@ -15,17 +15,13 @@ public class PlayerDao implements DataAccessObject<Player> {
 	public PlayerDao() {
 	}
 
-	public Player get(Long id) {
-		return em.find(Player.class, id);
+	public boolean contains(Player player)
+	{
+		return em.contains(player);
 	}
 
 	@Transactional
 	public Player create(Player player) {
-		return em.merge(player);
-	}
-
-	@Transactional
-	public Player update(Player player) {
 		return em.merge(player);
 	}
 
@@ -35,9 +31,13 @@ public class PlayerDao implements DataAccessObject<Player> {
 		em.remove(player);
 	}
 
+	public Player get(Long id) {
+		return em.find(Player.class, id);
+	}
+
 	
-	public boolean contains(Player player)
-	{
-		return em.contains(player);
+	@Transactional
+	public Player update(Player player) {
+		return em.merge(player);
 	}
 }

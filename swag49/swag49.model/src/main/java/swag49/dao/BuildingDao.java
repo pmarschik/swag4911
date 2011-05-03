@@ -15,17 +15,13 @@ public class BuildingDao implements DataAccessObject<Building> {
 	public BuildingDao() {
 	}
 
-	public Building get(Long id) {
-		return em.find(Building.class, id);
+	public boolean contains(Building building)
+	{
+		return em.contains(building);
 	}
 
 	@Transactional
 	public Building create(Building building) {
-		return em.merge(building);
-	}
-
-	@Transactional
-	public Building update(Building building) {
 		return em.merge(building);
 	}
 
@@ -35,8 +31,12 @@ public class BuildingDao implements DataAccessObject<Building> {
 		em.remove(building);
 	}
 
-	public boolean contains(Building building)
-	{
-		return em.contains(building);
+	public Building get(Long id) {
+		return em.find(Building.class, id);
+	}
+
+	@Transactional
+	public Building update(Building building) {
+		return em.merge(building);
 	}
 }

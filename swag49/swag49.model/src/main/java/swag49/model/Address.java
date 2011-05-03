@@ -13,32 +13,32 @@ public class Address {
 
 	private String street;
 
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
 	public String getCity() {
 		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
 	}
 
 	public String getPostalCode() {
 		return postalCode;
 	}
 
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
+	public String getState() {
+		return state;
 	}
 
 	public String getStreet() {
 		return street;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 
 	public void setStreet(String street) {

@@ -15,17 +15,13 @@ public class ActionDao implements DataAccessObject<Action> {
 	public ActionDao() {
 	}
 
-	public Action get(Long id) {
-		return em.find(Action.class, id);
+	public boolean contains(Action action)
+	{
+		return em.contains(action);
 	}
 
 	@Transactional
 	public Action create(Action action) {
-		return em.merge(action);
-	}
-
-	@Transactional
-	public Action update(Action action) {
 		return em.merge(action);
 	}
 
@@ -35,8 +31,12 @@ public class ActionDao implements DataAccessObject<Action> {
 		em.remove(action);
 	}
 
-	public boolean contains(Action action)
-	{
-		return em.contains(action);
+	public Action get(Long id) {
+		return em.find(Action.class, id);
+	}
+
+	@Transactional
+	public Action update(Action action) {
+		return em.merge(action);
 	}
 }

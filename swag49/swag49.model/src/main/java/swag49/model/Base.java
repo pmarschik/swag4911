@@ -28,43 +28,43 @@ public class Base {
 	@OneToMany(mappedBy = "base")
 	private Set<Square> consistsOf = new HashSet<Square>();
 
+	public Set<Square> getConsistsOf() {
+		return consistsOf;
+	}
+
 	public Long getId() {
 		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Boolean isHome() {
-		return home;
-	}
-
-	public void setHome(Boolean home) {
-		this.home = home;
-	}
-
-	public void setOwner(Player owner) {
-		this.owner = owner;
-	}
-
-	public Player getOwner() {
-		return owner;
-	}
-
-	public void setLocatedOn(Tile locatedOn) {
-		this.locatedOn = locatedOn;
 	}
 
 	public Tile getLocatedOn() {
 		return locatedOn;
 	}
 
+	public Player getOwner() {
+		return owner;
+	}
+
+	public Boolean isHome() {
+		return home;
+	}
+
 	public void setConsistsOf(Set<Square> consistsOf) {
 		this.consistsOf = consistsOf;
 	}
 
-	public Set<Square> getConsistsOf() {
-		return consistsOf;
+	public void setHome(Boolean home) {
+		this.home = home;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setLocatedOn(Tile locatedOn) {
+		this.locatedOn = locatedOn;
+	}
+
+	public void setOwner(Player owner) {
+		this.owner = owner;
 	}
 }

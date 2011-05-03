@@ -15,18 +15,13 @@ public class BaseDao implements DataAccessObject<Base> {
 	public BaseDao() {
 	}
 
-	public Base get(Long id) {
-		return em.find(Base.class, id);
+	public boolean contains(Base base)
+	{
+		return em.contains(base);
 	}
 
 	@Transactional
 	public Base create(Base base) {
-		return em.merge(base);
-
-	}
-
-	@Transactional
-	public Base update(Base base) {
 		return em.merge(base);
 
 	}
@@ -38,8 +33,13 @@ public class BaseDao implements DataAccessObject<Base> {
 
 	}
 
-	public boolean contains(Base base)
-	{
-		return em.contains(base);
+	public Base get(Long id) {
+		return em.find(Base.class, id);
+	}
+
+	@Transactional
+	public Base update(Base base) {
+		return em.merge(base);
+
 	}
 }

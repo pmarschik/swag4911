@@ -27,17 +27,17 @@ public class Building {
 		}
 
 		@Override
-		public int hashCode() {
-			return squareId.hashCode();
-		}
-
-		@Override
 		public boolean equals(Object obj) {
 			if (obj != null && obj instanceof Id) {
 				return this.squareId.equals(((Id) obj).squareId);
 			} else {
 				return false;
 			}
+		}
+
+		@Override
+		public int hashCode() {
+			return squareId.hashCode();
 		}
 	}
 
@@ -68,12 +68,12 @@ public class Building {
 		return id;
 	}
 
-	public Square getSquare() {
-		return square;
+	public BuildingLevel getIsOfLevel() {
+		return isOfLevel;
 	}
 
-	public void setType(BuildingType type) {
-		this.type = type;
+	public Square getSquare() {
+		return square;
 	}
 
 	public BuildingType getType() {
@@ -84,7 +84,7 @@ public class Building {
 		this.isOfLevel = isOfLevel;
 	}
 
-	public BuildingLevel getIsOfLevel() {
-		return isOfLevel;
+	public void setType(BuildingType type) {
+		this.type = type;
 	}
 }

@@ -1,6 +1,5 @@
 package swag49.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,78 +12,45 @@ public class Troop {
 	@GeneratedValue
 	private Long id;
 
-	@Column(nullable = false)
-	private Integer strength;
-
-	@Column(nullable = false)
-	private Integer speed;
-
-	@Column(nullable = false)
-	private Integer defense;
-
-	@Column(nullable = false)
-	private Integer level;
-
 	@ManyToOne(optional = false)
 	private TroopType type;
 
 	@ManyToOne
 	private Tile position;
 
+	@ManyToOne(optional = false)
+	private TroopLevel isOfLevel;
+
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public TroopLevel getIsOfLevel() {
+		return isOfLevel;
 	}
 
-	public Integer getStrength() {
-		return strength;
-	}
-
-	public void setStrength(Integer strength) {
-		this.strength = strength;
-	}
-
-	public Integer getSpeed() {
-		return speed;
-	}
-
-	public void setSpeed(Integer speed) {
-		this.speed = speed;
-	}
-
-	public Integer getDefense() {
-		return defense;
-	}
-
-	public void setDefense(Integer defense) {
-		this.defense = defense;
-	}
-
-	public Integer getLevel() {
-		return level;
-	}
-
-	public void setLevel(Integer level) {
-		this.level = level;
-	}
-
-	public void setType(TroopType type) {
-		this.type = type;
+	public Tile getPosition() {
+		return position;
 	}
 
 	public TroopType getType() {
 		return type;
 	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setIsOfLevel(TroopLevel isOfLevel) {
+		this.isOfLevel = isOfLevel;
+	}
+
 	public void setPosition(Tile position) {
 		this.position = position;
 	}
 
-	public Tile getPosition() {
-		return position;
+	public void setType(TroopType type) {
+		this.type = type;
 	}
 
 }

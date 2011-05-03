@@ -16,17 +16,13 @@ public class UserDAO implements DataAccessObject<User> {
 	public UserDAO() {
 	}
 
-	public User get(Long id) {
-		return em.find(User.class, id);
+	public boolean contains(User user)
+	{		
+		return em.contains(user);
 	}
 
     @Transactional
 	public User create(User user) {
-		return em.merge(user);
-	}
-
-    @Transactional
-	public User update(User user) {
 		return em.merge(user);
 	}
 
@@ -36,8 +32,12 @@ public class UserDAO implements DataAccessObject<User> {
 		em.remove(user);
 	}
 
-	public boolean contains(User user)
-	{		
-		return em.contains(user);
+    public User get(Long id) {
+		return em.find(User.class, id);
+	}
+
+	@Transactional
+	public User update(User user) {
+		return em.merge(user);
 	}
 }

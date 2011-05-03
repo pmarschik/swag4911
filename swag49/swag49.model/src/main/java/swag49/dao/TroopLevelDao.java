@@ -15,17 +15,13 @@ public class TroopLevelDao implements DataAccessObject<TroopLevel> {
 	public TroopLevelDao() {
 	}
 
-	public TroopLevel get(Long id) {
-		return em.find(TroopLevel.class, id);
+	public boolean contains(TroopLevel troopLevel)
+	{
+		return em.contains(troopLevel);
 	}
 
 	@Transactional
 	public TroopLevel create(TroopLevel troopLevel) {
-		return em.merge(troopLevel);
-	}
-
-	@Transactional
-	public TroopLevel update(TroopLevel troopLevel) {
 		return em.merge(troopLevel);
 	}
 
@@ -35,8 +31,12 @@ public class TroopLevelDao implements DataAccessObject<TroopLevel> {
 		em.remove(troopLevel);
 	}
 
-	public boolean contains(TroopLevel troopLevel)
-	{
-		return em.contains(troopLevel);
+	public TroopLevel get(Long id) {
+		return em.find(TroopLevel.class, id);
+	}
+
+	@Transactional
+	public TroopLevel update(TroopLevel troopLevel) {
+		return em.merge(troopLevel);
 	}
 }

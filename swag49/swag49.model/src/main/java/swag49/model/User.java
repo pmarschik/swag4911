@@ -40,75 +40,75 @@ public class User {
 	public User() {
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public Address getAddress() {
+		return address;
 	}
 
 	public String getEmail() {
 		return email;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public Integer getUtcOffset() {
-		return utcOffset;
+	public Long getId() {
+		return id;
 	}
 
-	public void setUtcOffset(Integer utcOffset) {
-		this.utcOffset = utcOffset;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setPlayers(Set<Player> players) {
-		this.players = players;
+	public String getPassword() {
+		return password;
 	}
 
 	public Set<Player> getPlayers() {
 		return players;
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public Integer getUtcOffset() {
+		return utcOffset;
+	}
+
 	public void setAddress(Address address) {
 		this.address = address;
 	}
 
-	public Address getAddress() {
-		return address;
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setPlayers(Set<Player> players) {
+		this.players = players;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setUtcOffset(Integer utcOffset) {
+		this.utcOffset = utcOffset;
 	}
 }

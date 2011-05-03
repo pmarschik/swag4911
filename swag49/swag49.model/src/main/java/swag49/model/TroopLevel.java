@@ -2,6 +2,7 @@ package swag49.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -28,11 +29,6 @@ public class TroopLevel extends LevelBase {
 		}
 
 		@Override
-		public int hashCode() {
-			return level.hashCode() + troopTypeId.hashCode();
-		}
-
-		@Override
 		public boolean equals(Object obj) {
 			if (obj != null && obj instanceof Id) {
 				return this.level.equals(((Id) obj).level)
@@ -41,7 +37,28 @@ public class TroopLevel extends LevelBase {
 				return false;
 			}
 		}
+
+		@Override
+		public int hashCode() {
+			return level.hashCode() + troopTypeId.hashCode();
+		}
 	}
+
+	@EmbeddedId
+	private Id id = new Id();
+
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "troopTypeId", insertable = false, updatable = false)
+	private TroopType troopType;
+
+	@Column(nullable = false)
+	private Integer strength;
+
+	@Column(nullable = false)
+	private Integer speed;
+	
+	@Column(nullable = false)
+	private Integer defense;
 
 	public TroopLevel() {
 	}
@@ -54,33 +71,51 @@ public class TroopLevel extends LevelBase {
 
 		this.getTroopType().getLevels().add(this);
 	}
+	
 
-	@EmbeddedId
-	private Id id = new Id();
-
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "troopTypeId", insertable = false, updatable = false)
-	private TroopType troopType;
+	public Integer getDefense() {
+		return defense;
+	}
 
 	public Id getId() {
 		return id;
 	}
 
-	public void setId(Id id) {
-		this.id = id;
+	@Override
+	public Integer getLevel() {
+		return id.level;
 	}
 
-	public void setTroopType(TroopType troopType) {
-		this.troopType = troopType;
+	public Integer getSpeed() {
+		return speed;
+	}
+
+	public Integer getStrength() {
+		return strength;
 	}
 
 	public TroopType getTroopType() {
 		return troopType;
 	}
 
-	@Override
-	public Integer getLevel() {
-		return id.level;
+	public void setDefense(Integer defense) {
+		this.defense = defense;
+	}
+
+	public void setId(Id id) {
+		this.id = id;
+	}
+
+	public void setSpeed(Integer speed) {
+		this.speed = speed;
+	}
+
+	public void setStrength(Integer strength) {
+		this.strength = strength;
+	}
+
+	public void setTroopType(TroopType troopType) {
+		this.troopType = troopType;
 	}
 
 }

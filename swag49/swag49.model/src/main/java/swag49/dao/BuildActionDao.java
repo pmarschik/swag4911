@@ -15,17 +15,13 @@ public class BuildActionDao implements DataAccessObject<BuildAction> {
 	public BuildActionDao() {
 	}
 
-	public BuildAction get(Long id) {
-		return em.find(BuildAction.class, id);
+	public boolean contains(BuildAction buildAction)
+	{
+		return em.contains(buildAction);
 	}
 
 	@Transactional
 	public BuildAction create(BuildAction buildAction) {
-		return em.merge(buildAction);
-	}
-
-	@Transactional
-	public BuildAction update(BuildAction buildAction) {
 		return em.merge(buildAction);
 	}
 
@@ -35,9 +31,13 @@ public class BuildActionDao implements DataAccessObject<BuildAction> {
 		em.remove(buildAction);
 	}
 
-	public boolean contains(BuildAction buildAction)
-	{
-		return em.contains(buildAction);
+	public BuildAction get(Long id) {
+		return em.find(BuildAction.class, id);
+	}
+
+	@Transactional
+	public BuildAction update(BuildAction buildAction) {
+		return em.merge(buildAction);
 	}
 }
 

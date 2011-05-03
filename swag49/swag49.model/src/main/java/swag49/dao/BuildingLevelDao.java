@@ -15,17 +15,13 @@ public class BuildingLevelDao implements DataAccessObject<BuildingLevel> {
 	public BuildingLevelDao() {
 	}
 
-	public BuildingLevel get(Long id) {
-		return em.find(BuildingLevel.class, id);
+	public boolean contains(BuildingLevel buildingLevel)
+	{
+		return em.contains(buildingLevel);
 	}
 
 	@Transactional
 	public BuildingLevel create(BuildingLevel buildingLevel) {
-		return em.merge(buildingLevel);
-	}
-
-	@Transactional
-	public BuildingLevel update(BuildingLevel buildingLevel) {
 		return em.merge(buildingLevel);
 	}
 
@@ -35,9 +31,13 @@ public class BuildingLevelDao implements DataAccessObject<BuildingLevel> {
 		em.remove(buildingLevel);
 	}
 
-	public boolean contains(BuildingLevel buildingLevel)
-	{
-		return em.contains(buildingLevel);
+	public BuildingLevel get(Long id) {
+		return em.find(BuildingLevel.class, id);
+	}
+
+	@Transactional
+	public BuildingLevel update(BuildingLevel buildingLevel) {
+		return em.merge(buildingLevel);
 	}
 }
 

@@ -21,18 +21,12 @@ public class SquareDao implements DataAccessObject<Square> {
 		this.em = em;
 	}
 
-	public Square get(Long id) {
-		return em.find(Square.class, id);
+	public boolean contains(Square square) {
+		return em.contains(square);
 	}
 	
 	@Transactional
 	public Square create(Square square) {
-		em.merge(square);
-		return square;
-	}
-
-	@Transactional
-	public Square update(Square square) {
 		em.merge(square);
 		return square;
 	}
@@ -44,8 +38,14 @@ public class SquareDao implements DataAccessObject<Square> {
 
 	}
 
-	public boolean contains(Square square) {
-		return em.contains(square);
+	public Square get(Long id) {
+		return em.find(Square.class, id);
+	}
+
+	@Transactional
+	public Square update(Square square) {
+		em.merge(square);
+		return square;
 	}
 
 }

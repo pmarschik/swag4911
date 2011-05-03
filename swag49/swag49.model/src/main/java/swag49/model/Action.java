@@ -30,43 +30,43 @@ public abstract class Action {
 	@ManyToOne(optional = false)
 	private Player player;
 
+	public Integer getDuration() {
+		return duration;
+	}
+
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public Player getPlayer() {
+		return player;
 	}
 
 	public Date getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	public Integer getDuration() {
-		return duration;
+	public Tile getTarget() {
+		return target;
 	}
 
 	public void setDuration(Integer duration) {
 		this.duration = duration;
 	}
 
-	public Tile getTarget() {
-		return target;
-	}
-
-	public void setTarget(Tile target) {
-		this.target = target;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
 
-	public Player getPlayer() {
-		return player;
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public void setTarget(Tile target) {
+		this.target = target;
 	}
 }

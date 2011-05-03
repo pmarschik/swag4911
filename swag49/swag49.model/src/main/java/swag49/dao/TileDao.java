@@ -15,17 +15,13 @@ public class TileDao implements DataAccessObject<Tile> {
 	public TileDao() {
 	}
 
-	public Tile get(Long id) {
-		return em.find(Tile.class, id);
+	public boolean contains(Tile tile)
+	{
+		return em.contains(tile);
 	}
 
 	@Transactional
 	public Tile create(Tile tile) {
-		return em.merge(tile);
-	}
-
-	@Transactional
-	public Tile update(Tile tile) {
 		return em.merge(tile);
 	}
 
@@ -35,10 +31,14 @@ public class TileDao implements DataAccessObject<Tile> {
 		em.remove(tile);
 	}
 
+	public Tile get(Long id) {
+		return em.find(Tile.class, id);
+	}
+
 	
-	public boolean contains(Tile tile)
-	{
-		return em.contains(tile);
+	@Transactional
+	public Tile update(Tile tile) {
+		return em.merge(tile);
 	}
 }
 

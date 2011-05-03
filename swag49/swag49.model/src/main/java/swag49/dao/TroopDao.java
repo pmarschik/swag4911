@@ -16,17 +16,13 @@ public class TroopDao implements DataAccessObject<Troop> {
 	public TroopDao() {
 	}
 
-	public Troop get(Long id) {
-		return em.find(Troop.class, id);
+	public boolean contains(Troop troop)
+	{
+		return em.contains(troop);
 	}
 
 	 @Transactional
 	public Troop create(Troop troop) {
-		return em.merge(troop);
-	}
-
-	 @Transactional
-	public Troop update(Troop troop) {
 		return em.merge(troop);
 	}
 
@@ -36,8 +32,12 @@ public class TroopDao implements DataAccessObject<Troop> {
 		em.remove(troop);
 	}
 
-	public boolean contains(Troop troop)
-	{
-		return em.contains(troop);
+	 public Troop get(Long id) {
+		return em.find(Troop.class, id);
+	}
+
+	@Transactional
+	public Troop update(Troop troop) {
+		return em.merge(troop);
 	}
 }

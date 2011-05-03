@@ -35,11 +35,6 @@ public class Tile {
 		}
 
 		@Override
-		public int hashCode() {
-			return mapId.hashCode() + x.hashCode() + y.hashCode();
-		}
-
-		@Override
 		public boolean equals(Object obj) {
 			if (obj != null && obj instanceof Id) {
 				return this.mapId.equals(((Id) obj).mapId)
@@ -48,6 +43,11 @@ public class Tile {
 			} else {
 				return false;
 			}
+		}
+
+		@Override
+		public int hashCode() {
+			return mapId.hashCode() + x.hashCode() + y.hashCode();
 		}
 	}
 
@@ -67,14 +67,6 @@ public class Tile {
 	public Tile() {
 	}
 
-	public Set<Troop> getTroops() {
-		return troops;
-	}
-
-	public void setTroops(Set<Troop> troops) {
-		this.troops = troops;
-	}
-
 	public Tile(Map map, int x, int y) {
 		this.map = map;
 		this.id.mapId = map.getId();
@@ -92,11 +84,19 @@ public class Tile {
 		return map;
 	}
 
+	public ResourceType getSpecial() {
+		return special;
+	}
+
+	public Set<Troop> getTroops() {
+		return troops;
+	}
+
 	public void setSpecial(ResourceType special) {
 		this.special = special;
 	}
 
-	public ResourceType getSpecial() {
-		return special;
+	public void setTroops(Set<Troop> troops) {
+		this.troops = troops;
 	}
 }

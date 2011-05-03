@@ -15,8 +15,9 @@ public class MessageDao implements DataAccessObject<Message> {
 	public MessageDao() {
 	}
 
-	public Message get(Long id) {
-		return em.find(Message.class, id);
+	public boolean contains(Message message)
+	{
+		return em.contains(message);
 	}
 
 	@Transactional
@@ -25,19 +26,18 @@ public class MessageDao implements DataAccessObject<Message> {
 	}
 
 	@Transactional
-	public Message update(Message message) {
-		return em.merge(message);
-	}
-
-	@Transactional
 	public void delete(Message message) {
 		message = em.merge(message);
 		em.remove(message);
 	}
+
+	public Message get(Long id) {
+		return em.find(Message.class, id);
+	}
 	
-	public boolean contains(Message message)
-	{
-		return em.contains(message);
+	@Transactional
+	public Message update(Message message) {
+		return em.merge(message);
 	}
 
 }

@@ -12,14 +12,17 @@
         <class>swag49.model.BuildAction</class>
         <class>swag49.model.Building</class>
         <class>swag49.model.BuildingLevel</class>
+        <class>swag49.model.BuildingType</class>
         <class>swag49.model.Map</class>
         <class>swag49.model.Message</class>
         <class>swag49.model.Player</class>
-        <class>swag49.model.Resource</class>
+        <class>swag49.model.ResourceValue</class>
         <class>swag49.model.Square</class>
         <class>swag49.model.Tile</class>
         <class>swag49.model.Troop</class>
         <class>swag49.model.TroopAction</class>
+        <class>swag49.model.TroopType</class>
+        <class>swag49.model.TroopLevel</class>
         <class>swag49.model.User</class>
 
         <properties>

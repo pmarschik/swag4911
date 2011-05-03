@@ -15,17 +15,13 @@ public class MapDao implements DataAccessObject<Map> {
 	public MapDao() {
 	}
 
-	public Map get(Long id) {
-		return em.find(Map.class, id);
+	public boolean contains(Map map)
+	{
+		return em.contains(map);
 	}
 
 	@Transactional
 	public Map create(Map map) {
-		return em.merge(map);
-	}
-
-	@Transactional
-	public Map update(Map map) {
 		return em.merge(map);
 	}
 
@@ -35,8 +31,12 @@ public class MapDao implements DataAccessObject<Map> {
 		em.remove(map);
 	}
 
-	public boolean contains(Map map)
-	{
-		return em.contains(map);
+	public Map get(Long id) {
+		return em.find(Map.class, id);
+	}
+
+	@Transactional
+	public Map update(Map map) {
+		return em.merge(map);
 	}
 }

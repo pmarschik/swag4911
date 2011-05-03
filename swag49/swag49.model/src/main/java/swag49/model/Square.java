@@ -30,11 +30,6 @@ public class Square {
 		}
 
 		@Override
-		public int hashCode() {
-			return baseId.hashCode() + position.hashCode();
-		}
-
-		@Override
 		public boolean equals(Object obj) {
 			if (obj != null && obj instanceof Id) {
 				return this.position.equals(((Id) obj).position)
@@ -42,6 +37,11 @@ public class Square {
 			} else {
 				return false;
 			}
+		}
+
+		@Override
+		public int hashCode() {
+			return baseId.hashCode() + position.hashCode();
 		}
 	}
 
@@ -66,19 +66,19 @@ public class Square {
 		base.getConsistsOf().add(this);
 	}
 	
-	public Id getId() {
-		return id;
-	}
-
 	public Base getBase() {
 		return base;
 	}
 
-	public void setBuilding(Building building) {
-		this.building = building;
-	}
-
 	public Building getBuilding() {
 		return building;
+	}
+
+	public Id getId() {
+		return id;
+	}
+
+	public void setBuilding(Building building) {
+		this.building = building;
 	}
 }
