@@ -16,7 +16,7 @@ public class Player {
 	@javax.persistence.ManyToOne(optional = false)
 	private User user;
 
-	@javax.persistence.OneToOne(optional = false)
+	@javax.persistence.ManyToOne(optional = false)
 	private Map plays;
 
 	@javax.persistence.OneToMany(mappedBy = "owner")
