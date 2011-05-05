@@ -28,7 +28,7 @@ public class Player {
 	@ManyToOne(optional = false)
 	private User user;
 
-	@OneToOne(optional = false)
+	@ManyToOne(optional = false)
 	private Map plays;
 
 	@OneToMany(mappedBy = "owner")
