@@ -11,39 +11,36 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class LevelBase {
-	
+
 	@Column(nullable = false)
 	private Long upgradeDuration;
-	
+
 	@Embedded
-	@AttributeOverrides( {
-            @AttributeOverride(name="amount_gold", column = @Column(name="upkeep_gold") ),
-            @AttributeOverride(name="amount_stone", column = @Column(name="upkeep_stone") ),
-            @AttributeOverride(name="amount_wood", column = @Column(name="upkeep_wood") ),
-            @AttributeOverride(name="amount_crops", column = @Column(name="upkeep_crops") )
-    } )
+	@AttributeOverrides({
+			@AttributeOverride(name = "amount_gold", column = @Column(name = "upkeep_gold")),
+			@AttributeOverride(name = "amount_stone", column = @Column(name = "upkeep_stone")),
+			@AttributeOverride(name = "amount_wood", column = @Column(name = "upkeep_wood")),
+			@AttributeOverride(name = "amount_crops", column = @Column(name = "upkeep_crops")) })
 	private ResourceValue upkeepCosts = new ResourceValue();
 
 	@Embedded
-	@AttributeOverrides( {
-        @AttributeOverride(name="amount_gold", column = @Column(name="cost_gold") ),
-        @AttributeOverride(name="amount_stone", column = @Column(name="cost_stone") ),
-        @AttributeOverride(name="amount_wood", column = @Column(name="cost_wood") ),
-        @AttributeOverride(name="amount_crops", column = @Column(name="cost_crops") )
-} )
+	@AttributeOverrides({
+			@AttributeOverride(name = "amount_gold", column = @Column(name = "cost_gold")),
+			@AttributeOverride(name = "amount_stone", column = @Column(name = "cost_stone")),
+			@AttributeOverride(name = "amount_wood", column = @Column(name = "cost_wood")),
+			@AttributeOverride(name = "amount_crops", column = @Column(name = "cost_crops")) })
 	private ResourceValue buildCosts = new ResourceValue();
 
 	public ResourceValue getBuildCosts() {
 		return buildCosts;
 	}
-	
 
 	public abstract Integer getLevel();
 
 	public Long getUpgradeDuration() {
 		return upgradeDuration;
 	}
-	
+
 	public ResourceValue getUpkeepCosts() {
 		return upkeepCosts;
 	}
