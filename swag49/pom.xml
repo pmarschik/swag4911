@@ -12,6 +12,7 @@
 	<modules>
 		<module>swag49.model</module>
 		<module>swag49.web</module>
+		<module>swag49.processing</module>
 	</modules>
 
 	<properties>

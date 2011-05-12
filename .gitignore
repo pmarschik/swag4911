@@ -4,3 +4,10 @@ data/bin/
 .idea/
 target/
 *.iml
+swag49/.project
+swag49/swag49.model/.classpath
+swag49/swag49.model/.project
+swag49/swag49.web/.classpath
+swag49/swag49.web/.project
+swag49/swag49.processing/.classpath
+swag49/swag49.processing/.project
