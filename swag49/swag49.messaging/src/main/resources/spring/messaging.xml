@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:si="http://www.springframework.org/schema/integration"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-1.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="swag49"/>
+
+    <si:channel id="playerMessageInput"/>
+    <si:channel id="playerMessageOutput">
+        <si:queue capacity="10"/>
+    </si:channel>
+    <si:gateway id="playerMessageGateway" service-interface="swag49.messaging.MessageSender"
+                default-request-channel="playerMessageInput"/>
+    <si:service-activator input-channel="playerMessageInput" output-channel="playerMessageOutput"
+                          ref="emailMessageHandler" method="handleMessage"/>
+
+</beans>

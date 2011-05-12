@@ -12,6 +12,7 @@
     <modules>
         <module>swag49.util</module>
         <module>swag49.model</module>
+        <module>swag49.messaging</module>
         <module>swag49.web</module>
         <module>swag49.processing</module>
     </modules>
@@ -20,6 +21,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jetty.version>6.1.4</jetty.version>
         <spring.version>3.0.5.RELEASE</spring.version>
+        <spring.integration.version>2.0.3.RELEASE</spring.integration.version>
         <slf4j.version>1.5.10</slf4j.version>
         <java.version>1.5</java.version>
         <junit.version>4.8.2</junit.version>
