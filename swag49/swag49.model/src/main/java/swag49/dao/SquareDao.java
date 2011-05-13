@@ -1,10 +1,9 @@
 package swag49.dao;
 
 import javax.persistence.PersistenceContext;
-import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.stereotype.Repository;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import swag49.model.Square;
 
