@@ -55,6 +55,8 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="index" eType="#//PersistenceIndex"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributeOverride" eType="#//PersistenceAttributeOverrides"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="PersistenceInjection">
     <eLiterals name="Constructor"/>
@@ -121,5 +123,13 @@
   <eClassifiers xsi:type="ecore:EEnum" name="PersistenceProvider">
     <eLiterals name="MySQL"/>
     <eLiterals name="PostgreSQL" value="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PersistenceAttributeOverrides">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributeOverrides" lowerBound="1"
+        upperBound="-1" eType="#//PerstistenceAttributeOverride" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PerstistenceAttributeOverride">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="column" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
 </ecore:EPackage>

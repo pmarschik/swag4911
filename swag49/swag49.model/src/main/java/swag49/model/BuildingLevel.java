@@ -21,6 +21,14 @@ public class BuildingLevel extends LevelBase {
 		private Integer level;
 		private Long buildingTypeId;
 
+		public Integer getLevel() {
+			return level;
+		}
+
+		public Long getBuildingTypeId() {
+			return buildingTypeId;
+		}
+
 		public Id() {
 			super();
 		}
@@ -60,13 +68,12 @@ public class BuildingLevel extends LevelBase {
 			@AttributeOverride(name = "amount_wood", column = @Column(name = "production_wood")),
 			@AttributeOverride(name = "amount_crops", column = @Column(name = "production_crops")) })
 	private ResourceValue resourceProduction = new ResourceValue();
-	
-//	@ElementCollection
-//	@MapKey(name = "resourceType")
-//	@CollectionTable(name = "upkeepResourceTable", 
-//	joinColumns = @JoinColumn(name = "string_id"))
-//	private HashMap<String, Long> map = new HashMap<String, Long>();
 
+	// @ElementCollection
+	// @MapKey(name = "resourceType")
+	// @CollectionTable(name = "upkeepResourceTable",
+	// joinColumns = @JoinColumn(name = "string_id"))
+	// private HashMap<String, Long> map = new HashMap<String, Long>();
 
 	public BuildingLevel() {
 	}

@@ -33,7 +33,7 @@ public class BaseDao implements DataAccessObject<Base> {
 
 	}
 
-	public Base get(Long id) {
+	public Base get(Object id) {
 		return em.find(Base.class, id);
 	}
 

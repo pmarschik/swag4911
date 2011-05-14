@@ -31,7 +31,7 @@ public class TroopTypeDao implements DataAccessObject<TroopType> {
 		em.remove(troopType);
 	}
 
-	public TroopType get(Long id) {
+	public TroopType get(Object id) {
 		return em.find(TroopType.class, id);
 	}
 

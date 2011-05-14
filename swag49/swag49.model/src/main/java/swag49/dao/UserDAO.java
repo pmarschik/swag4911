@@ -32,7 +32,7 @@ public class UserDAO implements DataAccessObject<User> {
 		em.remove(user);
 	}
 
-    public User get(Long id) {
+    public User get(Object id) {
 		return em.find(User.class, id);
 	}
 

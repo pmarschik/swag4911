@@ -210,6 +210,15 @@
 	«IF index != null»
 		@org.hibernate.annotations.Index(name = "«index.name»")
 	«ENDIF»
+	«IF attributeOverride != null»
+		@AttributeOverrides({
+		«EXPAND singleAttributeOverride FOREACH attributeOverride.attributeOverrides»
+		}
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE singleAttributeOverride FOR PerstistenceAttributeOverride»
+	@AttributeOverride(name = "«name»", column = @Column(name = "«column»"))
 «ENDDEFINE»
 
 «DEFINE entityClassMemberGetter FOR Member»
@@ -230,7 +239,7 @@
 	
 		public interface DataAccessObject<T> {
 		
-			public T get(Long id);
+			public T get(Object id);
 			public T create(T model);
 			public T update(T model);
 			public void delete(T model);
@@ -277,7 +286,7 @@
 «ENDDEFINE»
 
 «DEFINE getMethodForDao(Boolean isContainerManaged) FOR DAO»
-	public «daoFor.name» get(Long id) {
+	public «daoFor.name» get(Object id) {
 		return em.find(«daoFor.name».class, id);
 	}
 «ENDDEFINE»

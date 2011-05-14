@@ -32,7 +32,7 @@ public class TroopDao implements DataAccessObject<Troop> {
 		em.remove(troop);
 	}
 
-	 public Troop get(Long id) {
+	 public Troop get(Object id) {
 		return em.find(Troop.class, id);
 	}
 

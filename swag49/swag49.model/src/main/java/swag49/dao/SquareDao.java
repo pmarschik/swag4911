@@ -37,7 +37,7 @@ public class SquareDao implements DataAccessObject<Square> {
 
 	}
 
-	public Square get(Long id) {
+	public Square get(Object id) {
 		return em.find(Square.class, id);
 	}
 

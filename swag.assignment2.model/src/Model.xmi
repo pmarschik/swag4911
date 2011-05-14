@@ -88,8 +88,31 @@
     <members name="user" complexType="//@entities.16" persistenceRelation="ManyToOne"/>
     <members name="plays" complexType="//@entities.9" persistenceRelation="OneToOne"/>
     <members name="owns" complexType="//@entities.4" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="owner"/>
-    <members name="resources" complexType="//@entities.12" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="player"/>
     <members name="actions" complexType="//@entities.0" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="player"/>
+    <members name="resources" type="" complexType="//@entities.17">
+      <attributeOverride>
+        <attributeOverrides name="resources_gold" column="amount_gold"/>
+        <attributeOverrides name="resources_stone" column="amount_stone"/>
+        <attributeOverrides name="resources_wood" column="amount_wood"/>
+        <attributeOverrides name="resources_crops" column="amount_crops"/>
+      </attributeOverride>
+    </members>
+    <members name="income" complexType="//@entities.17">
+      <attributeOverride>
+        <attributeOverrides name="income_gold" column="amount_gold"/>
+        <attributeOverrides name="income_stone" column="amount_stone"/>
+        <attributeOverrides name="income_wood" column="amount_wood"/>
+        <attributeOverrides name="income_crops" column="amount_crops"/>
+      </attributeOverride>
+    </members>
+    <members name="upkeep" complexType="//@entities.17">
+      <attributeOverride>
+        <attributeOverrides name="upkeep_gold" column="amount_gold"/>
+        <attributeOverrides name="upkeep_stone" column="amount_stone"/>
+        <attributeOverrides name="upkeep_wood" column="amount_wood"/>
+        <attributeOverrides name="upkeep_crops" column="amount_crops"/>
+      </attributeOverride>
+    </members>
   </entities>
   <entities name="Resource">
     <members name="player" complexType="//@entities.11" persistenceRelation="ManyToOne">
@@ -156,6 +179,12 @@
     </members>
     <members name="players" complexType="//@entities.11" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="user"/>
     <members name="address" complexType="//@entities.3"/>
+  </entities>
+  <entities name="ResourceValue" persistenceEmbeddable="true">
+    <members name="amount_gold" type="Integer"/>
+    <members name="amount_stone" type="Integer"/>
+    <members name="amount_wood" type="Integer"/>
+    <members name="amount_crops" type="Integer"/>
   </entities>
   <daos daoFor="//@entities.4" name="BaseDao"/>
   <daos daoFor="//@entities.6" name="BuildActionDao"/>

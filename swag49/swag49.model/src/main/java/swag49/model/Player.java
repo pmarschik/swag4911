@@ -34,6 +34,17 @@ public class Player {
 
 	@OneToMany(mappedBy = "owner")
 	private Set<Base> owns = new HashSet<Base>();
+	
+	@OneToMany(mappedBy = "owner")
+	private Set<Troop> commands = new HashSet<Troop>();
+
+	public Set<Troop> getCommands() {
+		return commands;
+	}
+
+	public void setCommands(Set<Troop> commands) {
+		this.commands = commands;
+	}
 
 	@Embedded
 	@AttributeOverrides({
@@ -50,6 +61,22 @@ public class Player {
 			@AttributeOverride(name = "amount_wood", column = @Column(name = "income_wood")),
 			@AttributeOverride(name = "amount_crops", column = @Column(name = "income_crops")) })
 	private ResourceValue income = new ResourceValue();
+	
+	@Embedded
+	@AttributeOverrides({
+			@AttributeOverride(name = "amount_gold", column = @Column(name = "upkeep_gold")),
+			@AttributeOverride(name = "amount_stone", column = @Column(name = "upkeep_stone")),
+			@AttributeOverride(name = "amount_wood", column = @Column(name = "upkeep_wood")),
+			@AttributeOverride(name = "amount_crops", column = @Column(name = "upkeep_crops")) })
+	private ResourceValue upkeep = new ResourceValue();
+
+	public ResourceValue getUpkeep() {
+		return upkeep;
+	}
+
+	public void setUpkeep(ResourceValue upkeep) {
+		this.upkeep = upkeep;
+	}
 
 	public ResourceValue getIncome() {
 		return income;

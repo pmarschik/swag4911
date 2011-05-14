@@ -31,7 +31,7 @@ public class BuildingDao implements DataAccessObject<Building> {
 		em.remove(building);
 	}
 
-	public Building get(Long id) {
+	public Building get(Object id) {
 		return em.find(Building.class, id);
 	}
 

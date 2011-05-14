@@ -31,7 +31,7 @@ public class PlayerDao implements DataAccessObject<Player> {
 		em.remove(player);
 	}
 
-	public Player get(Long id) {
+	public Player get(Object id) {
 		return em.find(Player.class, id);
 	}
 

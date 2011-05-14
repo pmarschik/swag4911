@@ -31,7 +31,7 @@ public class MapDao implements DataAccessObject<Map> {
 		em.remove(map);
 	}
 
-	public Map get(Long id) {
+	public Map get(Object id) {
 		return em.find(Map.class, id);
 	}
 

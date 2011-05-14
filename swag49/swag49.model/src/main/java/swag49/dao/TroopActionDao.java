@@ -31,7 +31,7 @@ public class TroopActionDao implements DataAccessObject<TroopAction> {
 		em.remove(troopAction);
 	}
 
-	public TroopAction get(Long id) {
+	public TroopAction get(Object id) {
 		return em.find(TroopAction.class, id);
 	}
 

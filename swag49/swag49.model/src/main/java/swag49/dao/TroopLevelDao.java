@@ -31,7 +31,7 @@ public class TroopLevelDao implements DataAccessObject<TroopLevel> {
 		em.remove(troopLevel);
 	}
 
-	public TroopLevel get(Long id) {
+	public TroopLevel get(Object id) {
 		return em.find(TroopLevel.class, id);
 	}
 

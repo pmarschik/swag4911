@@ -31,7 +31,7 @@ public class BuildingLevelDao implements DataAccessObject<BuildingLevel> {
 		em.remove(buildingLevel);
 	}
 
-	public BuildingLevel get(Long id) {
+	public BuildingLevel get(Object id) {
 		return em.find(BuildingLevel.class, id);
 	}
 

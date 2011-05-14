@@ -31,7 +31,7 @@ public class MessageDao implements DataAccessObject<Message> {
 		em.remove(message);
 	}
 
-	public Message get(Long id) {
+	public Message get(Object id) {
 		return em.find(Message.class, id);
 	}
 	

@@ -31,7 +31,7 @@ public class TileDao implements DataAccessObject<Tile> {
 		em.remove(tile);
 	}
 
-	public Tile get(Long id) {
+	public Tile get(Object id) {
 		return em.find(Tile.class, id);
 	}
 

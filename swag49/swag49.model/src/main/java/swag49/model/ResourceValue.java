@@ -74,4 +74,14 @@ public class ResourceValue {
 		this.amount_wood = amount_wood;
 	}
 
+	public void remove(ResourceValue upkeepCosts) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void add(ResourceValue upkeepCosts) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

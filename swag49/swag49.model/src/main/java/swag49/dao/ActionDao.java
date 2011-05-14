@@ -31,7 +31,7 @@ public class ActionDao implements DataAccessObject<Action> {
 		em.remove(action);
 	}
 
-	public Action get(Long id) {
+	public Action get(Object id) {
 		return em.find(Action.class, id);
 	}
 

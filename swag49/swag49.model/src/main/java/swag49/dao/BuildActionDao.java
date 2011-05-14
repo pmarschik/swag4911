@@ -31,7 +31,7 @@ public class BuildActionDao implements DataAccessObject<BuildAction> {
 		em.remove(buildAction);
 	}
 
-	public BuildAction get(Long id) {
+	public BuildAction get(Object id) {
 		return em.find(BuildAction.class, id);
 	}
 
