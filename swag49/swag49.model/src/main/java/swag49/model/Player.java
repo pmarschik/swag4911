@@ -108,7 +108,7 @@ public class Player {
 		return online;
 	}
 
-	public void getOwns(Set<Base> bases) {
+	public void setOwns(Set<Base> bases) {
 		this.owns = bases;
 	}
 
@@ -140,7 +140,7 @@ public class Player {
 		this.online = online;
 	}
 
-	public Set<Base> setOwns() {
+	public Set<Base> getOwns() {
 		return owns;
 	}
 

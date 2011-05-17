@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Tile {
@@ -63,6 +64,17 @@ public class Tile {
 
 	@OneToMany(mappedBy = "position")
 	private Set<Troop> troops;
+	
+	@OneToOne(optional = true)
+	private Base base;
+
+	public Base getBase() {
+		return base;
+	}
+
+	public void setBase(Base base) {
+		this.base = base;
+	}
 
 	public Tile() {
 	}
