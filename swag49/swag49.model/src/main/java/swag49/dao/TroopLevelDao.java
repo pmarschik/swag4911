@@ -1,12 +1,19 @@
 package swag49.dao;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import swag49.model.TroopLevel;
+
+import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Repository(value="troopLevelDAO")
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Example;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import swag49.model.TroopLevel;
+
+@Repository(value = "troopLevelDAO")
 public class TroopLevelDao implements DataAccessObject<TroopLevel> {
 
 	@PersistenceContext
@@ -15,8 +22,7 @@ public class TroopLevelDao implements DataAccessObject<TroopLevel> {
 	public TroopLevelDao() {
 	}
 
-	public boolean contains(TroopLevel troopLevel)
-	{
+	public boolean contains(TroopLevel troopLevel) {
 		return em.contains(troopLevel);
 	}
 
@@ -35,8 +41,20 @@ public class TroopLevelDao implements DataAccessObject<TroopLevel> {
 		return em.find(TroopLevel.class, id);
 	}
 
+	@SuppressWarnings("unchecked")
+	public Collection<TroopLevel> queryByExample(TroopLevel model) {
+		Session session = (Session) em.getDelegate();
+		Criteria criteria = session.createCriteria(TroopLevel.class);
+
+		if (model != null)
+			criteria.add(Example.create(model));
+
+		return criteria.list();
+	}
+
 	@Transactional
 	public TroopLevel update(TroopLevel troopLevel) {
 		return em.merge(troopLevel);
 	}
+
 }

@@ -1,12 +1,19 @@
 package swag49.dao;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import swag49.model.BuildingType;
+
+import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Repository(value="buildingTypeDAO")
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Example;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import swag49.model.BuildingType;
+
+@Repository(value = "buildingTypeDAO")
 public class BuildingTypeDao implements DataAccessObject<BuildingType> {
 
 	@PersistenceContext
@@ -15,8 +22,7 @@ public class BuildingTypeDao implements DataAccessObject<BuildingType> {
 	public BuildingTypeDao() {
 	}
 
-	public boolean contains(BuildingType buildingType)
-	{
+	public boolean contains(BuildingType buildingType) {
 		return em.contains(buildingType);
 	}
 
@@ -35,8 +41,20 @@ public class BuildingTypeDao implements DataAccessObject<BuildingType> {
 		return em.find(BuildingType.class, id);
 	}
 
+	@SuppressWarnings("unchecked")
+	public Collection<BuildingType> queryByExample(BuildingType model) {
+		Session session = (Session) em.getDelegate();
+		Criteria criteria = session.createCriteria(BuildingType.class);
+
+		if (model != null)
+			criteria.add(Example.create(model));
+
+		return criteria.list();
+	}
+
 	@Transactional
 	public BuildingType update(BuildingType buildingType) {
 		return em.merge(buildingType);
 	}
+
 }

@@ -1,4 +1,10 @@
 package swag49.dao;
+
+import java.util.Collection;
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import swag49.model.Action;
@@ -6,7 +12,7 @@ import swag49.model.Action;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Repository(value="actionDAO")
+@Repository(value = "actionDAO")
 public class ActionDao implements DataAccessObject<Action> {
 
 	@PersistenceContext
@@ -15,8 +21,7 @@ public class ActionDao implements DataAccessObject<Action> {
 	public ActionDao() {
 	}
 
-	public boolean contains(Action action)
-	{
+	public boolean contains(Action action) {
 		return em.contains(action);
 	}
 
@@ -35,8 +40,20 @@ public class ActionDao implements DataAccessObject<Action> {
 		return em.find(Action.class, id);
 	}
 
+	@SuppressWarnings("unchecked")
+	public Collection<Action> queryByExample(Action model) {
+		Session session = (Session) em.getDelegate();
+		Criteria criteria = session.createCriteria(Action.class);
+
+		if (model != null)
+			criteria.add(Example.create(model));
+
+		return criteria.list();
+	}
+
 	@Transactional
 	public Action update(Action action) {
 		return em.merge(action);
 	}
+
 }

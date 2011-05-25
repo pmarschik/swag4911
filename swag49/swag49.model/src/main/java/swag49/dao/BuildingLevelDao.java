@@ -1,12 +1,19 @@
 package swag49.dao;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import swag49.model.BuildingLevel;
+
+import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Repository(value="buildingLevelDAO")
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Example;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import swag49.model.BuildingLevel;
+
+@Repository(value = "buildingLevelDAO")
 public class BuildingLevelDao implements DataAccessObject<BuildingLevel> {
 
 	@PersistenceContext
@@ -15,8 +22,7 @@ public class BuildingLevelDao implements DataAccessObject<BuildingLevel> {
 	public BuildingLevelDao() {
 	}
 
-	public boolean contains(BuildingLevel buildingLevel)
-	{
+	public boolean contains(BuildingLevel buildingLevel) {
 		return em.contains(buildingLevel);
 	}
 
@@ -35,9 +41,20 @@ public class BuildingLevelDao implements DataAccessObject<BuildingLevel> {
 		return em.find(BuildingLevel.class, id);
 	}
 
+	@SuppressWarnings("unchecked")
+	public Collection<BuildingLevel> queryByExample(BuildingLevel model) {
+		Session session = (Session) em.getDelegate();
+		Criteria criteria = session.createCriteria(BuildingLevel.class);
+
+		if (model != null)
+			criteria.add(Example.create(model));
+
+		return criteria.list();
+	}
+
 	@Transactional
 	public BuildingLevel update(BuildingLevel buildingLevel) {
 		return em.merge(buildingLevel);
 	}
-}
 
+}

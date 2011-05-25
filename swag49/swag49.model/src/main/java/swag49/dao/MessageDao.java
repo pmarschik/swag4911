@@ -1,12 +1,19 @@
 package swag49.dao;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import swag49.model.Message;
+
+import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Repository(value="messageDAO")
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Example;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import swag49.model.Message;
+
+@Repository(value = "messageDAO")
 public class MessageDao implements DataAccessObject<Message> {
 
 	@PersistenceContext
@@ -15,8 +22,7 @@ public class MessageDao implements DataAccessObject<Message> {
 	public MessageDao() {
 	}
 
-	public boolean contains(Message message)
-	{
+	public boolean contains(Message message) {
 		return em.contains(message);
 	}
 
@@ -34,7 +40,18 @@ public class MessageDao implements DataAccessObject<Message> {
 	public Message get(Object id) {
 		return em.find(Message.class, id);
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public Collection<Message> queryByExample(Message model) {
+		Session session = (Session) em.getDelegate();
+		Criteria criteria = session.createCriteria(Message.class);
+
+		if (model != null)
+			criteria.add(Example.create(model));
+
+		return criteria.list();
+	}
+
 	@Transactional
 	public Message update(Message message) {
 		return em.merge(message);

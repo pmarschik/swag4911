@@ -1,12 +1,19 @@
 package swag49.dao;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import swag49.model.Base;
+
+import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Repository(value="baseDAO")
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Example;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import swag49.model.Base;
+
+@Repository(value = "baseDAO")
 public class BaseDao implements DataAccessObject<Base> {
 
 	@PersistenceContext
@@ -15,8 +22,7 @@ public class BaseDao implements DataAccessObject<Base> {
 	public BaseDao() {
 	}
 
-	public boolean contains(Base base)
-	{
+	public boolean contains(Base base) {
 		return em.contains(base);
 	}
 
@@ -37,9 +43,21 @@ public class BaseDao implements DataAccessObject<Base> {
 		return em.find(Base.class, id);
 	}
 
+	@SuppressWarnings("unchecked")
+	public Collection<Base> queryByExample(Base model) {
+		Session session = (Session) em.getDelegate();
+		Criteria criteria = session.createCriteria(Base.class);
+
+		if (model != null)
+			criteria.add(Example.create(model));
+
+		return criteria.list();
+	}
+
 	@Transactional
 	public Base update(Base base) {
 		return em.merge(base);
 
 	}
+
 }

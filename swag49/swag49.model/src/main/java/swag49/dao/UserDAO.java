@@ -1,14 +1,20 @@
 package swag49.dao;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import swag49.model.User;
+import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Example;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import swag49.model.User;
+
 // annotate with @Repository because it is a DAO, other components should be annotated with @Component
-@Repository(value="userDAO")
+@Repository(value = "userDAO")
 public class UserDAO implements DataAccessObject<User> {
 	@PersistenceContext
 	private EntityManager em;
@@ -16,28 +22,39 @@ public class UserDAO implements DataAccessObject<User> {
 	public UserDAO() {
 	}
 
-	public boolean contains(User user)
-	{		
+	public boolean contains(User user) {
 		return em.contains(user);
 	}
 
-    @Transactional
+	@Transactional
 	public User create(User user) {
 		return em.merge(user);
 	}
 
-    @Transactional
+	@Transactional
 	public void delete(User user) {
-    	user = em.merge(user);
+		user = em.merge(user);
 		em.remove(user);
 	}
 
-    public User get(Object id) {
+	public User get(Object id) {
 		return em.find(User.class, id);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Collection<User> queryByExample(User model) {
+		Session session = (Session) em.getDelegate();
+		Criteria criteria = session.createCriteria(User.class);
+
+		if (model != null)
+			criteria.add(Example.create(model));
+
+		return criteria.list();
 	}
 
 	@Transactional
 	public User update(User user) {
 		return em.merge(user);
 	}
+
 }
