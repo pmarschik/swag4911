@@ -245,6 +245,8 @@
 			public void delete(T model);
 			public boolean contains(T model);
 			
+			public Collection<T> queryByExample(T model);
+			
 		}
 	«ENDFILE»
 «ENDDEFINE»
@@ -280,6 +282,8 @@
 			«EXPAND updateMethodForDao(isContainerManaged) FOR this»
 			«EXPAND deleteMethodForDao(isContainerManaged) FOR this»
 			«EXPAND containsMethodForDao(isContainerManaged) FOR this»
+			
+			«EXPAND queryByExampleMethodForDao(isContainerManaged) FOR this»
 			
 		}
 	«ENDFILE»
@@ -343,6 +347,18 @@
 «DEFINE containsMethodForDao(Boolean isContainerManaged) FOR DAO»
 	public boolean contains(«daoFor.name» «daoFor.name.toLowerCase()») {
 		return em.contains(«daoFor.name.toLowerCase()»);
+	}
+«ENDDEFINE»
+
+«DEFINE queryByExampleMethodForDao(Boolean isContainerManaged) FOR DAO»
+	public Collection<«daoFor.name»> contains(«daoFor.name» «daoFor.name.toLowerCase()») {
+		Session session = (Session) em.getDelegate();
+		Criteria criteria = session.createCriteria(«daoFor.name».class);
+
+		if (model != null)
+			criteria.add(Example.create(model));
+
+		return criteria.list();
 	}
 «ENDDEFINE»
 
