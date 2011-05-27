@@ -3,21 +3,63 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:si="http://www.springframework.org/schema/integration"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-1.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-1.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
     <context:component-scan base-package="swag49"/>
 
+    <bean id="propertyPlaceHolder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:swag49.messaging.properties"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="placeholderPrefix" value="$messaging{"/>
+        <property name="placeholderSuffix" value="}"/>
+    </bean>
+
+    <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="velocityProperties">
+            <value>
+                resource.loader=class
+                class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+            </value>
+        </property>
+    </bean>
+
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="$messaging{messaging.mail.host}"/>
+        <property name="username" value="$messaging{messaging.mail.username}"/>
+        <property name="password" value="$messaging{messaging.mail.password}"/>
+        <property name="javaMailProperties">
+            <props>
+                <!-- Use SMTP-AUTH to authenticate to SMTP server -->
+                <prop key="mail.smtp.auth">true</prop>
+                <!-- Use TLS to encrypt communication with SMTP server -->
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+    </bean>
+
     <si:gateway id="playerMessageGateway" service-interface="swag49.messaging.MessageSender"
-                default-request-channel="playerMessageInput"/>
+                default-request-channel="playerMessageChannel"/>
 
-    <si:channel id="playerMessageInput" datatype="swag49.model.Message"/>
+    <si:channel id="playerMessageChannel" datatype="swag49.model.Message"/>
 
-    <si:service-activator input-channel="playerMessageInput" output-channel="playerMessageDispatcher"
-                          ref="emailMessageHandler" method="handleMessage"/>
+    <si:router ref="messageRouter" input-channel="playerMessageChannel"/>
 
-    <si:channel id="playerMessageDispatcher" datatype="swag49.model.Message">
-        <si:priority-queue capacity="10"/>
+    <si:channel id="emailMessageChannel" datatype="swag49.model.Message">
+        <si:queue capacity="10"/>
     </si:channel>
+
+    <si:service-activator input-channel="emailMessageChannel" ref="emailMessageHandler" method="handleMessage"/>
+
+    <!-- - - - -->
+
+    <si:channel id="webMessageChannel" datatype="swag49.model.Message"/>
+
+    <si:service-activator input-channel="webMessageChannel" ref="webMessageHandler" method="handleMessage"/>
+
+    <si:poller max-messages-per-poll="1" id="defaultPoller" default="true">
+        <si:interval-trigger interval="30000"/>
+    </si:poller>
 
 </beans>

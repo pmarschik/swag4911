@@ -18,7 +18,9 @@ import swag49.model.User;
 
 import java.util.Date;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -42,9 +44,8 @@ public class MessagingTest {
     @Autowired
     private MessageMaker messageMaker;
 
-    @Autowired
-    @Qualifier("playerMessageDispatcher")
-    private MessageChannel outputChannel;
+    @Autowired @Qualifier("emailMessageChannel")
+    private MessageChannel emailMessageChannel;
 
     private Player sender;
     private Player receiver;
@@ -57,7 +58,7 @@ public class MessagingTest {
             user = new User();
             user.setLastName(userName);
             user.setFirstName(userName);
-            user.setEmail(userName + "@" + userName);
+            user.setEmail("swag4911@gmail.com");
             user.setPassword(userName);
             user.setUsername(userName + new Date());
             user.setUtcOffset(0);
@@ -107,7 +108,7 @@ public class MessagingTest {
                 SUBJECT, CONTENT).get();
         messageSender.send(message);
 
-        org.springframework.integration.Message<?> receivedMessage = ((PollableChannel) outputChannel).receive();
+        org.springframework.integration.Message<?> receivedMessage = ((PollableChannel) emailMessageChannel).receive();
         assertThat(receivedMessage, not(is(nullValue())));
 
         message = (Message) receivedMessage.getPayload();
