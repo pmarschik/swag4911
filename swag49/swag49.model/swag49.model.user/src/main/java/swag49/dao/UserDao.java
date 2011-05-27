@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import swag49.model.User;
 
 // annotate with @Repository because it is a DAO, other components should be annotated with @Component
-<<<<<<< HEAD:swag49/swag49.model/swag49.model.user/src/main/java/swag49/dao/UserDao.java
 @Repository(value="userDAO")
 public class UserDao implements DataAccessObject<User> {
 
