@@ -81,7 +81,7 @@ public class MessagingTest {
         if (player == null) {
             player = new Player();
             player.setId(playerId);
-            player.setUser(user);
+            player.setUserId(user.getId());
             player.setPlays(map);
             player.setDeleted(false);
             player.setOnline(false);

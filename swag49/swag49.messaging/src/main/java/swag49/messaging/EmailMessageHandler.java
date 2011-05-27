@@ -59,8 +59,8 @@ public class EmailMessageHandler implements MessageReceiver {
 
         Player receiverPlayer = playerDAO.get(message.getReceiver().getId());
         Player senderPlayer = playerDAO.get(message.getSender().getId());
-        User receiverUser = userDAO.get(receiverPlayer.getUser().getId());
-        User senderUser = userDAO.get(senderPlayer.getUser().getId());
+        User receiverUser = userDAO.get(receiverPlayer.getUserId());
+        User senderUser = userDAO.get(senderPlayer.getUserId());
 
         PlayerMessageMimeMessagePreparator messagePreparator =
                 new PlayerMessageMimeMessagePreparator(velocityEngine, message, receiverUser, senderUser, fromAddress);
