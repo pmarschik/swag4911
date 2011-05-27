@@ -8,13 +8,16 @@
 
     <context:component-scan base-package="swag49"/>
 
-    <si:channel id="playerMessageInput"/>
-    <si:channel id="playerMessageOutput">
-        <si:queue capacity="10"/>
-    </si:channel>
     <si:gateway id="playerMessageGateway" service-interface="swag49.messaging.MessageSender"
                 default-request-channel="playerMessageInput"/>
-    <si:service-activator input-channel="playerMessageInput" output-channel="playerMessageOutput"
+
+    <si:channel id="playerMessageInput" datatype="swag49.model.Message"/>
+
+    <si:service-activator input-channel="playerMessageInput" output-channel="playerMessageDispatcher"
                           ref="emailMessageHandler" method="handleMessage"/>
+
+    <si:channel id="playerMessageDispatcher" datatype="swag49.model.Message">
+        <si:priority-queue capacity="10"/>
+    </si:channel>
 
 </beans>

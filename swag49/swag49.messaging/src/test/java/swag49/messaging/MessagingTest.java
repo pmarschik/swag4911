@@ -43,7 +43,7 @@ public class MessagingTest {
     private MessageMaker messageMaker;
 
     @Autowired
-    @Qualifier("playerMessageOutput")
+    @Qualifier("playerMessageDispatcher")
     private MessageChannel outputChannel;
 
     private Player sender;

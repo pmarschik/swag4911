@@ -23,7 +23,7 @@ public class EmailMessageHandler implements MessageReceiver {
     @ServiceActivator
     @Transactional
     public Message handleMessage(Message message) {
-        logger.info("Sending email with content %s", message.getContent());
+        logger.info("Sending email with content {}", message.getContent());
         message.setReceiveDate(new Date());
 
         messageDAO.update(message);
