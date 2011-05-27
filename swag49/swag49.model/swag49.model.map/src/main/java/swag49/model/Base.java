@@ -3,12 +3,15 @@ package swag49.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Base {
@@ -22,11 +25,26 @@ public class Base {
 	@ManyToOne(optional = false)
 	private Player owner;
 
-	@ManyToOne(optional = false)
+	@OneToOne(optional = false)
 	private Tile locatedOn;
 
 	@OneToMany(mappedBy = "base")
 	private Set<Square> consistsOf = new HashSet<Square>();
+
+	@AttributeOverrides({
+			@AttributeOverride(name = "amount_gold", column = @Column(name = "production_gold")),
+			@AttributeOverride(name = "amount_stone", column = @Column(name = "production_stone")),
+			@AttributeOverride(name = "amount_wood", column = @Column(name = "production_wood")),
+			@AttributeOverride(name = "amount_crops", column = @Column(name = "production_crops")) })
+	private ResourceValue resourceProduction = new ResourceValue();
+
+	public ResourceValue getResourceProduction() {
+		return resourceProduction;
+	}
+
+	public void setResourceProduction(ResourceValue resourceProduction) {
+		this.resourceProduction = resourceProduction;
+	}
 
 	public Set<Square> getConsistsOf() {
 		return consistsOf;

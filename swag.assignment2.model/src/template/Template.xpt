@@ -210,6 +210,15 @@
 	«IF index != null»
 		@org.hibernate.annotations.Index(name = "«index.name»")
 	«ENDIF»
+	«IF attributeOverride != null»
+		@AttributeOverrides({
+		«EXPAND singleAttributeOverride FOREACH attributeOverride.attributeOverrides»
+		}
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE singleAttributeOverride FOR PerstistenceAttributeOverride»
+	@AttributeOverride(name = "«name»", column = @Column(name = "«column»"))
 «ENDDEFINE»
 
 «DEFINE entityClassMemberGetter FOR Member»
@@ -230,11 +239,13 @@
 	
 		public interface DataAccessObject<T> {
 		
-			public T get(Long id);
+			public T get(Object id);
 			public T create(T model);
 			public T update(T model);
 			public void delete(T model);
 			public boolean contains(T model);
+			
+			public Collection<T> queryByExample(T model);
 			
 		}
 	«ENDFILE»
@@ -272,12 +283,14 @@
 			«EXPAND deleteMethodForDao(isContainerManaged) FOR this»
 			«EXPAND containsMethodForDao(isContainerManaged) FOR this»
 			
+			«EXPAND queryByExampleMethodForDao(isContainerManaged) FOR this»
+			
 		}
 	«ENDFILE»
 «ENDDEFINE»
 
 «DEFINE getMethodForDao(Boolean isContainerManaged) FOR DAO»
-	public «daoFor.name» get(Long id) {
+	public «daoFor.name» get(Object id) {
 		return em.find(«daoFor.name».class, id);
 	}
 «ENDDEFINE»
@@ -334,6 +347,18 @@
 «DEFINE containsMethodForDao(Boolean isContainerManaged) FOR DAO»
 	public boolean contains(«daoFor.name» «daoFor.name.toLowerCase()») {
 		return em.contains(«daoFor.name.toLowerCase()»);
+	}
+«ENDDEFINE»
+
+«DEFINE queryByExampleMethodForDao(Boolean isContainerManaged) FOR DAO»
+	public Collection<«daoFor.name»> contains(«daoFor.name» «daoFor.name.toLowerCase()») {
+		Session session = (Session) em.getDelegate();
+		Criteria criteria = session.createCriteria(«daoFor.name».class);
+
+		if (model != null)
+			criteria.add(Example.create(model));
+
+		return criteria.list();
 	}
 «ENDDEFINE»
 

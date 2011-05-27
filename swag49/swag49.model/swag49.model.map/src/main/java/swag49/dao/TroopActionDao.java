@@ -1,12 +1,19 @@
 package swag49.dao;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import swag49.model.TroopAction;
+
+import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Repository(value="troopActionDAO")
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Example;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import swag49.model.TroopAction;
+
+@Repository(value = "troopActionDAO")
 public class TroopActionDao implements DataAccessObject<TroopAction> {
 
 	@PersistenceContext
@@ -15,8 +22,7 @@ public class TroopActionDao implements DataAccessObject<TroopAction> {
 	public TroopActionDao() {
 	}
 
-	public boolean contains(TroopAction troopAction)
-	{
+	public boolean contains(TroopAction troopAction) {
 		return em.contains(troopAction);
 	}
 
@@ -31,14 +37,24 @@ public class TroopActionDao implements DataAccessObject<TroopAction> {
 		em.remove(troopAction);
 	}
 
-	public TroopAction get(Long id) {
+	public TroopAction get(Object id) {
 		return em.find(TroopAction.class, id);
 	}
 
-	
+	@SuppressWarnings("unchecked")
+	public Collection<TroopAction> queryByExample(TroopAction model) {
+		Session session = (Session) em.getDelegate();
+		Criteria criteria = session.createCriteria(TroopAction.class);
+
+		if (model != null)
+			criteria.add(Example.create(model));
+
+		return criteria.list();
+	}
+
 	@Transactional
 	public TroopAction update(TroopAction troopAction) {
 		return em.merge(troopAction);
 	}
-}
 
+}

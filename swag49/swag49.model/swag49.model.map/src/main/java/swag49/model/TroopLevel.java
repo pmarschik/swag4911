@@ -56,9 +56,20 @@ public class TroopLevel extends LevelBase {
 
 	@Column(nullable = false)
 	private Integer speed;
-	
+
 	@Column(nullable = false)
 	private Integer defense;
+
+	@Column(nullable = false)
+	private Integer cargo_capacity;
+
+	public Integer getCargo_capacity() {
+		return cargo_capacity;
+	}
+
+	public void setCargo_capacity(Integer cargo_capacity) {
+		this.cargo_capacity = cargo_capacity;
+	}
 
 	public TroopLevel() {
 	}
@@ -71,7 +82,6 @@ public class TroopLevel extends LevelBase {
 
 		this.getTroopType().getLevels().add(this);
 	}
-	
 
 	public Integer getDefense() {
 		return defense;
