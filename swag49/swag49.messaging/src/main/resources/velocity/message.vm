@@ -1,0 +1,19 @@
+#* @vtlvariable name="receiver" type="swag49.model.User" *#
+#* @vtlvariable name="sender" type="swag49.model.User" *#
+#* @vtlvariable name="message" type="swag49.model.Message" *#
+<html>
+    <body>
+        <h3>Hi ${receiver.getUsername()}</h3>
+        <p>You have received a new message:</p>
+        <h2>${message.getSubject()}</h2>
+        <dl>
+            <dt>From</dt>
+            <dd>${sender.getUsername()}</dd>
+            <dt>Sent</dt>
+            <dd>${message.getSendDate()}</dd>
+        </dl>
+        <p>
+            ${message.getContent()}
+        </p>
+    </body>
+</html>
