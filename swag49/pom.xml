@@ -13,7 +13,8 @@
 		<module>swag49.model</module>
 		<module>swag49.web</module>
 		<module>swag49.processing</module>
-	</modules>
+        <module>swag49.model.user</module>
+    </modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
