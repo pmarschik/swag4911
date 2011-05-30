@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import swag49.dao.DataAccessObject;
-import swag49.model.UserDTO;
+import swag49.model.UserLoginDTO;
+import swag49.model.UserRegisterDTO;
 import swag49.model.User;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,62 +34,82 @@ public class UserController {
     private DataAccessObject<User> userDAO;
 
     private Integer counter = 0;
-    private Map<Integer, UserDTO> users = new HashMap<Integer, UserDTO>();
+    private Map<String, UserRegisterDTO> users = new HashMap<String, UserRegisterDTO>();
 
-    private UserDTO loggedInUser = null;
+    private UserLoginDTO loggedInUser = null;
 
-    @RequestMapping(value = "/doUserRegistration", method = RequestMethod.POST)
-    public String registerUser(@ModelAttribute("userDTO")
-                                   UserDTO userDTO, BindingResult bingBindingResult) {
-        System.out.println("Added new user:" + userDTO);
-        userDTO.setId(generateId());
-        users.put(userDTO.getId(), userDTO);
-        return "redirect:register";
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public String registerUser(@Valid @ModelAttribute("userRegisterDTO")
+                               UserRegisterDTO userRegisterDTO, BindingResult bingBindingResult) {
+
+        if (bingBindingResult.hasErrors())
+            return "register";
+
+        System.out.println("Added new user:" + userRegisterDTO);
+        users.put(userRegisterDTO.getUsername(), userRegisterDTO);
+
+        return "redirect:./";
     }
 
-    @RequestMapping(value = "/register")
+    @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String register(Map<String, Object> map) {
-        map.put("userDTO", new UserDTO());
+        map.put("userRegisterDTO", new UserRegisterDTO());
         map.put("userList", users.values());
         return "register";
     }
 
-    @RequestMapping(value = "/delete/{userId}")
-    public String deleteUser(@PathVariable("userId") Integer userId) {
-        users.remove(userId);
-        System.out.println("Remove User with id: " + userId);
+    @RequestMapping(value = "/delete/{username}")
+    public String deleteUser(@PathVariable("username") String username) {
+        users.remove(username);
+        System.out.println("Remove User with username: " + username);
         return "redirect:../register";
     }
 
     @RequestMapping(value = "/")
-    public String handler() {
+    public String handle(Map<String, Object> map) {
 
-        String redirect = "";
+        map.put("loggedInUser", loggedInUser);
 
-        if(loggedInUser == null)
-            redirect = "redirect:login";
-        else
-            redirect = "redirect:register";
-
-        return redirect;
+        return "overview";
     }
 
 
-    @RequestMapping(value = "/login")
-    public ModelAndView login() {
-        return new ModelAndView("login", "command", new UserDTO());
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login(Map<String, Object> map) {
+        map.put("userLoginDTO", new UserLoginDTO());
+        return "login";
     }
 
-    @RequestMapping(value = "/doLogin", method = RequestMethod.POST)
-    public String loginUser(@ModelAttribute("contact")
-                                UserDTO userDTO, BindingResult bingBindingResult) {
-        System.out.println("Logged in user:" + userDTO);
-        return "redirect:register";
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public String loginUser(@Valid @ModelAttribute("userLoginDTO")
+                            UserLoginDTO userLoginDTO, BindingResult bingBindingResult) {
+
+        if (bingBindingResult.hasErrors())
+            return "login";
+
+        UserRegisterDTO user = users.get(userLoginDTO.getUsername());
+
+        if (user == null)
+            return "login";
+
+        if (!user.getPassword().equals(userLoginDTO.getPassword()))
+            return "login";
+
+        System.out.println("Logged in user:" + userLoginDTO);
+
+        this.loggedInUser = userLoginDTO;
+
+        return "redirect:./";
     }
 
-    private Integer generateId() {
-        return counter++;
+    @RequestMapping(value = "/overview")
+    public String handleOverview() {
+        return "redirect:./";
     }
 
-
+    @RequestMapping(value = "/logout")
+    public String logoutUser() {
+        this.loggedInUser = null;
+        return "redirect:./";
+    }
 }
