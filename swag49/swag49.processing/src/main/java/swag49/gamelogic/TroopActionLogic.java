@@ -185,5 +185,7 @@ public class TroopActionLogic {
 
 		return deadTroops;
 	}
+	
+	
 
 }

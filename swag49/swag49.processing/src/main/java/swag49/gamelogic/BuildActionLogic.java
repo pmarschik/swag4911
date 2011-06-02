@@ -15,6 +15,14 @@ public class BuildActionLogic {
 	@Qualifier("buildingLevelDao")
 	private DataAccessObject<BuildingLevel> buildingLevelDao;
 
+	@Autowired
+	@Qualifier("playerDao")
+	private DataAccessObject<Player> playerDao;
+
+	@Autowired
+	@Qualifier("buildingDao")
+	private DataAccessObject<Building> buildingDao;
+
 	public void handleAction(BuildAction action) {
 		Building building = action.getConcerns();
 
@@ -30,6 +38,8 @@ public class BuildActionLogic {
 		if (nextLevel != null) {
 			building.setIsOfLevel(nextLevel);
 
+			buildingDao.update(building);
+
 			Player player = action.getPlayer();
 			// update upkeep
 			player.getUpkeep().remove(currentLevel.getUpkeepCosts());
@@ -38,6 +48,8 @@ public class BuildActionLogic {
 			// update income
 			player.getIncome().remove(currentLevel.getUpkeepCosts());
 			player.getIncome().add(nextLevel.getUpkeepCosts());
+
+			playerDao.update(player);
 		}
 		// TODO: else? Errormessage?
 

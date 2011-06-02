@@ -22,7 +22,7 @@ public abstract class Action {
 	private Date startDate;
 
 	@Column(nullable = false)
-	private Integer duration;
+	private Long duration;
 
 	@ManyToOne(optional = false)
 	private Tile target;
@@ -30,7 +30,7 @@ public abstract class Action {
 	@ManyToOne(optional = false)
 	private Player player;
 
-	public Integer getDuration() {
+	public Long getDuration() {
 		return duration;
 	}
 
@@ -50,7 +50,7 @@ public abstract class Action {
 		return target;
 	}
 
-	public void setDuration(Integer duration) {
+	public void setDuration(Long duration) {
 		this.duration = duration;
 	}
 

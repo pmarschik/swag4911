@@ -46,6 +46,30 @@ public class Tile {
 			}
 		}
 
+		public Long getMapId() {
+			return mapId;
+		}
+
+		public void setMapId(Long mapId) {
+			this.mapId = mapId;
+		}
+
+		public Integer getX() {
+			return x;
+		}
+
+		public void setX(Integer x) {
+			this.x = x;
+		}
+
+		public Integer getY() {
+			return y;
+		}
+
+		public void setY(Integer y) {
+			this.y = y;
+		}
+
 		@Override
 		public int hashCode() {
 			return mapId.hashCode() + x.hashCode() + y.hashCode();
@@ -64,7 +88,7 @@ public class Tile {
 
 	@OneToMany(mappedBy = "position")
 	private Set<Troop> troops;
-	
+
 	@OneToOne(optional = true)
 	private Base base;
 

@@ -14,7 +14,7 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import swag49.model.TroopAction;
+import swag49.model.Action;
 
 public abstract class ActionListenerBase {
 
@@ -24,12 +24,12 @@ public abstract class ActionListenerBase {
 	protected abstract Class<? extends Job> getJobClass();
 
 	@PostRemove
-	public void postRemove(TroopAction action) throws SchedulerException {
+	public void postRemove(Action action) throws SchedulerException {
 		scheduler.deleteJob(getJobKey(action));
 	}
 
 	@PostPersist
-	public void postPersist(TroopAction action) throws SchedulerException {
+	public void postPersist(Action action) throws SchedulerException {
 		JobDetail jobDetail = newJob(getJobClass()).withIdentity(
 				getJobKey(action)).usingJobData("actionId", action.getId())
 				.build();
@@ -41,7 +41,7 @@ public abstract class ActionListenerBase {
 		scheduler.scheduleJob(jobDetail, trigger);
 	}
 
-	private JobKey getJobKey(TroopAction action) {
+	private JobKey getJobKey(Action action) {
 		return new JobKey(action.getId().toString(), action.getClass()
 				.getName());
 	}

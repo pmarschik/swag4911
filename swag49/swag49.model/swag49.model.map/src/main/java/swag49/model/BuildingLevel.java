@@ -33,6 +33,14 @@ public class BuildingLevel extends LevelBase {
 			super();
 		}
 
+		public void setLevel(Integer level) {
+			this.level = level;
+		}
+
+		public void setBuildingTypeId(Long buildingTypeId) {
+			this.buildingTypeId = buildingTypeId;
+		}
+
 		public Id(int level, long buildingTypeId) {
 			this.level = level;
 			this.buildingTypeId = buildingTypeId;
