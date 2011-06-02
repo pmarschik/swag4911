@@ -20,7 +20,7 @@
     <ul>
         <li><a href="logout.html">Logout</a></li>
         <li><a href="edit.html">Edit</a></li>
-        <li><a href="maps.html">Maps</a></li>
+        <li><a href="messages.html">Messages</a></li>
     </ul>
 </c:if>
 </body>
