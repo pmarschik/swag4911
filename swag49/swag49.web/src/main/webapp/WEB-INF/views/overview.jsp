@@ -19,6 +19,8 @@
     <h3>You are logged in as: ${loggedInUser.username}</h3>
     <ul>
         <li><a href="logout.html">Logout</a></li>
+        <li><a href="edit.html">Edit</a></li>
+        <li><a href="maps.html">Maps</a></li>
     </ul>
 </c:if>
 </body>

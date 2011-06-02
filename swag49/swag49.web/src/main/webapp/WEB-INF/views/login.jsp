@@ -29,6 +29,9 @@
         </tr>
     </table>
 </form:form>
+<c:if test="${loginError != null}">
+    <p><FONT color="red">Error: ${loginError}</FONT></p>
+</c:if>
 
 <ul>
     <li><a href="register.html">Register</a></li>

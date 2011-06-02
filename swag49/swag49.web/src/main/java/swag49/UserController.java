@@ -40,10 +40,17 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String registerUser(@Valid @ModelAttribute("userRegisterDTO")
-                               UserRegisterDTO userRegisterDTO, BindingResult bingBindingResult) {
+                               UserRegisterDTO userRegisterDTO, BindingResult bingBindingResult,
+                               Map<String, Object> map) {
 
         if (bingBindingResult.hasErrors())
             return "register";
+
+        if (users.containsKey(userRegisterDTO.getUsername())) {
+            map.put("registerError", "User with username: " +
+                    userRegisterDTO.getUsername() + " is already registered!");
+            return "register";
+        }
 
         System.out.println("Added new user:" + userRegisterDTO);
         users.put(userRegisterDTO.getUsername(), userRegisterDTO);
@@ -53,7 +60,10 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String register(Map<String, Object> map) {
-        map.put("userRegisterDTO", new UserRegisterDTO());
+
+        UserRegisterDTO userRegisterDTO = new UserRegisterDTO();
+
+        map.put("userRegisterDTO", userRegisterDTO);
         map.put("userList", users.values());
         return "register";
     }
@@ -82,18 +92,22 @@ public class UserController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String loginUser(@Valid @ModelAttribute("userLoginDTO")
-                            UserLoginDTO userLoginDTO, BindingResult bingBindingResult) {
+                            UserLoginDTO userLoginDTO, BindingResult bingBindingResult, Map<String, Object> map) {
 
         if (bingBindingResult.hasErrors())
             return "login";
 
         UserRegisterDTO user = users.get(userLoginDTO.getUsername());
 
-        if (user == null)
+        if (user == null) {
+            map.put("loginError", "Username not found!");
             return "login";
+        }
 
-        if (!user.getPassword().equals(userLoginDTO.getPassword()))
+        if (!user.getPassword().equals(userLoginDTO.getPassword())) {
+            map.put("loginError", "Username/Password combination doesn't match!");
             return "login";
+        }
 
         System.out.println("Logged in user:" + userLoginDTO);
 
@@ -111,5 +125,44 @@ public class UserController {
     public String logoutUser() {
         this.loggedInUser = null;
         return "redirect:./";
+    }
+
+    @RequestMapping(value = "/edit", method = RequestMethod.GET)
+    public String edit(Map<String, Object> map) {
+
+        if (this.loggedInUser != null) {
+            UserRegisterDTO user = users.get(loggedInUser.getUsername());
+            map.put("user", user);
+            return "edit";
+        } else
+            return "redirect:./";
+
+    }
+
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    public String editUser(@Valid @ModelAttribute("user")
+                           UserRegisterDTO userRegisterDTO, BindingResult bingBindingResult) {
+
+        if (bingBindingResult.hasErrors())
+            return "edit";
+
+        System.out.println("Updated user:" + userRegisterDTO);
+        users.put(userRegisterDTO.getUsername(), userRegisterDTO);
+
+        return "redirect:./";
+    }
+
+    @RequestMapping(value = "/maps", method = RequestMethod.GET)
+    public String chooseMap() {
+        System.out.println("Redirecting to new Controller!");
+        return "redirect:../map/";
+    }
+
+    public UserLoginDTO getLoggedInUser() {
+        return loggedInUser;
+    }
+
+    public void setLoggedInUser(UserLoginDTO loggedInUser) {
+        this.loggedInUser = loggedInUser;
     }
 }

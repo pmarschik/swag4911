@@ -4,13 +4,13 @@
 <%@ page session="false" %>
 <html>
 <head>
-    <title>Register User</title>
+    <title>Edit Profile</title>
 </head>
 <body>
 <h1>
-    Register User
+    Edit Profile
 </h1>
-<form:form method="post" action="register" commandName="userRegisterDTO">
+<form:form method="post" action="edit" commandName="user">
     <table>
         <tr>
             <td><form:label path="username">UserName</form:label></td>
@@ -55,43 +55,14 @@
         </tr>
         <tr>
             <td colspan="2">
-                <input type="submit" value="Register User"/>
+                <input type="submit" value="Edit Profile"/>
             </td>
         </tr>
     </table>
 </form:form>
 
-<c:if test="${registerError != null}">
-    <p><FONT color="red">Error: ${registerError}</FONT></p>
-</c:if>
-
 <ul>
-    <li><a href="login.html">Login</a></li>
     <li><a href="overview.html">Overview</a></li>
 </ul>
-
-<h1>
-    Registered Users
-</h1>
-<c:if test="${!empty userList}">
-    <table class="data">
-        <tr>
-            <th>UserName</th>
-            <th>Name</th>
-            <th>State</th>
-            <th>City</th>
-            <th>&nbsp;</th>
-        </tr>
-        <c:forEach items="${userList}" var="user">
-            <tr>
-                <td>${user.username}</td>
-                <td>${user.lastName}, ${user.firstName} </td>
-                <td>${user.state}</td>
-                <td>${user.city}</td>
-                <td><a href="delete/${user.username}">delete</a></td>
-            </tr>
-        </c:forEach>
-    </table>
-</c:if>
 </body>
 </html>
