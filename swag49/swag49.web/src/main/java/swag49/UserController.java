@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,6 +25,7 @@ import java.util.Map;
  * @author michael
  */
 @Controller
+@Scope(value = "session")
 @RequestMapping(value = "/user")
 public class UserController {
 
@@ -37,6 +39,14 @@ public class UserController {
     private Map<String, UserRegisterDTO> users = new HashMap<String, UserRegisterDTO>();
 
     private UserLoginDTO loggedInUser = null;
+
+    public UserController() {
+        UserRegisterDTO user = new UserRegisterDTO();
+        user.setUsername("test");
+        user.setPassword("test");
+        user.setEmail("test@swag.com");
+        users.put("test", user);
+    }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String registerUser(@Valid @ModelAttribute("userRegisterDTO")
@@ -152,10 +162,10 @@ public class UserController {
         return "redirect:./";
     }
 
-    @RequestMapping(value = "/maps", method = RequestMethod.GET)
-    public String chooseMap() {
-        System.out.println("Redirecting to new Controller!");
-        return "redirect:../map/";
+    @RequestMapping(value = "/messages", method = RequestMethod.GET)
+    public String messages() {
+        System.out.println("Redirecting to Messaging Controller!");
+        return "redirect:../messaging/";
     }
 
     public UserLoginDTO getLoggedInUser() {
