@@ -33,29 +33,48 @@ INSERT INTO map (id, maxusers) VALUES (2, 20);
 
 
 --
--- TOC entry 1916 (class 0 OID 84452)
--- Dependencies: 1542
--- Data for Name: swag_user; Type: TABLE DATA; Schema: public; Owner: swa
---
-
-INSERT INTO swag_user (id, city, postalcode, state, street, email, firstname, lastname, password, username, utcoffset) VALUES (1, 'Vienna', '1050', 'Austria', NULL, 'blabla@bla.com', 'Firstname1', 'Lastname2', 'dkjgf', 'User 1', 0);
-INSERT INTO swag_user (id, city, postalcode, state, street, email, firstname, lastname, password, username, utcoffset) VALUES (2, 'Vienna', '1050', 'Austria', NULL, 'blablabla@bla.com', 'Firstname 2', 'Lastname 2', 'gfdgfd', 'User 2', 0);
-INSERT INTO swag_user (id, city, postalcode, state, street, email, firstname, lastname, password, username, utcoffset) VALUES (3, NULL, NULL, NULL, NULL, 'ccccc@bla.com', 'Firstname 3', 'Lastname 3', 'sdfsdf', 'User 3', 0);
-INSERT INTO swag_user (id, city, postalcode, state, street, email, firstname, lastname, password, username, utcoffset) VALUES (4, NULL, NULL, NULL, NULL, 'dddd@bla.com', 'Firstname 4', 'Lastname 4', 'dskfjsd', 'User 4', 0);
-
-
---
 -- TOC entry 1914 (class 0 OID 84442)
 -- Dependencies: 1540 1916 1912
 -- Data for Name: player; Type: TABLE DATA; Schema: public; Owner: swa
 --
 
-INSERT INTO player (id, deleted, income_crops, income_gold, income_stone, income_wood, online, resources_crops, resources_gold, resources_stone, resources_wood, upkeep_crops, upkeep_gold, upkeep_stone, upkeep_wood, plays_id, user_id) VALUES (1, false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
-INSERT INTO player (id, deleted, income_crops, income_gold, income_stone, income_wood, online, resources_crops, resources_gold, resources_stone, resources_wood, upkeep_crops, upkeep_gold, upkeep_stone, upkeep_wood, plays_id, user_id) VALUES (2, false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2);
-INSERT INTO player (id, deleted, income_crops, income_gold, income_stone, income_wood, online, resources_crops, resources_gold, resources_stone, resources_wood, upkeep_crops, upkeep_gold, upkeep_stone, upkeep_wood, plays_id, user_id) VALUES (3, false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3);
-INSERT INTO player (id, deleted, income_crops, income_gold, income_stone, income_wood, online, resources_crops, resources_gold, resources_stone, resources_wood, upkeep_crops, upkeep_gold, upkeep_stone, upkeep_wood, plays_id, user_id) VALUES (4, false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4);
-INSERT INTO player (id, deleted, income_crops, income_gold, income_stone, income_wood, online, resources_crops, resources_gold, resources_stone, resources_wood, upkeep_crops, upkeep_gold, upkeep_stone, upkeep_wood, plays_id, user_id) VALUES (5, false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1);
+INSERT INTO player (id, deleted, income_crops, income_gold, income_stone, income_wood, online, resources_crops, resources_gold, resources_stone, resources_wood, upkeep_crops, upkeep_gold, upkeep_stone, upkeep_wood, plays_id, userId) VALUES (1, false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
+INSERT INTO player (id, deleted, income_crops, income_gold, income_stone, income_wood, online, resources_crops, resources_gold, resources_stone, resources_wood, upkeep_crops, upkeep_gold, upkeep_stone, upkeep_wood, plays_id, userId) VALUES (2, false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2);
+INSERT INTO player (id, deleted, income_crops, income_gold, income_stone, income_wood, online, resources_crops, resources_gold, resources_stone, resources_wood, upkeep_crops, upkeep_gold, upkeep_stone, upkeep_wood, plays_id, userId) VALUES (3, false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3);
+INSERT INTO player (id, deleted, income_crops, income_gold, income_stone, income_wood, online, resources_crops, resources_gold, resources_stone, resources_wood, upkeep_crops, upkeep_gold, upkeep_stone, upkeep_wood, plays_id, userId) VALUES (4, false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4);
+INSERT INTO player (id, deleted, income_crops, income_gold, income_stone, income_wood, online, resources_crops, resources_gold, resources_stone, resources_wood, upkeep_crops, upkeep_gold, upkeep_stone, upkeep_wood, plays_id, userId) VALUES (5, false, 0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1);
 
+--
+-- TOC entry 1918 (class 0 OID 84467)
+-- Dependencies: 1544 1906 1912
+-- Data for Name: tile; Type: TABLE DATA; Schema: public; Owner: swa
+--
+
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 1, 1, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 2, 1, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 1, 2, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 2, 2, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 3, 2, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 4, 3, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 3, 4, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 4, 4, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 5, 4, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 4, 5, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 5, 5, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 1, 4, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 1, 5, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 5, 1, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 5, 2, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 5, 3, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 2, 4, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 2, 5, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 4, 2, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 1, 0, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 0, 1, 'special', NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 1, 3, 'special', NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 4, 1, 'special', NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 3, 3, NULL, NULL);
+INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 2, 3, 'special', NULL);
 
 --
 -- TOC entry 1906 (class 0 OID 84395)
@@ -106,39 +125,6 @@ INSERT INTO buildinglevel (buildingtypeid, level, cost_crops, cost_gold, cost_st
 
 
 --
--- TOC entry 1918 (class 0 OID 84467)
--- Dependencies: 1544 1906 1912
--- Data for Name: tile; Type: TABLE DATA; Schema: public; Owner: swa
---
-
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 1, 1, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 2, 1, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 1, 2, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 2, 2, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 3, 2, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 4, 3, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 3, 4, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 4, 4, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 5, 4, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 4, 5, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 5, 5, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 1, 4, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 1, 5, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 5, 1, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 5, 2, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 5, 3, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 2, 4, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 2, 5, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 4, 2, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 1, 0, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 0, 1, 'special', NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 1, 3, 'special', NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 4, 1, 'special', NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 3, 3, NULL, NULL);
-INSERT INTO tile (mapid, x, y, special, base_id) VALUES (1, 2, 3, 'special', NULL);
-
-
---
 -- TOC entry 1907 (class 0 OID 84402)
 -- Dependencies: 1533 1908 1918 1914
 -- Data for Name: buildaction; Type: TABLE DATA; Schema: public; Owner: swa
@@ -185,38 +171,38 @@ INSERT INTO hibernate_sequences (sequence_name, sequence_next_hi_value) VALUES (
 -- Data for Name: square; Type: TABLE DATA; Schema: public; Owner: swa
 --
 
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (1, 1, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (1, 2, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (1, 3, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (1, 4, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (1, 5, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (1, 6, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (1, 7, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (1, 8, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (2, 1, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (2, 2, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (2, 3, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (2, 4, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (2, 5, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (2, 6, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (2, 7, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (2, 8, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (3, 1, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (3, 2, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (3, 3, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (3, 4, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (3, 5, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (3, 6, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (3, 7, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (3, 8, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (4, 1, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (4, 2, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (4, 3, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (4, 4, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (4, 5, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (4, 6, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (4, 7, NULL, NULL);
-INSERT INTO square (baseid, "position", building_baseid, building_position) VALUES (4, 8, NULL, NULL);
+INSERT INTO square (baseid, "position") VALUES (1, 1);
+INSERT INTO square (baseid, "position") VALUES (1, 2);
+INSERT INTO square (baseid, "position") VALUES (1, 3);
+INSERT INTO square (baseid, "position") VALUES (1, 4);
+INSERT INTO square (baseid, "position") VALUES (1, 5);
+INSERT INTO square (baseid, "position") VALUES (1, 6);
+INSERT INTO square (baseid, "position") VALUES (1, 7);
+INSERT INTO square (baseid, "position") VALUES (1, 8);
+INSERT INTO square (baseid, "position") VALUES (2, 1);
+INSERT INTO square (baseid, "position") VALUES (2, 2);
+INSERT INTO square (baseid, "position") VALUES (2, 3);
+INSERT INTO square (baseid, "position") VALUES (2, 4);
+INSERT INTO square (baseid, "position") VALUES (2, 5);
+INSERT INTO square (baseid, "position") VALUES (2, 6);
+INSERT INTO square (baseid, "position") VALUES (2, 7);
+INSERT INTO square (baseid, "position") VALUES (2, 8);
+INSERT INTO square (baseid, "position") VALUES (3, 1);
+INSERT INTO square (baseid, "position") VALUES (3, 2);
+INSERT INTO square (baseid, "position") VALUES (3, 3);
+INSERT INTO square (baseid, "position") VALUES (3, 4);
+INSERT INTO square (baseid, "position") VALUES (3, 5);
+INSERT INTO square (baseid, "position") VALUES (3, 6);
+INSERT INTO square (baseid, "position") VALUES (3, 7);
+INSERT INTO square (baseid, "position") VALUES (3, 8);
+INSERT INTO square (baseid, "position") VALUES (4, 1);
+INSERT INTO square (baseid, "position") VALUES (4, 2);
+INSERT INTO square (baseid, "position") VALUES (4, 3);
+INSERT INTO square (baseid, "position") VALUES (4, 4);
+INSERT INTO square (baseid, "position") VALUES (4, 5);
+INSERT INTO square (baseid, "position") VALUES (4, 6);
+INSERT INTO square (baseid, "position") VALUES (4, 7);
+INSERT INTO square (baseid, "position") VALUES (4, 8);
 
 
 --
@@ -267,8 +253,6 @@ INSERT INTO trooptype (id, name) VALUES (3, 'Cavalry');
 -- Dependencies: 1550 1923 1922
 -- Data for Name: trooptype_trooplevel; Type: TABLE DATA; Schema: public; Owner: swa
 --
-
-
 
 -- Completed on 2011-05-21 19:39:54
 
