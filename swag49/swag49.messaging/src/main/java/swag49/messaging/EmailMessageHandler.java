@@ -15,8 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import swag49.dao.DataAccessObject;
-import swag49.model.Message;
-import swag49.model.Player;
+import swag49.messaging.model.Message;
 import swag49.model.User;
 import swag49.util.Log;
 
@@ -38,10 +37,6 @@ public class EmailMessageHandler implements MessageReceiver {
     private DataAccessObject<User> userDAO;
 
     @Autowired
-    @Qualifier("playerDAO")
-    private DataAccessObject<Player> playerDAO;
-
-    @Autowired
     private JavaMailSender mailSender;
 
     @Value("$messaging{messaging.mail.fromAddress}")
@@ -57,10 +52,8 @@ public class EmailMessageHandler implements MessageReceiver {
         message.setReceiveDate(new Date());
         messageDAO.update(message);
 
-        Player receiverPlayer = playerDAO.get(message.getReceiver().getId());
-        Player senderPlayer = playerDAO.get(message.getSender().getId());
-        User receiverUser = userDAO.get(receiverPlayer.getUserId());
-        User senderUser = userDAO.get(senderPlayer.getUserId());
+        User receiverUser = userDAO.get(message.getReceiverUserId());
+        User senderUser = userDAO.get(message.getSenderUserId());
 
         PlayerMessageMimeMessagePreparator messagePreparator =
                 new PlayerMessageMimeMessagePreparator(velocityEngine, message, receiverUser, senderUser, fromAddress);

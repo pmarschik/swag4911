@@ -1,17 +1,16 @@
-package swag49.dao;
-
-import java.util.Collection;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+package swag49.messaging.dao;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import swag49.dao.DataAccessObject;
+import swag49.messaging.model.Message;
 
-import swag49.model.Message;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.Collection;
 
 @Repository(value = "messageDAO")
 public class MessageDao implements DataAccessObject<Message> {

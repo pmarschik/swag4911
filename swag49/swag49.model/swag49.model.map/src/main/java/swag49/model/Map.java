@@ -1,23 +1,21 @@
 package swag49.model;
 
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Map {
 	@Id
 	@GeneratedValue
 	private Long id;
-	
+
 	@Column(nullable = false)
 	private Integer maxUsers;
-	
+
+    @Column(nullable = false)
+    private String url;
+
 	@OneToMany(mappedBy="map")
 	private Set<Tile> consistsOf = new HashSet<Tile>();
 

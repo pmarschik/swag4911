@@ -1,5 +1,6 @@
 package swag49.web.controller;
 
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -11,7 +12,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import swag49.web.model.MessageDTO;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author michael
@@ -24,14 +28,12 @@ public class MessagingController {
     @Autowired
     private MapController mapController;
 
-    private Long idCounter = new Long(0);
-
-    private Map<Long, MessageDTO> messages = new HashMap<Long, MessageDTO>();
+    private Map<Long, MessageDTO> messages = Maps.newHashMap();
 
     public MessagingController() {
-        MessageDTO message = new MessageDTO(new Long(0), new Date(), new Date(), "Test",
-                "This is a Test Message", "test", "test");
-        messages.put(new Long(0), message);
+        MessageDTO message = new MessageDTO("TestSubject", "This is a test message", 1L, "sender", 2L, "receiver",
+                new Date());
+        messages.put(0L, message);
     }
 
     @RequestMapping(value = "/")
@@ -139,10 +141,11 @@ public class MessagingController {
     }
 
     public void sendMessage(MessageDTO message) {
-        message.setId(++idCounter);
-        //message.setSender(this.userController.getLoggedInUser().getUsername());
-        message.setSendDate(new Date());
-        messages.put(message.getId(), message);
+        //message.setId(++idCounter);
+//        message.setSender(new MessageDTO.UserDTO(userController.getLoggedInUser().getId(),
+//                userController.getLoggedInUser().getUsername()));
+        message.setSent(new Date());
+        messages.put(message.getReceiver().getId(), message);
         System.out.println("Send message:" + message);
     }
 

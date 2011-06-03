@@ -12,7 +12,7 @@ public class MapLocation {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String url;
 
     public Long getId() {

@@ -5,7 +5,6 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import swag49.model.Message;
 import swag49.model.Statistic;
 
 import javax.persistence.EntityManager;

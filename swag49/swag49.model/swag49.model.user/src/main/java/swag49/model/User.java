@@ -3,7 +3,6 @@ package swag49.model;
 import com.google.common.collect.Sets;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.Set;
 
 // need to rename because postgresql does not like tables named user ...
@@ -15,7 +14,6 @@ public class User {
 	private Long id;
 
 	@Column(nullable = false, length = 50, unique = true)
-	//@Index(name = "idx_username")
 	private String username;
 
 	@Column(nullable = false, length = 50)

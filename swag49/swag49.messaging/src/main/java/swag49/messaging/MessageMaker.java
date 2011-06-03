@@ -1,10 +1,8 @@
 package swag49.messaging;
 
-import org.hibernate.loader.custom.Return;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import swag49.model.Message;
-import swag49.model.Player;
+import swag49.messaging.model.Message;
 
 import java.util.Date;
 
@@ -37,13 +35,18 @@ public class MessageMaker {
         return this;
     }
 
-    public MessageMaker from(Player sender) {
-        message.setSender(sender);
+    public MessageMaker from(Long senderUserId) {
+        message.setSenderUserId(senderUserId);
         return this;
     }
 
-    public MessageMaker to(Player receiver) {
-        message.setReceiver(receiver);
+    public MessageMaker to(Long receiverUserId) {
+        message.setReceiverUserId(receiverUserId);
+        return this;
+    }
+
+    public MessageMaker on(String mapUrl) {
+        message.setMapUrl(mapUrl);
         return this;
     }
 

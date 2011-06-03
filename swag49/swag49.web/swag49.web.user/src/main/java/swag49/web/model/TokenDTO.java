@@ -15,7 +15,6 @@ public class TokenDTO {
     private Long userId;
 
     public TokenDTO() {
-
     }
 
     public TokenDTO(UUID token, Long userId) {

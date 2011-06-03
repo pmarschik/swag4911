@@ -39,14 +39,33 @@
         </property>
     </bean>
 
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+        <property name="messageConverters">
+            <list>
+                <!-- We only have one message converter for the RestTemplate, namely the XStream Marshller -->
+                <bean class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+                    <constructor-arg>
+                        <bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+                            <property name="classesToBeBound">
+                                <util:list>
+                                    <value>swag49.messaging.model.TokenDTO</value>
+                                </util:list>
+                            </property>
+                        </bean>
+                    </constructor-arg>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
     <si:gateway id="playerMessageGateway" service-interface="swag49.messaging.MessageSender"
                 default-request-channel="playerMessageChannel"/>
 
-    <si:channel id="playerMessageChannel" datatype="swag49.model.Message"/>
+    <si:channel id="playerMessageChannel" datatype="swag49.messaging.model.Message"/>
 
     <si:router ref="messageRouter" input-channel="playerMessageChannel"/>
 
-    <si:channel id="emailMessageChannel" datatype="swag49.model.Message">
+    <si:channel id="emailMessageChannel" datatype="swag49.messaging.model.Message">
         <si:queue capacity="10"/>
     </si:channel>
 
@@ -54,7 +73,7 @@
 
     <!-- - - - -->
 
-    <si:channel id="webMessageChannel" datatype="swag49.model.Message"/>
+    <si:channel id="webMessageChannel" datatype="swag49.messaging.model.Message"/>
 
     <si:service-activator input-channel="webMessageChannel" ref="webMessageHandler" method="handleMessage"/>
 

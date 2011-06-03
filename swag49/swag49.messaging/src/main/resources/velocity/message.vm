@@ -1,6 +1,6 @@
 #* @vtlvariable name="receiver" type="swag49.model.User" *#
 #* @vtlvariable name="sender" type="swag49.model.User" *#
-#* @vtlvariable name="message" type="swag49.model.Message" *#
+#* @vtlvariable name="message" type="swag49.messaging.model.Message" *#
 <html>
     <body>
         <h3>Hi ${receiver.getUsername()}</h3>
