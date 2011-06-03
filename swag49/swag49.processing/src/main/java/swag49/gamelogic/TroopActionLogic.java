@@ -1,191 +1,294 @@
 package swag49.gamelogic;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import swag49.dao.DataAccessObject;
+import swag49.model.*;
 
-import swag49.model.Player;
-import swag49.model.ResourceValue;
-import swag49.model.Tile;
-import swag49.model.Troop;
-import swag49.model.TroopAction;
+import java.util.*;
 
 public class TroopActionLogic {
 
-	public void handleAction(TroopAction action) {
-		Tile tile = action.getTarget();
+    @Autowired
+    @Qualifier("troopActionDAO")
+    private DataAccessObject<TroopAction> troopActionDao;
 
-		// check if other troops are on that tile
-		Set<Troop> defenders = tile.getTroops();
+    @Autowired
+    @Qualifier("troopDAO")
+    private DataAccessObject<Troop> troopDao;
 
-		if (defenders.isEmpty()) {
-			tile.getTroops().addAll(action.getConcerns());
-		} else {
-			// check if this are allied troops
+    @Autowired
+    @Qualifier("baseDAO")
+    private DataAccessObject<Base> baseDao;
 
-			// get first troop of collection
-			// assuming that only troops of one player can stay at a tile at a
-			// moment
-			Troop troop = defenders.iterator().next();
-			if (troop.getOwner() == action.getPlayer()) {
-				// lets play a party!!!
-				tile.getTroops().addAll(action.getConcerns());
-			} else {
-				// oho - enemies....FIGHT!!!!
-				calculateFight(action.getPlayer(), troop.getOwner(),
-						action.getConcerns(), defenders, tile);
-			}
-		}
+    @Autowired
+    @Qualifier("squareDAO")
+    private DataAccessObject<Square> squareDao;
 
-	}
+    public void handleAction(TroopAction action) {
+        Tile tile = action.getTarget();
 
-	private void calculateFight(Player attackers_owner, Player defenders_owner,
-			Set<Troop> attackers, Set<Troop> defenders, Tile tile) {
+        boolean canBuildBase = false;
 
-		Collection<Troop> deadTroops_attacker = null;
-		Collection<Troop> deadTroops_defenders = null;
 
-		do {
-			// calculate victims
-			deadTroops_attacker = calculateAttack(attackers, defenders);
-			deadTroops_defenders = calculateAttack(defenders, attackers);
+        for (Troop troop : action.getConcerns()) {
+            if (troop.getType().getCanFoundBase()) {
+                canBuildBase = true;
+                break;
+            }
+        }
 
-			// remove victims of the sets
-			if (!deadTroops_defenders.isEmpty())
-				defenders.removeAll(deadTroops_defenders);
 
-			if (!deadTroops_attacker.isEmpty())
-				attackers.removeAll(deadTroops_attacker);
+        boolean enemyTerritory = false;
 
-			// TODO: remove victims in persistence layer
+        if (tile.getBase() != null && tile.getBase().getOwner() != action.getPlayer()) {
+            enemyTerritory = false;
+        }
 
-		} while (!deadTroops_attacker.isEmpty()
-				&& !deadTroops_defenders.isEmpty());
+        // check if other troops are on that tile
+        Set<Troop> defenders = tile.getTroops();
 
-		if (attackers.size() > 0 && defenders.isEmpty()) {
-			// attacker win
-			// TODO: write MSG to both player about the result of the fight
+        if (!defenders.isEmpty() && defenders.iterator().next().getOwner() != action.getPlayer())
+            enemyTerritory = false;
 
-			if (tile.getBase() != null) {
-				// attacking troops rob the bank and go home
 
-				ResourceValue booty = calculateBooty(defenders_owner, attackers);
+        if (!enemyTerritory) {
+            tile.getTroops().addAll(action.getConcerns());
+            if (canBuildBase && action.getShouldFoundBase()) {
+                if (tile.getBase() != null) {
+                    //TODO: write errormsg
+                } else {
+                    Base base = createBase(tile, action.getPlayer());
+                    //TODO: write msg to player
+                }
+            }
+        } else {
+            if (defenders.isEmpty()) {
+                if (canBuildBase && !tile.getBase().isHome()) {
+                    //take base
+                    Base base = tile.getBase();
+                    base.setOwner(action.getPlayer());
+                    base = baseDao.update(base);
+                    //TODO: write msg to both players
+                } else {
+                    //rob base
+                    ResourceValue booty = calculateBooty(tile.getBase().getOwner(), action.getConcerns());
 
-				// TODO: send troops with booty back
+                    action.getPlayer().getResources().add(booty);
+                    //TODO: write ms to both players
+                }
+            } else {
+                Player enemyOwner = defenders.iterator().next().getOwner();
+                // oho - enemies....FIGHT!!!!
+                Set<Troop> attackers = new HashSet<Troop>(action.getConcerns());
+                boolean attackerWin = calculateFight(action.getPlayer(), enemyOwner,
+                        attackers, defenders, tile);
 
-			} else {
-				// attacking troops stay on the tile
-			}
+                if (attackerWin) {
+                    if (tile.getBase() != null) {
+                        //rob base
+                        ResourceValue booty = calculateBooty(enemyOwner, attackers);
+                        action.getPlayer().getResources().add(booty);
 
-		} else if (defenders.size() > 0 && attackers.isEmpty()) {
-			// defenders win
-			// TODO: write MSG to both player about the result of the fight
+                        if (canBuildBase && !tile.getBase().isHome()) {
+                            Base base = tile.getBase();
+                            base.setOwner(action.getPlayer());
+                            base = baseDao.update(base);
+                            //TODO: write msg to both players
+                        } else {
+                            sendHome(attackers, action.getSource());
+                        }
+                    } else if (canBuildBase) {
+                        Base base = createBase(tile, action.getPlayer());
+                        //TODO: write msg to player
+                    } else {
+                        //stay
+                    }
+                } else {
+                    if (!attackers.isEmpty()) {
+                        // send attacking army home to mom
+                        sendHome(attackers, action.getSource());
+                    }
+                }
 
-		} else {
-			// draw
-			if (defenders.size() == 0 && attackers.size() == 0) {
-				// war - what is it good for?
+            }
+        }
+    }
 
-				// TODO: write MSG to both player that they lost their army
-			} else {
-				// mexican standoff
+    private Base createBase(Tile tile, Player owner) {
+        Base base = BaseFactory.createBase(tile);
 
-				// TODO: write MSG to both player about the result of the fight
-				// TODO: send attacking army home to mom
-			}
-		}
-	}
+        base.setOwner(owner);
 
-	private ResourceValue calculateBooty(Player defenders_owner,
-			Set<Troop> attackers) {
+        base = baseDao.create(base);
 
-		ResourceValue booty = new ResourceValue();
-		// determine maximal resources by dividing players resources by
-		// the number of Bases
-		int noCities = defenders_owner.getOwns().size();
-		ResourceValue maxSteal = new ResourceValue(defenders_owner
-				.getResources().getAmount_wood() / noCities, defenders_owner
-				.getResources().getAmount_crops() / noCities, defenders_owner
-				.getResources().getAmount_gold() / noCities, defenders_owner
-				.getResources().getAmount_stone() / noCities);
+        for (Square square : base.getConsistsOf())
+            squareDao.create(square);
 
-		int cargo_total = 0;
-		for (Troop troop : attackers) {
-			cargo_total += troop.getIsOfLevel().getCargo_capacity();
-		}
+        //update players resources
+        owner.getResources().add(base.getResourceProduction());
 
-		int i = getNoNonzeroResources(maxSteal);
-		while (cargo_total > 0 && i > 0) {
-			// steal c amount of crops
-			int c = Math.min(maxSteal.getAmount_crops(), cargo_total / i);
+        return base;
+    }
 
-			booty.setAmount_crops(booty.getAmount_crops() + c);
-			maxSteal.setAmount_crops(maxSteal.getAmount_crops() - c);
+    private void sendHome(Set<Troop> attackers, Tile destination) {
+        TroopAction homeAction = new TroopAction();
+        homeAction.setConcerns(attackers);
+        homeAction.setShouldFoundBase(false);
+        homeAction.setTarget(destination);
+        homeAction.setIsAbortable(false);
 
-			// steal s amount of stone
-			int s = Math.min(maxSteal.getAmount_stone(), cargo_total / i);
-			booty.setAmount_stone(booty.getAmount_stone() + s);
-			maxSteal.setAmount_stone(maxSteal.getAmount_stone() - s);
+        homeAction = troopActionDao.create(homeAction);
+    }
 
-			// steal w amount of wood
-			int w = Math.min(maxSteal.getAmount_wood(), cargo_total / i);
-			booty.setAmount_wood(booty.getAmount_wood() + w);
-			maxSteal.setAmount_wood(maxSteal.getAmount_wood() - w);
+    private boolean calculateFight(Player attackers_owner, Player defenders_owner,
+                                   Set<Troop> attackers, Set<Troop> defenders, Tile tile) {
 
-			// steal g amount of gold
-			int g = Math.min(maxSteal.getAmount_gold(), cargo_total / i);
-			booty.setAmount_gold(booty.getAmount_gold() + g);
-			maxSteal.setAmount_gold(maxSteal.getAmount_gold() - g);
+        Collection<Troop> deadTroops_attacker = null;
+        Collection<Troop> deadTroops_defenders = null;
 
-			cargo_total -= (c + s + w + g);
+        do {
+            // calculate victims
+            deadTroops_attacker = calculateAttack(attackers, defenders);
+            deadTroops_defenders = calculateAttack(defenders, attackers);
 
-			i = getNoNonzeroResources(maxSteal);
-		}
+            // remove victims of the sets
+            if (!deadTroops_defenders.isEmpty())
+                defenders.removeAll(deadTroops_defenders);
 
-		return booty;
-	}
+            if (!deadTroops_attacker.isEmpty())
+                attackers.removeAll(deadTroops_attacker);
 
-	private int getNoNonzeroResources(ResourceValue value) {
-		int i = 0;
+            // remove victims in persistence layer
+            for (Troop troop : deadTroops_attacker) {
+                troopDao.delete(troop);
+            }
 
-		if (value.getAmount_crops() > 0)
-			i++;
+            for (Troop troop : deadTroops_defenders) {
+                troopDao.delete(troop);
 
-		if (value.getAmount_gold() > 0)
-			i++;
+                tile.getTroops().remove(troop);
+            }
 
-		if (value.getAmount_stone() > 0)
-			i++;
+        } while (!deadTroops_attacker.isEmpty()
+                && !deadTroops_defenders.isEmpty());
 
-		if (value.getAmount_wood() > 0)
-			i++;
-		return i;
-	}
+        if (attackers.size() > 0 && defenders.isEmpty()) {
+            // attacker win
+            // TODO: write MSG to both player about the result of the fight
 
-	private Collection<Troop> calculateAttack(Set<Troop> attackers,
-			Set<Troop> defenders) {
+            // attacking troops stay on the tile
+            tile.getTroops().addAll(attackers);
 
-		List<Troop> deadTroops = new ArrayList<Troop>();
-		int strength_attacker = 0;
+            return true;
+        } else if (defenders.size() > 0 && attackers.isEmpty()) {
+            // defenders win
+            // TODO: write MSG to both player about the result of the fight
 
-		for (Troop troop : attackers) {
-			strength_attacker += troop.getIsOfLevel().getStrength();
-		}
-		Iterator<Troop> iterator = defenders.iterator();
+            return false;
+        } else {
+            // draw
+            if (defenders.size() == 0 && attackers.size() == 0) {
+                // war - what is it good for?
 
-		while (strength_attacker > 0 && iterator.hasNext()) {
-			Troop troop = iterator.next();
-			if (strength_attacker >= troop.getIsOfLevel().getDefense()) {
-				deadTroops.add(troop);
-				strength_attacker -= troop.getIsOfLevel().getDefense();
-			}
-		}
+                // TODO: write MSG to both player that they lost their army
+                return false;
+            } else {
+                // mexican standoff
 
-		return deadTroops;
-	}
-	
-	
+                // TODO: write MSG to both player about the result of the fight
+                return false;
+            }
+        }
+    }
+
+    private ResourceValue calculateBooty(Player defenders_owner,
+                                         Set<Troop> attackers) {
+
+        ResourceValue booty = new ResourceValue();
+        // determine maximal resources by dividing players resources by
+        // the number of Bases
+        int noCities = defenders_owner.getOwns().size();
+        ResourceValue maxSteal = new ResourceValue(defenders_owner
+                .getResources().getAmount_wood() / noCities, defenders_owner
+                .getResources().getAmount_crops() / noCities, defenders_owner
+                .getResources().getAmount_gold() / noCities, defenders_owner
+                .getResources().getAmount_stone() / noCities);
+
+        int cargo_total = 0;
+        for (Troop troop : attackers) {
+            cargo_total += troop.getIsOfLevel().getCargo_capacity();
+        }
+
+        int i = getNoNonzeroResources(maxSteal);
+        while (cargo_total > 0 && i > 0) {
+            // steal c amount of crops
+            int c = Math.min(maxSteal.getAmount_crops(), cargo_total / i);
+
+            booty.setAmount_crops(booty.getAmount_crops() + c);
+            maxSteal.setAmount_crops(maxSteal.getAmount_crops() - c);
+
+            // steal s amount of stone
+            int s = Math.min(maxSteal.getAmount_stone(), cargo_total / i);
+            booty.setAmount_stone(booty.getAmount_stone() + s);
+            maxSteal.setAmount_stone(maxSteal.getAmount_stone() - s);
+
+            // steal w amount of wood
+            int w = Math.min(maxSteal.getAmount_wood(), cargo_total / i);
+            booty.setAmount_wood(booty.getAmount_wood() + w);
+            maxSteal.setAmount_wood(maxSteal.getAmount_wood() - w);
+
+            // steal g amount of gold
+            int g = Math.min(maxSteal.getAmount_gold(), cargo_total / i);
+            booty.setAmount_gold(booty.getAmount_gold() + g);
+            maxSteal.setAmount_gold(maxSteal.getAmount_gold() - g);
+
+            cargo_total -= (c + s + w + g);
+
+            i = getNoNonzeroResources(maxSteal);
+        }
+
+        return booty;
+    }
+
+    private int getNoNonzeroResources(ResourceValue value) {
+        int i = 0;
+
+        if (value.getAmount_crops() > 0)
+            i++;
+
+        if (value.getAmount_gold() > 0)
+            i++;
+
+        if (value.getAmount_stone() > 0)
+            i++;
+
+        if (value.getAmount_wood() > 0)
+            i++;
+        return i;
+    }
+
+    private Collection<Troop> calculateAttack(Set<Troop> attackers,
+                                              Set<Troop> defenders) {
+
+        List<Troop> deadTroops = new ArrayList<Troop>();
+        int strength_attacker = 0;
+
+        for (Troop troop : attackers) {
+            strength_attacker += troop.getIsOfLevel().getStrength();
+        }
+        Iterator<Troop> iterator = defenders.iterator();
+
+        while (strength_attacker > 0 && iterator.hasNext()) {
+            Troop troop = iterator.next();
+            if (strength_attacker >= troop.getIsOfLevel().getDefense()) {
+                deadTroops.add(troop);
+                strength_attacker -= troop.getIsOfLevel().getDefense();
+            }
+        }
+
+        return deadTroops;
+    }
+
 
 }

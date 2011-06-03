@@ -30,6 +30,16 @@ public abstract class Action {
 	@ManyToOne(optional = false)
 	private Player player;
 
+	private Boolean isAbortable;
+
+	public Boolean getIsAbortable() {
+		return isAbortable;
+	}
+
+	public void setIsAbortable(Boolean isAbortable) {
+		this.isAbortable = isAbortable;
+	}
+
 	public Long getDuration() {
 		return duration;
 	}
@@ -69,11 +79,11 @@ public abstract class Action {
 	public void setTarget(Tile target) {
 		this.target = target;
 	}
-	
+
 	public Date getEndDate() {
 		if (startDate == null || duration == null)
 			return null;
-		
+
 		return new Date(startDate.getTime() + duration);
 	}
 }

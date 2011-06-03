@@ -22,6 +22,16 @@ public class TroopType {
 	@OneToMany(cascade = CascadeType.ALL)
 	private Set<TroopLevel> levels = new HashSet<TroopLevel>();
 
+    public Boolean getCanFoundBase() {
+        return canFoundBase;
+    }
+
+    public void setCanFoundBase(Boolean canFoundBase) {
+        this.canFoundBase = canFoundBase;
+    }
+
+    private Boolean canFoundBase;
+
 	public Long getId() {
 		return id;
 	}
