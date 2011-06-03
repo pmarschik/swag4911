@@ -48,8 +48,11 @@ public class StatisticEntry {
 	@JoinColumn(name = "statisticId", insertable = false, updatable = false)
 	private Statistic statistic;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Player player;
+
+    @Column(nullable = false)
+    private Integer score;
 
     public StatisticEntry() {
 	}
@@ -80,5 +83,13 @@ public class StatisticEntry {
 
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
     }
 }

@@ -13,8 +13,9 @@
     <import resource="test-db.xml"/>
     <import resource="test-quartz.xml"/>
 
+    <bean id="mostBasesJob" class="swag49.statistics.MostBasesEvaluatorJob" autowire-candidate="true"/>
+
     <tx:annotation-driven/>
     
     <context:component-scan base-package="swag49"/>
-
 </beans>
