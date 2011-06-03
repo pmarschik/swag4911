@@ -75,59 +75,80 @@ public class StatisticDaoTest {
         Assert.assertEquals(new Integer(2), iterator.next().getRanking());
     }
 
-//    @Test
-//    public void delete_shouldDelete() throws Exception {
-//		Map map = new Map();
-//		map.setMaxUsers(5);
-//
-//		map = mapDAO.create(map);
-//
-//		Player player = new Player();
-//		player.setDeleted(false);
-//		player.setOnline(true);
-//		player.setUserId(1L);
-//		player.setPlays(map);
-//
-//		player = playerDAO.create(player);
-//
-//		Message message = new Message();
-//		message.setContent("test");
-//		message.setReceiver(player);
-//		message.setSender(player);
-//		message.setSubject("test");
-//		message.setSendDate(new Date());
-//
-//		message = messageDAO.create(message);
-//
-//		messageDAO.delete(message);
-//    }
-//
-//    @Test
-//    public void update_shouldUpdate() throws Exception{
-//		Map map = new Map();
-//		map.setMaxUsers(5);
-//
-//		map = mapDAO.create(map);
-//
-//		Player player = new Player();
-//		player.setDeleted(false);
-//		player.setOnline(true);
-//		player.setUserId(1L);
-//		player.setPlays(map);
-//
-//		player = playerDAO.create(player);
-//
-//		Message message = new Message();
-//		message.setContent("test");
-//		message.setReceiver(player);
-//		message.setSender(player);
-//		message.setSubject("test");
-//		message.setSendDate(new Date());
-//
-//		message = messageDAO.create(message);
-//
-//		message.setSubject("New Subject");
-//
-//		messageDAO.update(message);
-//    }
+    @Test
+    public void update_shouldUpdate() throws Exception {
+		Map map = new Map();
+		map.setMaxUsers(5);
+
+		map = mapDAO.create(map);
+
+		Player player1 = new Player();
+		player1.setDeleted(false);
+		player1.setOnline(true);
+		player1.setUserId(1L);
+		player1.setPlays(map);
+
+		player1 = playerDAO.create(player1);
+
+        Player player2 = new Player();
+		player2.setDeleted(false);
+		player2.setOnline(true);
+		player2.setUserId(2L);
+		player2.setPlays(map);
+
+		player2 = playerDAO.create(player2);
+
+		Statistic statistic = new Statistic();
+        statistic.setName("Most defeats");
+        statistic = statisticDAO.create(statistic);
+
+        StatisticEntry entry1 = new StatisticEntry(statistic, 1);
+        entry1.setPlayer(player1);
+        statistic.getEntries().add(entry1);
+        StatisticEntry entry2 = new StatisticEntry(statistic, 2);
+        entry2.setPlayer(player2);
+        statistic.getEntries().add(entry2);
+        statistic = statisticDAO.update(statistic);
+
+        statistic.setName("Most bases");
+        statisticDAO.update(statistic);
+    }
+
+    @Test
+    public void delete_shouldDelete() throws Exception{
+		Map map = new Map();
+		map.setMaxUsers(5);
+
+		map = mapDAO.create(map);
+
+		Player player1 = new Player();
+		player1.setDeleted(false);
+		player1.setOnline(true);
+		player1.setUserId(1L);
+		player1.setPlays(map);
+
+		player1 = playerDAO.create(player1);
+
+        Player player2 = new Player();
+		player2.setDeleted(false);
+		player2.setOnline(true);
+		player2.setUserId(2L);
+		player2.setPlays(map);
+
+		player2 = playerDAO.create(player2);
+
+		Statistic statistic = new Statistic();
+        statistic.setName("Most defeats");
+        statistic = statisticDAO.create(statistic);
+
+        StatisticEntry entry1 = new StatisticEntry(statistic, 1);
+        entry1.setPlayer(player1);
+        statistic.getEntries().add(entry1);
+        StatisticEntry entry2 = new StatisticEntry(statistic, 2);
+        entry2.setPlayer(player2);
+        statistic.getEntries().add(entry2);
+        statistic = statisticDAO.update(statistic);
+
+        statisticDAO.delete(statistic);
+    }
 }
