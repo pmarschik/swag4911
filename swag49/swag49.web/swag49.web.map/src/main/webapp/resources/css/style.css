@@ -1,0 +1,53 @@
+body
+{
+	width:100%;
+	}
+	
+#header 
+{
+	border-bottom-style:solid;
+	border-bottom-width:2px;
+	border-bottom-color:black;
+	min-height:150px;
+	float:left;
+	display:block;
+	width:100%;
+}
+
+#subContent
+{
+	border-style:solid;
+	border-width:2px;
+	border-color:black;
+	width:100%;
+}
+
+#menu
+{
+	float:left;
+	width:150px;
+	height:100%;
+	border-right-style:solid;
+	border-right-width:2px;
+	border-right-color:black;
+
+}
+
+#menu ul
+{
+		list-style-type:none; 
+}
+
+#content
+{
+	float:right;
+
+}
+
+#resourceTable
+{
+	width:300px;
+	border-style:solid;
+	border-width:1px;
+	border-color:black;
+}
