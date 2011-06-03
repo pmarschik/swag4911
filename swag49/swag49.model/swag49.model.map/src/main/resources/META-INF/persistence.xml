@@ -18,6 +18,8 @@
         <class>swag49.model.Player</class>
         <class>swag49.model.ResourceValue</class>
         <class>swag49.model.Square</class>
+        <class>swag49.model.Statistic</class>
+        <class>swag49.model.StatisticEntry</class>
         <class>swag49.model.Tile</class>
         <class>swag49.model.Troop</class>
         <class>swag49.model.TroopAction</class>
