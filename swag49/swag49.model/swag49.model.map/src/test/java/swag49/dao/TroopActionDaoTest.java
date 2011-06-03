@@ -48,7 +48,7 @@ public class TroopActionDaoTest {
 		tile = tileDAO.create(tile);
 		
 		TroopAction troopAction = new TroopAction();
-		troopAction.setDuration(1);
+		troopAction.setDuration(new Long(1));
 		troopAction.setPlayer(player);
 		troopAction.setStartDate(new Date());
 		troopAction.setTarget(tile);
@@ -75,7 +75,7 @@ public class TroopActionDaoTest {
 		tile = tileDAO.create(tile);
 		
 		TroopAction troopAction = new TroopAction();
-		troopAction.setDuration(1);
+		troopAction.setDuration(new Long(1));
 		troopAction.setPlayer(player);
 		troopAction.setStartDate(new Date());
 		troopAction.setTarget(tile);
@@ -104,13 +104,13 @@ public class TroopActionDaoTest {
 		tile = tileDAO.create(tile);
 		
 		TroopAction troopAction = new TroopAction();
-		troopAction.setDuration(1);
+		troopAction.setDuration(new Long(1));
 		troopAction.setPlayer(player);
 		troopAction.setStartDate(new Date());
 		troopAction.setTarget(tile);
 		
 		troopAction = troopActionDAO.create(troopAction);		
-		troopAction.setDuration(2);
+		troopAction.setDuration(new Long(2));
 		
 		troopAction = troopActionDAO.update(troopAction);
     }
