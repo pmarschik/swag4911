@@ -1,5 +1,6 @@
 package swag49.web.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -20,8 +21,8 @@ import java.util.*;
 @RequestMapping(value = "/messaging")
 public class MessagingController {
 
-//    @Autowired
-//    private UserController userController;
+    @Autowired
+    private MapController mapController;
 
     private Long idCounter = new Long(0);
 
@@ -35,7 +36,7 @@ public class MessagingController {
 
     @RequestMapping(value = "/")
     public String handle(Map<String, Object> map) {
-        //map.put("user", userController.getLoggedInUser());
+        map.put("user", mapController.getUserID());
 
         return "messaging";
     }
@@ -45,9 +46,9 @@ public class MessagingController {
         return "redirect:../user/register";
     }
 
-    @RequestMapping(value = "/user")
-    public String redirectLogin() {
-        return "redirect:../user/";
+    @RequestMapping(value = "/map")
+    public String redirectMap() {
+        return "redirect:../map/";
     }
 
     @RequestMapping(value = "/index")
@@ -57,8 +58,8 @@ public class MessagingController {
 
     @RequestMapping(value = "/incoming")
     public String incoming(Map<String, Object> map) {
-        //if (userController.getLoggedInUser() == null)
-        //    return "redirect:./";
+        if (mapController.getUserID() == null)
+            return "redirect:./";
 
         map.put("incomingMessages", getIncomingMessages());
 
@@ -67,8 +68,8 @@ public class MessagingController {
 
     @RequestMapping(value = "/outgoing")
     public String outgoing(Map<String, Object> map) {
-        //if (userController.getLoggedInUser() == null)
-        //    return "redirect:./";
+        if (mapController.getUserID() == null)
+            return "redirect:./";
 
         map.put("outgoingMessages", getOutgoingMessages());
         map.put("view", true);
@@ -78,8 +79,8 @@ public class MessagingController {
 
     @RequestMapping(value = "/view/{id}")
     public String viewMessage(@PathVariable("id") Long id, Map<String, Object> map) {
-        //if (userController.getLoggedInUser() == null)
-        //    return "redirect:./";
+        if (mapController.getUserID() == null)
+            return "redirect:./";
 
         map.put("message", messages.get(id));
         map.put("view", true);
@@ -89,8 +90,8 @@ public class MessagingController {
 
     @RequestMapping(value = "/message")
     public String createMessage(Map<String, Object> map) {
-         //if (userController.getLoggedInUser() == null)
-         //   return "redirect:./";
+        if (mapController.getUserID() == null)
+            return "redirect:./";
 
         map.put("message", new MessageDTO());
         map.put("view", false);
@@ -100,8 +101,8 @@ public class MessagingController {
 
     @RequestMapping(value = "/send", method = RequestMethod.POST)
     public String handleSend(@Valid @ModelAttribute("message")
-                               MessageDTO message, BindingResult bingBindingResult,
-                               Map<String, Object> map) {
+                             MessageDTO message, BindingResult bingBindingResult,
+                             Map<String, Object> map) {
 
         System.out.println("Received request to send message: " + message);
 
@@ -118,9 +119,9 @@ public class MessagingController {
     public List<MessageDTO> getIncomingMessages() {
         List<MessageDTO> messages = new ArrayList<MessageDTO>();
 
-        for(MessageDTO message : this.messages.values()) {
+        for (MessageDTO message : this.messages.values()) {
             //if(message.getReceiver().equals(userController.getLoggedInUser().getUsername()))
-            //    messages.add(message);
+            messages.add(message);
         }
 
         return messages;
@@ -129,9 +130,9 @@ public class MessagingController {
     public List<MessageDTO> getOutgoingMessages() {
         List<MessageDTO> messages = new ArrayList<MessageDTO>();
 
-        for(MessageDTO message : this.messages.values()) {
+        for (MessageDTO message : this.messages.values()) {
             //if(message.getSender().equals(userController.getLoggedInUser().getUsername()))
-            //    messages.add(message);
+            messages.add(message);
         }
 
         return messages;
