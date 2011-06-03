@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+proof of concept configuration,
+for details see http://ehcache.org/documentation/hibernate.html
+-->
+
+<ehcache>
+    <cache name="swag49.messaging.model.MessageDTO"
+           maxElementsInMemory="1000"
+           eternal="false"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="600"
+           overflowToDisk="false"/>
+    <defaultCache maxElementsInMemory="10000"
+                  eternal="false"
+                  timeToIdleSeconds="120"
+                  timeToLiveSeconds="120"
+                  overflowToDisk="false"
+                  memoryStoreEvictionPolicy="LRU"/>
+</ehcache>

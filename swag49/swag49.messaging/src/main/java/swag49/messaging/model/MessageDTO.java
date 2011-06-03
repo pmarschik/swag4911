@@ -2,13 +2,13 @@ package swag49.messaging.model;
 
 import com.google.common.base.Objects;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.util.Date;
 
 @XmlRootElement(name = "message")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class MessageDTO {
+    @XmlAccessorType(XmlAccessType.FIELD)
     public static class UserDTO {
         @XmlElement(name = "username")
         private String username;
@@ -44,7 +44,10 @@ public class MessageDTO {
         }
     }
 
-    @XmlElement(name = "content")
+    @XmlAttribute(name = "map")
+    private String mapUrl;
+
+    @XmlElement(name = "subject")
     private String subject;
 
     @XmlElement(name = "content")
@@ -62,12 +65,21 @@ public class MessageDTO {
     public MessageDTO() { }
 
     public MessageDTO(String subject, String content, Long senderId, String senderUsername, Long receiverId,
-                      String receiverUsername, Date sent) {
+                      String receiverUsername, Date sent, String mapUrl) {
         this.subject = subject;
         this.content = content;
         this.sender = new UserDTO(senderUsername, senderId);
         this.receiver = new UserDTO(receiverUsername, receiverId);
         this.sent = sent;
+        this.mapUrl = mapUrl;
+    }
+
+    public String getMapUrl() {
+        return mapUrl;
+    }
+
+    public void setMapUrl(String mapUrl) {
+        this.mapUrl = mapUrl;
     }
 
     public String getSubject() {

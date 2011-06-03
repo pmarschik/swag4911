@@ -32,7 +32,7 @@ public class WebMessageHandler implements MessageReceiver {
     private RestTemplate restTemplate;
 
     @ServiceActivator
-    @Transactional
+    @Transactional("swag49.messaging")
     public Message handleMessage(Message message) {
         logger.info("Sending message {} to web-server", message);
         message.setReceiveDate(new Date());
@@ -43,7 +43,7 @@ public class WebMessageHandler implements MessageReceiver {
 
         MessageDTO messageDTO =
                 new MessageDTO(message.getSubject(), message.getContent(), message.getSenderUserId(), senderUsername,
-                        message.getReceiverUserId(), receiverUsername, message.getSendDate());
+                        message.getReceiverUserId(), receiverUsername, message.getSendDate(), message.getMapUrl());
 
         String requestUri = message.getMapUrl() + "/swag-api/messaging/receive";
         restTemplate.put(requestUri, messageDTO);

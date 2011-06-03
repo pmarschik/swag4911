@@ -1,10 +1,9 @@
 package swag49.messaging.model;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 
 @XmlRootElement(name="player")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class PlayerDTO {
     @XmlAttribute(name = "id")
     private long id;

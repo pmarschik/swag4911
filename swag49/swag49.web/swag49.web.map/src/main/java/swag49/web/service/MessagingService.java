@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import swag49.dao.DataAccessObject;
 import swag49.model.Player;
@@ -25,6 +26,7 @@ public class MessagingService {
 
     @RequestMapping(value = "/messaging/user/{userId}", method = RequestMethod.GET)
     @ResponseBody
+    @Transactional
     public PlayerDTO getUser(@PathVariable("userId") long userId) {
         Player playerExample = new Player();
         playerExample.setUserId(userId);

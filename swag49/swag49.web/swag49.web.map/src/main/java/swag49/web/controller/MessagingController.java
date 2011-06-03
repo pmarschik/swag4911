@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.client.RestTemplate;
 import swag49.web.model.MessageDTO;
 
 import javax.validation.Valid;
@@ -28,11 +29,16 @@ public class MessagingController {
     @Autowired
     private MapController mapController;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     private Map<Long, MessageDTO> messages = Maps.newHashMap();
+
+    private static final String MAP_URL = "http://localhost:8080/map/";
 
     public MessagingController() {
         MessageDTO message = new MessageDTO("TestSubject", "This is a test message", 1L, "sender", 2L, "receiver",
-                new Date());
+                new Date(), MAP_URL);
         messages.put(0L, message);
     }
 
@@ -144,8 +150,15 @@ public class MessagingController {
         //message.setId(++idCounter);
 //        message.setSender(new MessageDTO.UserDTO(userController.getLoggedInUser().getId(),
 //                userController.getLoggedInUser().getUsername()));
+        // TODO get userid of receiving player
+        message.getReceiver().setId(2L);
+
+        message.setSender(new MessageDTO.UserDTO("TODO",1L));
         message.setSent(new Date());
+        message.setMapUrl(MAP_URL);
         messages.put(message.getReceiver().getId(), message);
+
+        restTemplate.put("http://localhost:8080/messaging/send", message);
         System.out.println("Send message:" + message);
     }
 

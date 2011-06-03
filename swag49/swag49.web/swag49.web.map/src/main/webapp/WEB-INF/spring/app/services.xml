@@ -5,26 +5,6 @@
        xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
-    <!-- Define the OXM marshaller which is used to convert the Objects <-> XML. -->
-    <bean id="xmlMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="classesToBeBound">
-            <array>
-                <value>swag49.web.model.TokenDTO</value>
-            </array>
-        </property>
-    </bean>
-
-    <bean id="marshallingHttpMessageConverter"
-          class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
-        <property name="marshaller" ref="xmlMarshaller"/>
-        <property name="unmarshaller" ref="xmlMarshaller"/>
-        <property name="supportedMediaTypes">
-            <util:list>
-                <value>application/xml</value>
-            </util:list>
-        </property>
-    </bean>
-
     <!-- Required for REST services in order to bind the return value to the ResponseBody. -->
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
         <property name="messageConverters">

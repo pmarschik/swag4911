@@ -5,7 +5,6 @@ import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import swag49.model.MapLocation;
-import swag49.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -14,7 +13,7 @@ import java.util.Collection;
 @Repository(value="mapLoactionDAO")
 public class MapLocationDao implements DataAccessObject<MapLocation> {
 
-	@PersistenceContext
+	@PersistenceContext(unitName = "swag49.user")
 	private EntityManager em;
 
 	public MapLocationDao() {

@@ -13,47 +13,47 @@ import javax.persistence.PersistenceContext;
 import java.util.Collection;
 
 @Repository(value = "messageDAO")
-public class MessageDao implements DataAccessObject<Message> {
+public class MessageDAO implements DataAccessObject<Message> {
 
-	@PersistenceContext
-	private EntityManager em;
+    @PersistenceContext(unitName = "swag49.messaging")
+    private EntityManager em;
 
-	public MessageDao() {
-	}
+    public MessageDAO() {
+    }
 
-	public boolean contains(Message message) {
-		return em.contains(message);
-	}
+    public boolean contains(Message message) {
+        return em.contains(message);
+    }
 
-	@Transactional
-	public Message create(Message message) {
-		return em.merge(message);
-	}
+    @Transactional(value="swag49.messaging")
+    public Message create(Message message) {
+        return em.merge(message);
+    }
 
-	@Transactional
-	public void delete(Message message) {
-		message = em.merge(message);
-		em.remove(message);
-	}
+    @Transactional(value="swag49.messaging")
+    public void delete(Message message) {
+        message = em.merge(message);
+        em.remove(message);
+    }
 
-	public Message get(Object id) {
-		return em.find(Message.class, id);
-	}
+    public Message get(Object id) {
+        return em.find(Message.class, id);
+    }
 
-	@SuppressWarnings("unchecked")
-	public Collection<Message> queryByExample(Message model) {
-		Session session = (Session) em.getDelegate();
-		Criteria criteria = session.createCriteria(Message.class);
+    @SuppressWarnings("unchecked")
+    public Collection<Message> queryByExample(Message model) {
+        Session session = (Session) em.getDelegate();
+        Criteria criteria = session.createCriteria(Message.class);
 
-		if (model != null)
-			criteria.add(Example.create(model));
+        if (model != null)
+            criteria.add(Example.create(model));
 
-		return criteria.list();
-	}
+        return criteria.list();
+    }
 
-	@Transactional
-	public Message update(Message message) {
-		return em.merge(message);
-	}
+    @Transactional(value="swag49.messaging")
+    public Message update(Message message) {
+        return em.merge(message);
+    }
 
 }
