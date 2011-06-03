@@ -1,5 +1,7 @@
 package swag49.model;
 
+import com.google.common.collect.Sets;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,7 +34,7 @@ public class User {
 	private Integer utcOffset;
 
 	@ManyToMany
-	private Set<MapLocation> mapLocations = new HashSet<MapLocation>();
+	private Set<MapLocation> mapLocations = Sets.newHashSet();
 
 	@Embedded
 	private Address address;
