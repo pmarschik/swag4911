@@ -2,6 +2,7 @@ package swag49.web.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -11,10 +12,10 @@ import javax.validation.constraints.Size;
 public class UserRegisterDTO {
 
 
-    @NotEmpty
+    @NotNull
     @Size(min = 1, max = 50)
     private String username;
-    @NotEmpty
+    @NotNull
     @Size(min = 1, max = 50)
     private String password;
     @Size(min = 1, max = 255)
