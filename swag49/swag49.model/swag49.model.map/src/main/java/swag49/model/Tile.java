@@ -105,9 +105,7 @@ public class Tile {
 
 	public Tile(Map map, int x, int y) {
 		this.map = map;
-		this.id.mapId = map.getId();
-		this.id.x = x;
-		this.id.y = y;
+        this.id = new Id(map.getId(),x,y);
 
 		map.getConsistsOf().add(this);
 	}
