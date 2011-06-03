@@ -27,7 +27,7 @@ public class Square {
 		@Override
 		public boolean equals(Object obj) {
 			if (obj != null && obj instanceof Id) {
-				return this.position.equals(((Id) obj).position)
+				return this.baseId.equals(((Id) obj).baseId)
 						&& this.position.equals(((Id) obj).position);
 			} else {
 				return false;
