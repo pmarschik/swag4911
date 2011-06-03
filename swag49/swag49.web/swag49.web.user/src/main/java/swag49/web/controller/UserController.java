@@ -12,13 +12,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import swag49.dao.DataAccessObject;
+import swag49.model.MapLocation;
 import swag49.model.User;
+import swag49.util.Log;
+import swag49.web.HelperComponent;
+import swag49.web.TokenService;
+import swag49.web.model.MapLocationDTO;
 import swag49.web.model.UserLoginDTO;
 import swag49.web.model.UserRegisterDTO;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author michael
@@ -28,16 +32,28 @@ import java.util.Map;
 @RequestMapping(value = "/user")
 public class UserController {
 
-    private static Logger logger = LoggerFactory.getLogger(UserController.class);
+    @Log
+    private static Logger logger;
+
+    private static String mapController = "/swag/map/";
 
     @Autowired
     @Qualifier("userDAO")
     private DataAccessObject<User> userDAO;
 
+    @Autowired
+    private TokenService tokenService;
+
+    @Autowired
+    private HelperComponent helperComponent;
+
     private Integer counter = 0;
     private Map<String, UserRegisterDTO> users = new HashMap<String, UserRegisterDTO>();
 
     private UserLoginDTO loggedInUser = null;
+    private UUID userToken = null;
+
+    private Map<Long, MapLocationDTO> myMaps = new HashMap<Long, MapLocationDTO>();
 
     public UserController() {
         UserRegisterDTO user = new UserRegisterDTO();
@@ -81,7 +97,7 @@ public class UserController {
     public String deleteUser(@PathVariable("username") String username) {
         users.remove(username);
         System.out.println("Remove User with username: " + username);
-        return "redirect:../register";
+        return "redirect:./";
     }
 
     @RequestMapping(value = "/")
@@ -122,7 +138,16 @@ public class UserController {
 
         this.loggedInUser = userLoginDTO;
 
+        // TODO set UserToken
+        generateToken();
         return "redirect:./";
+    }
+
+    private void generateToken() {
+        User user = new User();
+        user.setId(0L);
+        UUID token = tokenService.generateToken(user);
+        this.userToken = token;
     }
 
     @RequestMapping(value = "/overview")
@@ -161,11 +186,81 @@ public class UserController {
         return "redirect:./";
     }
 
-    @RequestMapping(value = "/messages", method = RequestMethod.GET)
-    public String messages() {
-        System.out.println("Redirecting to Messaging Controller!");
-        return "redirect:../messaging/";
+    @RequestMapping(value = "/maps", method = RequestMethod.GET)
+    public String maps(Map<String, Object> map) {
+        if (loggedInUser == null)
+            return "redirect:./";
+
+        List<MapLocationDTO> availableMaps = getMapLocations();
+        map.put("availableMapLocations", getMapLocations());
+        map.put("myMapLocations", myMaps.values());
+
+        return "maps";
     }
+
+    @RequestMapping(value = "/join/{id}")
+    public String joinMap(@PathVariable("id") Long id) {
+
+        MapLocationDTO mapLocation = getMapLocation(id);
+
+        myMaps.put(mapLocation.getId(), mapLocation);
+
+        return "redirect:../maps";
+    }
+
+
+    @RequestMapping(value = "/play/{id}")
+    public String playMap(@PathVariable("id") Long id) {
+
+        MapLocationDTO mapLocation = getMapLocation(id);
+
+        return "redirect:" + mapLocation.getUrl() + mapController + userToken.toString();
+    }
+
+    public MapLocationDTO getMapLocation(Long id) {
+        MapLocationDTO ret = null;
+
+        for (MapLocation mapLocation : helperComponent.getMapLocations()) {
+            if (mapLocation.getId().equals(id)) {
+                MapLocationDTO temp = new MapLocationDTO();
+                temp.setUrl(mapLocation.getUrl());
+                temp.setId(mapLocation.getId());
+                ret = temp;
+
+                break;
+            }
+
+        }
+
+        return ret;
+    }
+
+
+    public List<MapLocationDTO> getMapLocations() {
+        List<MapLocationDTO> mapLocations = new ArrayList<MapLocationDTO>();
+
+        for (MapLocation mapLocation : helperComponent.getMapLocations()) {
+
+            if (myMaps.get(mapLocation.getId()) != null)
+                continue;
+            ;
+
+            MapLocationDTO mapLocationDTO = new MapLocationDTO();
+            mapLocationDTO.setUrl(mapLocation.getUrl());
+            mapLocationDTO.setId(mapLocation.getId());
+            mapLocations.add(mapLocationDTO);
+
+        }
+
+        return mapLocations;
+    }
+
+
+//    @RequestMapping(value = "/messages", method = RequestMethod.GET)
+//    public String messages() {
+//        System.out.println("Redirecting to Messaging Controller!");
+//        return "redirect:../messaging/";
+//    }
 
     public UserLoginDTO getLoggedInUser() {
         return loggedInUser;

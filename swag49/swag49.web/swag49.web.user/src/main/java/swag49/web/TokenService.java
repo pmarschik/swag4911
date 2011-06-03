@@ -37,16 +37,16 @@ public class TokenService {
     private Logger log;
     private Map<UUID, Long> tokens = Maps.newHashMap();
 
-    public boolean generateToken(User user) {
+    public UUID generateToken(User user) {
         try {
             UUID token = UUID.randomUUID();
 
             tokens.put(token, user.getId());
 
-            return true;
+            return token;
         } catch (Exception ex) {
             log.warn("Unable to generate login token", ex);
-            return false;
+            return null;
         }
     }
 
