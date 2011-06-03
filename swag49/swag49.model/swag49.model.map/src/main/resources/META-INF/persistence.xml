@@ -7,7 +7,6 @@
 
     <persistence-unit name="swag49.map" transaction-type="RESOURCE_LOCAL">
         <class>swag49.model.Action</class>
-        <class>swag49.model.Address</class>
         <class>swag49.model.Base</class>
         <class>swag49.model.BuildAction</class>
         <class>swag49.model.Building</class>
