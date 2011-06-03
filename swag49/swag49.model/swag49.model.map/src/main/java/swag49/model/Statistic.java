@@ -14,9 +14,10 @@ public class Statistic {
 
     private String name;
 
+    @SuppressWarnings({"JpaQlInspection"})
     @OneToMany(mappedBy = "statistic", cascade = CascadeType.ALL)
-    @OrderBy("ranking asc")
-    private Set<StatisticEntry> entries = Sets.newHashSet();
+    @OrderBy("id.ranking asc")
+    private Set<StatisticEntry> entries = Sets.newLinkedHashSet();
 
     public Long getId() {
         return id;

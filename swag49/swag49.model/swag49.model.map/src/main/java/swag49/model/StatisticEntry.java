@@ -6,6 +6,7 @@ import java.io.Serializable;
 @Entity
 public class StatisticEntry {
 
+    @SuppressWarnings({"JpaObjectClassSignatureInspection"})
     @Embeddable
 	public static class Id implements Serializable {
 
@@ -42,9 +43,13 @@ public class StatisticEntry {
     @EmbeddedId
     private Id id = new Id();
 
+    @SuppressWarnings({"JpaDataSourceORMInspection"})
     @ManyToOne(optional = false)
 	@JoinColumn(name = "statisticId", insertable = false, updatable = false)
 	private Statistic statistic;
+
+    @ManyToOne
+    private Player player;
 
     public StatisticEntry() {
 	}
@@ -67,5 +72,13 @@ public class StatisticEntry {
 
     public Integer getRanking() {
         return id.ranking;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }
