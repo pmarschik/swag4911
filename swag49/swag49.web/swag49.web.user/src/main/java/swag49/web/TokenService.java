@@ -50,6 +50,14 @@ public class TokenService {
         }
     }
 
+    public void removeToken(User user) {
+        try {
+            tokens.remove(user.getId());
+        } catch (Exception ex) {
+            log.warn("Unable to remove login token", ex);
+        }
+    }
+
     @RequestMapping(value = "/token/{token}", method = RequestMethod.GET)
     @ResponseBody
     public TokenDTO verifyToken(@PathVariable("token") UUID token) throws TokenNotFoundException {

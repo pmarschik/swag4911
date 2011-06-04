@@ -21,6 +21,7 @@ public class UserDao implements DataAccessObject<User> {
 	public UserDao() {
 	}
 
+    @Transactional
 	public boolean contains(User user) {
 		return em.contains(user);
 	}
@@ -36,11 +37,13 @@ public class UserDao implements DataAccessObject<User> {
 		em.remove(user);
 	}
 
+    @Transactional
 	public User get(Object id) {
 		return em.find(User.class, id);
 	}
 
 	@SuppressWarnings("unchecked")
+    @Transactional
 	public Collection<User> queryByExample(User model) {
 		Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(User.class);

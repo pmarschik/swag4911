@@ -10,7 +10,7 @@
 <h1>
     Register User
 </h1>
-<form:form method="post" action="register" commandName="userRegisterDTO">
+<form:form method="post" action="register" commandName="user">
     <table>
         <tr>
             <td><form:label path="username">UserName</form:label></td>
@@ -88,7 +88,7 @@
                 <td>${user.lastName}, ${user.firstName} </td>
                 <td>${user.state}</td>
                 <td>${user.city}</td>
-                <td><a href="delete/${user.username}">delete</a></td>
+                <td><a href="delete/${user.id}">delete</a></td>
             </tr>
         </c:forEach>
     </table>

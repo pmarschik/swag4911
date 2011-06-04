@@ -19,6 +19,7 @@ public class MapLocationDao implements DataAccessObject<MapLocation> {
 	public MapLocationDao() {
 	}
 
+    @Transactional
 	public boolean contains(MapLocation mapLocation)
 	{
 		return em.contains(mapLocation);
@@ -35,10 +36,12 @@ public class MapLocationDao implements DataAccessObject<MapLocation> {
 		em.remove(mapLocation);
 	}
 
+    @Transactional
     public MapLocation get(Object id) {
         return em.find(MapLocation.class, id);
     }
 
+    @Transactional
     public Collection<MapLocation> queryByExample(MapLocation model) {
         Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(MapLocation.class);
@@ -49,6 +52,7 @@ public class MapLocationDao implements DataAccessObject<MapLocation> {
 		return criteria.list();
     }
 
+    @Transactional
     public MapLocation get(Long id) {
 		return em.find(MapLocation.class, id);
 	}

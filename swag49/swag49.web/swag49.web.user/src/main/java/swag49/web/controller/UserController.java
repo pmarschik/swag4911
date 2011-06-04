@@ -1,11 +1,11 @@
 package swag49.web.controller;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,11 +15,10 @@ import swag49.dao.DataAccessObject;
 import swag49.model.MapLocation;
 import swag49.model.User;
 import swag49.util.Log;
-import swag49.web.HelperComponent;
 import swag49.web.TokenService;
 import swag49.web.model.MapLocationDTO;
+import swag49.web.model.UserDTO;
 import swag49.web.model.UserLoginDTO;
-import swag49.web.model.UserRegisterDTO;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -42,87 +41,108 @@ public class UserController {
     private DataAccessObject<User> userDAO;
 
     @Autowired
-    private TokenService tokenService;
+    @Qualifier("mapLoactionDAO")
+    private DataAccessObject<MapLocation> mapLocationDAO;
 
     @Autowired
-    private HelperComponent helperComponent;
+    private TokenService tokenService;
 
-    private Integer counter = 0;
-    private Map<String, UserRegisterDTO> users = new HashMap<String, UserRegisterDTO>();
-
-    private UserLoginDTO loggedInUser = null;
+    private UserDTO loggedInUser = null;
     private UUID userToken = null;
 
-    private Map<Long, MapLocationDTO> myMaps = new HashMap<Long, MapLocationDTO>();
-
     public UserController() {
-        UserRegisterDTO user = new UserRegisterDTO();
-        user.setUsername("test");
-        user.setPassword("test");
-        user.setEmail("test@swag.com");
-        users.put("test", user);
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String registerUser(@Valid @ModelAttribute("userRegisterDTO")
-                               UserRegisterDTO userRegisterDTO, BindingResult bingBindingResult,
+    @Transactional
+    public String registerUser(@Valid @ModelAttribute("user")
+                               UserDTO userDTO, BindingResult bingBindingResult,
                                Map<String, Object> map) {
 
         if (bingBindingResult.hasErrors())
             return "register";
 
-        if (users.containsKey(userRegisterDTO.getUsername())) {
+        User user = new User();
+        user.setUsername(userDTO.getUsername());
+        Collection<User> users = userDAO.queryByExample(user);
+
+        // check if username already exists
+        if (users != null && users.size() > 0) {
             map.put("registerError", "User with username: " +
-                    userRegisterDTO.getUsername() + " is already registered!");
+                    userDTO.getUsername() + " is already registered!");
             return "register";
         }
 
-        System.out.println("Added new user:" + userRegisterDTO);
-        users.put(userRegisterDTO.getUsername(), userRegisterDTO);
+        // register user
+        System.out.println("Registered new user:" + userDTO);
+
+        // TODO set correct utc offset
+        userDTO.setUtcOffset(0);
+        userDAO.create(userDTO.createUserEntity());
 
         return "redirect:./";
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String register(Map<String, Object> map) {
-
-        UserRegisterDTO userRegisterDTO = new UserRegisterDTO();
-
-        map.put("userRegisterDTO", userRegisterDTO);
-        map.put("userList", users.values());
+        UserDTO userDTO = new UserDTO();
+        map.put("user", userDTO);
+        map.put("userList", getRegisteredUsers());
         return "register";
     }
 
-    @RequestMapping(value = "/delete/{username}")
-    public String deleteUser(@PathVariable("username") String username) {
-        users.remove(username);
-        System.out.println("Remove User with username: " + username);
+    @Transactional
+    private List<UserDTO> getRegisteredUsers() {
+        List<UserDTO> users = new ArrayList<UserDTO>();
+
+//        Collection<User> registeredUsers = userDAO.queryByExample(new User());
+//        if (registeredUsers != null) {
+//            for (User user : registeredUsers) {
+//                users.add(new UserDTO(user));
+//            }
+//        }
+        return users;
+    }
+
+    @RequestMapping(value = "/delete/{id}")
+    @Transactional
+    public String deleteUser(@PathVariable("id") Long userID) {
+        User user = userDAO.get(userID);
+        if (user != null) {
+            userDAO.delete(user);
+            System.out.println("Remove User with username: " + user.getUsername());
+        }
         return "redirect:./";
     }
 
     @RequestMapping(value = "/")
     public String handle(Map<String, Object> map) {
-
         map.put("loggedInUser", loggedInUser);
-
         return "overview";
     }
 
-
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Map<String, Object> map) {
-        map.put("userLoginDTO", new UserLoginDTO());
+        map.put("user", new UserLoginDTO());
         return "login";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String loginUser(@Valid @ModelAttribute("userLoginDTO")
+    public String loginUser(@Valid @ModelAttribute("user")
                             UserLoginDTO userLoginDTO, BindingResult bingBindingResult, Map<String, Object> map) {
 
         if (bingBindingResult.hasErrors())
             return "login";
 
-        UserRegisterDTO user = users.get(userLoginDTO.getUsername());
+        User template = new User();
+        template.setUsername(userLoginDTO.getUsername());
+        Collection<User> users = userDAO.queryByExample(template);
+        User user = null;
+
+        if (users != null && users.size() > 0) {
+            Iterator<User> iterator = users.iterator();
+            user = iterator.next();
+        }
 
         if (user == null) {
             map.put("loginError", "Username not found!");
@@ -134,19 +154,18 @@ public class UserController {
             return "login";
         }
 
-        System.out.println("Logged in user:" + userLoginDTO);
+        UserDTO loggedInUser = new UserDTO(user);
+        System.out.println("Logged in user:" + loggedInUser);
 
-        this.loggedInUser = userLoginDTO;
+        this.loggedInUser = loggedInUser;
 
-        // TODO set UserToken
+        // set UserToken
         generateToken();
         return "redirect:./";
     }
 
     private void generateToken() {
-        User user = new User();
-        user.setId(0L);
-        UUID token = tokenService.generateToken(user);
+        UUID token = tokenService.generateToken(loggedInUser.createUserEntity());
         this.userToken = token;
     }
 
@@ -157,116 +176,113 @@ public class UserController {
 
     @RequestMapping(value = "/logout")
     public String logoutUser() {
+        tokenService.removeToken(loggedInUser.createUserEntity());
         this.loggedInUser = null;
         return "redirect:./";
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
     public String edit(Map<String, Object> map) {
-
         if (this.loggedInUser != null) {
-            UserRegisterDTO user = users.get(loggedInUser.getUsername());
+            UserDTO user = new UserDTO(userDAO.get(loggedInUser.getId()));
+            System.out.println("Try to update user: " + user);
             map.put("user", user);
             return "edit";
         } else
             return "redirect:./";
-
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    @Transactional
     public String editUser(@Valid @ModelAttribute("user")
-                           UserRegisterDTO userRegisterDTO, BindingResult bingBindingResult) {
-
+                           UserDTO userDTO, BindingResult bingBindingResult) {
         if (bingBindingResult.hasErrors())
             return "edit";
 
-        System.out.println("Updated user:" + userRegisterDTO);
-        users.put(userRegisterDTO.getUsername(), userRegisterDTO);
+        // TODO set corect utcOffset
+        userDTO.setUtcOffset(0);
+        System.out.println("Updated user:" + userDTO);
+
+        User user = userDAO.get(loggedInUser.getId());
+        this.loggedInUser = new UserDTO(userDTO.updateUser(user));
 
         return "redirect:./";
     }
 
     @RequestMapping(value = "/maps", method = RequestMethod.GET)
+    @Transactional
     public String maps(Map<String, Object> map) {
         if (loggedInUser == null)
             return "redirect:./";
 
-        List<MapLocationDTO> availableMaps = getMapLocations();
-        map.put("availableMapLocations", getMapLocations());
-        map.put("myMapLocations", myMaps.values());
+        User user = userDAO.get(loggedInUser.getId());
+
+        List<MapLocationDTO> availableMaps = getMapLocations(user);
+        map.put("availableMapLocations", availableMaps);
+        map.put("myMapLocations", getUserMapLocations(user));
 
         return "maps";
     }
 
+    @Transactional
+    private List<MapLocationDTO> getUserMapLocations(User user) {
+        List<MapLocationDTO> mapLocations = new ArrayList<MapLocationDTO>();
+
+        for(MapLocation mapLocation : user.getMapLocations())
+            mapLocations.add(new MapLocationDTO(mapLocation));
+
+        return mapLocations;
+    }
+
     @RequestMapping(value = "/join/{id}")
-    public String joinMap(@PathVariable("id") Long id) {
+    @Transactional
+    public String joinMap(@PathVariable("id") Long mapLocationID) {
 
-        MapLocationDTO mapLocation = getMapLocation(id);
-
-        myMaps.put(mapLocation.getId(), mapLocation);
+        User user = userDAO.get(loggedInUser.getId());
+        user.getMapLocations().add(getMapLocation(mapLocationID));
+        userDAO.update(user);
 
         return "redirect:../maps";
     }
 
 
     @RequestMapping(value = "/play/{id}")
-    public String playMap(@PathVariable("id") Long id) {
+    public String playMap(@PathVariable("id") Long mapLocationID) {
 
-        MapLocationDTO mapLocation = getMapLocation(id);
+        MapLocation mapLocation = getMapLocation(mapLocationID);
 
         return "redirect:" + mapLocation.getUrl() + mapController + userToken.toString();
     }
 
-    public MapLocationDTO getMapLocation(Long id) {
-        MapLocationDTO ret = null;
-
-        for (MapLocation mapLocation : helperComponent.getMapLocations()) {
-            if (mapLocation.getId().equals(id)) {
-                MapLocationDTO temp = new MapLocationDTO();
-                temp.setUrl(mapLocation.getUrl());
-                temp.setId(mapLocation.getId());
-                ret = temp;
-
-                break;
-            }
-
-        }
-
-        return ret;
+    @Transactional
+    public MapLocation getMapLocation(Long mapLocationID) {
+        MapLocation mapLocation = mapLocationDAO.get(mapLocationID);
+        return mapLocation;
     }
 
-
-    public List<MapLocationDTO> getMapLocations() {
+    @Transactional
+    public List<MapLocationDTO> getMapLocations(User user) {
         List<MapLocationDTO> mapLocations = new ArrayList<MapLocationDTO>();
 
-        for (MapLocation mapLocation : helperComponent.getMapLocations()) {
+        Collection<MapLocation> availableMaps = mapLocationDAO.queryByExample(new MapLocation());
 
-            if (myMaps.get(mapLocation.getId()) != null)
-                continue;
-            ;
-
-            MapLocationDTO mapLocationDTO = new MapLocationDTO();
-            mapLocationDTO.setUrl(mapLocation.getUrl());
-            mapLocationDTO.setId(mapLocation.getId());
-            mapLocations.add(mapLocationDTO);
-
+        if (availableMaps != null) {
+            Iterator<MapLocation> iterator = availableMaps.iterator();
+            while (iterator.hasNext()) {
+                MapLocation mapLocation = iterator.next();
+                if (!user.getMapLocations().contains(mapLocation))
+                    mapLocations.add(new MapLocationDTO(mapLocation));
+            }
         }
 
         return mapLocations;
     }
 
-
-//    @RequestMapping(value = "/messages", method = RequestMethod.GET)
-//    public String messages() {
-//        System.out.println("Redirecting to Messaging Controller!");
-//        return "redirect:../messaging/";
-//    }
-
-    public UserLoginDTO getLoggedInUser() {
+    public UserDTO getLoggedInUser() {
         return loggedInUser;
     }
 
-    public void setLoggedInUser(UserLoginDTO loggedInUser) {
+    public void setLoggedInUser(UserDTO loggedInUser) {
         this.loggedInUser = loggedInUser;
     }
 }
