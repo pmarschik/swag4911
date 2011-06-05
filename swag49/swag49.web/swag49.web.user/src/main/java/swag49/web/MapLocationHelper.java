@@ -9,8 +9,6 @@ import swag49.dao.DataAccessObject;
 import swag49.model.MapLocation;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author michael
@@ -27,11 +25,13 @@ public class MapLocationHelper {
     @Transactional
     public void init() {
         try {
+
+
             MapLocation mapLocation = new MapLocation();
             mapLocation.setUrl("http://localhost:8080/map");
             mapLocation.setMapName("Map - Venice");
-
-            mapLocationDAO.create(mapLocation);
+            if (mapLocationDAO.queryByExample(mapLocation).isEmpty())
+                mapLocationDAO.create(mapLocation);
         } catch (Exception e) {
             // nothing to do
         }
@@ -40,7 +40,8 @@ public class MapLocationHelper {
             MapLocation mapLocation = new MapLocation();
             mapLocation.setUrl("http://localhost:8080/map1");
             mapLocation.setMapName("Map - Vienna");
-            mapLocationDAO.create(mapLocation);
+            if (mapLocationDAO.queryByExample(mapLocation).isEmpty())
+                mapLocationDAO.create(mapLocation);
         } catch (Exception e) {
             // nothing to do
         }
