@@ -5,7 +5,8 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 @Entity
-public class Square {
+public class
+        Square {
 
 	@Embeddable
 	public static class Id implements Serializable {
