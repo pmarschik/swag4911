@@ -28,8 +28,8 @@ SELECT pg_catalog.setval('hibernate_sequence', 107, true);
 -- Data for Name: map; Type: TABLE DATA; Schema: public; Owner: swa
 --
 
-INSERT INTO map (id, maxusers) VALUES (1, 10);
-INSERT INTO map (id, maxusers) VALUES (2, 20);
+INSERT INTO map (id, maxusers, url) VALUES (1, 10, 'http://localhost/map/1');
+INSERT INTO map (id, maxusers, url) VALUES (2, 20, 'http://localhost/map/2');
 
 
 --

@@ -9,7 +9,7 @@ SET escape_string_warning = off;
 SET search_path = public, pg_catalog;
 
 
-INSERT INTO map (id, maxusers) VALUES (1, 10);
+INSERT INTO map (id, maxusers, url) VALUES (1, 10, 'http://localhost/map/1');
 
 INSERT INTO player (id, deleted, income_crops, income_gold, income_stone, income_wood, online, resources_crops, resources_gold, resources_stone, resources_wood, upkeep_crops, upkeep_gold, upkeep_stone, upkeep_wood, plays_id, userId) VALUES (1, false, 243, 345, 213, 543, true, 3211, 5343, 2910, 7001, 89, 179, 73, 13, 1, 1);
 INSERT INTO player (id, deleted, income_crops, income_gold, income_stone, income_wood, online, resources_crops, resources_gold, resources_stone, resources_wood, upkeep_crops, upkeep_gold, upkeep_stone, upkeep_wood, plays_id, userId) VALUES (2, false, 532, 698, 492, 1023, false, 8901, 14923, 6790, 21322, 123, 499, 132, 99, 1, 2);
