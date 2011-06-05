@@ -1,88 +1,88 @@
 package swag49.model;
 
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-
 @Entity
 public class Base {
-	@Id
-	@GeneratedValue
-	private Long id;
+    @Id
+    @GeneratedValue
+    private Long id;
 
-	@Column(nullable = false)
-	private Boolean home;
+    @Column(nullable = false)
+    private Boolean home;
 
-	@ManyToOne(optional = false)
-	private Player owner;
+    @ManyToOne(optional = false)
+    private Player owner;
 
-	@OneToOne(optional = false)
-	private Tile locatedOn;
+    @OneToOne(optional = false)
+    private Tile locatedOn;
 
-	@OneToMany(mappedBy = "base")
-	private Set<Square> consistsOf = new HashSet<Square>();
+    @OneToMany(mappedBy = "base")
+    private Set<Square> consistsOf = new HashSet<Square>();
 
-	@AttributeOverrides({
-			@AttributeOverride(name = "amount_gold", column = @Column(name = "production_gold")),
-			@AttributeOverride(name = "amount_stone", column = @Column(name = "production_stone")),
-			@AttributeOverride(name = "amount_wood", column = @Column(name = "production_wood")),
-			@AttributeOverride(name = "amount_crops", column = @Column(name = "production_crops")) })
-	private ResourceValue resourceProduction = new ResourceValue();
+    @AttributeOverrides({
+            @AttributeOverride(name = "amount_gold", column = @Column(name = "production_gold")),
+            @AttributeOverride(name = "amount_stone", column = @Column(name = "production_stone")),
+            @AttributeOverride(name = "amount_wood", column = @Column(name = "production_wood")),
+            @AttributeOverride(name = "amount_crops", column = @Column(name = "production_crops"))})
+    private ResourceValue resourceProduction = new ResourceValue();
 
-	public ResourceValue getResourceProduction() {
-		return resourceProduction;
-	}
+    public Base(Tile tile) {
+        this();
+        this.locatedOn = tile;
+    }
 
-	public void setResourceProduction(ResourceValue resourceProduction) {
-		this.resourceProduction = resourceProduction;
-	}
+    public Base() {
 
-	public Set<Square> getConsistsOf() {
-		return consistsOf;
-	}
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public ResourceValue getResourceProduction() {
+        return resourceProduction;
+    }
 
-	public Tile getLocatedOn() {
-		return locatedOn;
-	}
+    public void setResourceProduction(ResourceValue resourceProduction) {
+        this.resourceProduction = resourceProduction;
+    }
 
-	public Player getOwner() {
-		return owner;
-	}
+    public Set<Square> getConsistsOf() {
+        return consistsOf;
+    }
 
-	public Boolean isHome() {
-		return home;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setConsistsOf(Set<Square> consistsOf) {
-		this.consistsOf = consistsOf;
-	}
+    public Tile getLocatedOn() {
+        return locatedOn;
+    }
 
-	public void setHome(Boolean home) {
-		this.home = home;
-	}
+    public Player getOwner() {
+        return owner;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Boolean isHome() {
+        return home;
+    }
 
-	public void setLocatedOn(Tile locatedOn) {
-		this.locatedOn = locatedOn;
-	}
+    public void setConsistsOf(Set<Square> consistsOf) {
+        this.consistsOf = consistsOf;
+    }
 
-	public void setOwner(Player owner) {
-		this.owner = owner;
-	}
+    public void setHome(Boolean home) {
+        this.home = home;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setLocatedOn(Tile locatedOn) {
+        this.locatedOn = locatedOn;
+    }
+
+    public void setOwner(Player owner) {
+        this.owner = owner;
+    }
 }
