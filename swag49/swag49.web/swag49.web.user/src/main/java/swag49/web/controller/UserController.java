@@ -155,18 +155,22 @@ public class UserController {
         }
 
         UserDTO loggedInUser = new UserDTO(user);
+
+        // check if user is already logged in in another session
+        if (tokenService.hasTokenForUser(loggedInUser.createUserEntity())) {
+            map.put("loginError", "User is already logged in in another session!");
+            return "login";
+        }
+
         System.out.println("Logged in user:" + loggedInUser);
 
         this.loggedInUser = loggedInUser;
 
         // set UserToken
-        generateToken();
-        return "redirect:./";
-    }
-
-    private void generateToken() {
         UUID token = tokenService.generateToken(loggedInUser.createUserEntity());
         this.userToken = token;
+
+        return "redirect:./";
     }
 
     @RequestMapping(value = "/overview")
@@ -176,7 +180,7 @@ public class UserController {
 
     @RequestMapping(value = "/logout")
     public String logoutUser() {
-        tokenService.removeToken(loggedInUser.createUserEntity());
+        tokenService.removeToken(userToken);
         this.loggedInUser = null;
         return "redirect:./";
     }
@@ -228,7 +232,7 @@ public class UserController {
     private List<MapLocationDTO> getUserMapLocations(User user) {
         List<MapLocationDTO> mapLocations = new ArrayList<MapLocationDTO>();
 
-        for(MapLocation mapLocation : user.getMapLocations())
+        for (MapLocation mapLocation : user.getMapLocations())
             mapLocations.add(new MapLocationDTO(mapLocation));
 
         return mapLocations;

@@ -15,6 +15,13 @@
     <tx:annotation-driven/>
     <mvc:annotation-driven/>
 
+    <bean id="propertyPlaceHolder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:swag49.map.properties"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="placeholderPrefix" value="$map{"/>
+        <property name="placeholderSuffix" value="}"/>
+    </bean>
+
     <mvc:resources mapping="/resources/**" location="/resources/"/>
 
     <bean id="validator"
