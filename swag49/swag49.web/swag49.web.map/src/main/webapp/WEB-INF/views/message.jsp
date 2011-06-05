@@ -13,11 +13,7 @@
         <table>
             <tr>
                 <td>Send:</td>
-                <td>${message.sendDate}</td>
-            </tr>
-            <tr>
-                <td>Received:</td>
-                <td>${message.receiveDate}</td>
+                <td>${message.sent}</td>
             </tr>
             <tr>
                 <td>Subject:</td>
@@ -29,11 +25,11 @@
             </tr>
             <tr>
                 <td>Sender:</td>
-                <td>${message.sender}</td>
+                <td>${message.sender.username}</td>
             </tr>
             <tr>
                 <td>Receiver:</td>
-                <td>${message.receiver}</td>
+                <td>${message.receiver.username}</td>
             </tr>
         </table>
     </c:if>
@@ -51,19 +47,19 @@
     <form:form method="post" action="send" commandName="message">
         <table>
             <tr>
-                <td><form:label path="receiver">Receiver</form:label></td>
-                <td><form:input path="receiver"/></td>
-                <td><FONT color="red"><form:errors path="receiver"/></FONT></td>
+                <td><form:label path="receiver.username">Receiver</form:label></td>
+                <td><form:input path="receiver.username"/></td>
+                <td style="color:red;0"><form:errors path="receiver"/></td>
             </tr>
             <tr>
                 <td><form:label path="subject">Subject</form:label></td>
                 <td><form:input path="subject"/></td>
-                <td><FONT color="red"><form:errors path="subject"/></FONT></td>
+                <td style="color:red;0"><form:errors path="subject"/></td>
             </tr>
             <tr>
                 <td><form:label path="content">Content</form:label></td>
                 <td><form:textarea path="content" rows="5" cols="30"/></td>
-                <td><FONT color="red"><form:errors path="content"/></FONT></td>
+                <td style="color:red;0"><form:errors path="content"/></td>
             </tr>
             <tr>
                 <td colspan="2">

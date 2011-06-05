@@ -13,7 +13,6 @@
         <class>swag49.model.BuildingLevel</class>
         <class>swag49.model.BuildingType</class>
         <class>swag49.model.Map</class>
-        <class>swag49.model.Message</class>
         <class>swag49.model.Player</class>
         <class>swag49.model.ResourceValue</class>
         <class>swag49.model.Square</class>

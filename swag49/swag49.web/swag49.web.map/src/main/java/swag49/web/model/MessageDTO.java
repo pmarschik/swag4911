@@ -1,68 +1,85 @@
 package swag49.web.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import com.google.common.base.Objects;
 
-import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.*;
 import java.util.Date;
 
-/**
- * @author michael
- */
+@XmlRootElement(name = "message")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class MessageDTO {
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class UserDTO {
+        @XmlElement(name = "username")
+        private String username;
+        @XmlAttribute(name = "id")
+        private Long id;
 
-    private Long id;
+        public UserDTO() {}
 
-	private Date sendDate;
+        public UserDTO(String username, Long id) {
+            this.username = username;
+            this.id = id;
+        }
 
-	private Date receiveDate;
+        public String getUsername() { return username; }
 
-	@NotEmpty
-    @Size(min = 1, max = 255)
-	private String subject;
+        public void setUsername(String username) { this.username = username; }
 
-	@NotEmpty
-	private String content;
+        public Long getId() { return id; }
 
-	private String sender;
+        public void setId(Long id) { this.id = id; }
 
-	private String receiver;
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(username, id);
+        }
 
-    public MessageDTO() {
+        @Override
+        public String toString() {
+            return Objects.toStringHelper(this)
+                    .add("id", id)
+                    .add("username", username)
+                    .toString();
+        }
     }
 
-    public MessageDTO(Long id, Date sendDate, Date receiveDate, String subject,
-                      String content, String sender, String receiver) {
-        this.id = id;
-        this.sendDate = sendDate;
-        this.receiveDate = receiveDate;
+    @XmlAttribute(name = "map")
+    private String mapUrl;
+
+    @XmlElement(name = "subject")
+    private String subject;
+
+    @XmlElement(name = "content")
+    private String content;
+
+    @XmlElement(name = "sender")
+    private UserDTO sender;
+
+    @XmlElement(name = "receiver")
+    private UserDTO receiver;
+
+    @XmlAttribute(name = "sent")
+    private Date sent;
+
+    public MessageDTO() { }
+
+    public MessageDTO(String subject, String content, Long senderId, String senderUsername, Long receiverId,
+                      String receiverUsername, Date sent, String mapUrl) {
         this.subject = subject;
         this.content = content;
-        this.sender = sender;
-        this.receiver = receiver;
+        this.sender = new UserDTO(senderUsername, senderId);
+        this.receiver = new UserDTO(receiverUsername, receiverId);
+        this.sent = sent;
+        this.mapUrl = mapUrl;
     }
 
-    public Long getId() {
-        return id;
+    public String getMapUrl() {
+        return mapUrl;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Date getSendDate() {
-        return sendDate;
-    }
-
-    public void setSendDate(Date sendDate) {
-        this.sendDate = sendDate;
-    }
-
-    public Date getReceiveDate() {
-        return receiveDate;
-    }
-
-    public void setReceiveDate(Date receiveDate) {
-        this.receiveDate = receiveDate;
+    public void setMapUrl(String mapUrl) {
+        this.mapUrl = mapUrl;
     }
 
     public String getSubject() {
@@ -81,31 +98,43 @@ public class MessageDTO {
         this.content = content;
     }
 
-    public String getSender() {
+    public UserDTO getSender() {
         return sender;
     }
 
-    public void setSender(String sender) {
+    public void setSender(UserDTO sender) {
         this.sender = sender;
     }
 
-    public String getReceiver() {
+    public UserDTO getReceiver() {
         return receiver;
     }
 
-    public void setReceiver(String receiver) {
+    public void setReceiver(UserDTO receiver) {
         this.receiver = receiver;
+    }
+
+    public Date getSent() {
+        return sent;
+    }
+
+    public void setSent(Date sent) {
+        this.sent = sent;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(sender, receiver, sent, subject, content);
     }
 
     @Override
     public String toString() {
-        return "MessageDTO{" +
-                "sendDate=" + sendDate +
-                ", receiveDate=" + receiveDate +
-                ", subject='" + subject + '\'' +
-                ", content='" + content + '\'' +
-                ", sender='" + sender + '\'' +
-                ", receiver='" + receiver + '\'' +
-                '}';
+        return Objects.toStringHelper(this)
+                .add("sender", sender)
+                .add("receiver", receiver)
+                .add("sent", sent)
+                .add("subject", subject)
+                .add("content", content)
+                .toString();
     }
 }

@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
-import swag49.model.Message;
+import swag49.messaging.model.Message;
+import swag49.messaging.model.MessageDTO;
+import swag49.model.User;
 import swag49.util.Log;
 
 import java.util.Date;
@@ -21,13 +24,29 @@ public class WebMessageHandler implements MessageReceiver {
     @Qualifier("messageDAO")
     private DataAccessObject<Message> messageDAO;
 
-    @ServiceActivator
-    @Transactional
-    public Message handleMessage(Message message) {
-        logger.info("Sending message with content {} to webserver", message.getContent());
-        message.setReceiveDate(new Date());
+    @Autowired
+    @Qualifier("userDAO")
+    private DataAccessObject<User> userDAO;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @ServiceActivator
+    @Transactional("swag49.messaging")
+    public Message handleMessage(Message message) {
+        logger.info("Sending message {} to web-server", message);
+        message.setReceiveDate(new Date());
         messageDAO.update(message);
+
+        String senderUsername = userDAO.get(message.getSenderUserId()).getUsername();
+        String receiverUsername = userDAO.get(message.getReceiverUserId()).getUsername();
+
+        MessageDTO messageDTO =
+                new MessageDTO(message.getSubject(), message.getContent(), message.getSenderUserId(), senderUsername,
+                        message.getReceiverUserId(), receiverUsername, message.getSendDate(), message.getMapUrl());
+
+        String requestUri = message.getMapUrl() + "/swag-api/messaging/receive";
+        restTemplate.put(requestUri, messageDTO);
 
         return message;
     }

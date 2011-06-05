@@ -10,7 +10,7 @@
 <h1>
     Login User
 </h1>
-<form:form method="post" action="login" commandName="userLoginDTO">
+<form:form method="post" action="login" commandName="user">
     <table>
         <tr>
             <td><form:label path="username">Username</form:label></td>

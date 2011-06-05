@@ -12,8 +12,10 @@ public class MapLocation {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String url;
+
+    private String mapName;
 
     public Long getId() {
         return id;
@@ -29,5 +31,13 @@ public class MapLocation {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getMapName() {
+        return mapName;
+    }
+
+    public void setMapName(String mapName) {
+        this.mapName = mapName;
     }
 }

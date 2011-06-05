@@ -7,9 +7,9 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <context:component-scan base-package="swag49"/>
+    <context:component-scan base-package="swag49.messaging.dao"/>
+    <context:component-scan base-package="swag49.messaging.model"/>
 
-    <import resource="test-db.xml"/>
-    <import resource="spring/messaging.xml"/>
+    <import resource="spring/db.xml"/>
 
 </beans>

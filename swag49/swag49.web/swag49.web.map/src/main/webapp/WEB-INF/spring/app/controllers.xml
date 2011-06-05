@@ -4,7 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd	
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
@@ -15,6 +15,13 @@
     <tx:annotation-driven/>
     <mvc:annotation-driven/>
 
+    <bean id="propertyPlaceHolder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:swag49.map.properties"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="placeholderPrefix" value="$map{"/>
+        <property name="placeholderSuffix" value="}"/>
+    </bean>
+
     <mvc:resources mapping="/resources/**" location="/resources/"/>
 
     <bean id="validator"
@@ -23,18 +30,7 @@
     <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
         <property name="messageConverters">
             <list>
-                <!-- We only have one message converter for the RestTemplate, namely the XStream Marshller -->
-                <bean class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
-                    <constructor-arg>
-                        <bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-                            <property name="classesToBeBound">
-                                <util:list>
-                                   <value>swag49.web.model.TokenDTO</value>
-                                </util:list>
-                            </property>
-                        </bean>
-                    </constructor-arg>
-                </bean>
+                <ref bean="marshallingHttpMessageConverter"/>
             </list>
         </property>
     </bean>

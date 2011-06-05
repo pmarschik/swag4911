@@ -5,7 +5,6 @@ import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import swag49.model.MapLocation;
-import swag49.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -14,12 +13,13 @@ import java.util.Collection;
 @Repository(value="mapLoactionDAO")
 public class MapLocationDao implements DataAccessObject<MapLocation> {
 
-	@PersistenceContext
+	@PersistenceContext(unitName = "swag49.user")
 	private EntityManager em;
 
 	public MapLocationDao() {
 	}
 
+    @Transactional
 	public boolean contains(MapLocation mapLocation)
 	{
 		return em.contains(mapLocation);
@@ -36,10 +36,12 @@ public class MapLocationDao implements DataAccessObject<MapLocation> {
 		em.remove(mapLocation);
 	}
 
+    @Transactional
     public MapLocation get(Object id) {
         return em.find(MapLocation.class, id);
     }
 
+    @Transactional
     public Collection<MapLocation> queryByExample(MapLocation model) {
         Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(MapLocation.class);
@@ -50,6 +52,7 @@ public class MapLocationDao implements DataAccessObject<MapLocation> {
 		return criteria.list();
     }
 
+    @Transactional
     public MapLocation get(Long id) {
 		return em.find(MapLocation.class, id);
 	}
