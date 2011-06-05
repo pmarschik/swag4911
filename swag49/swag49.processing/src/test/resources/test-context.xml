@@ -16,6 +16,10 @@
     <bean id="mostBasesJob" class="swag49.statistics.MostBasesEvaluatorJob" autowire-candidate="true">
         <property name="limit" value="5" />
     </bean>
+
+     <bean id="mostResourcesJob" class="swag49.statistics.MostResourcesEvaluatorJob" autowire-candidate="true">
+        <property name="limit" value="5" />
+    </bean>
    
 
     <tx:annotation-driven/>
