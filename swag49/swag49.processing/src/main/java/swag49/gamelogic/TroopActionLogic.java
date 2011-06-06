@@ -1,6 +1,6 @@
 package swag49.gamelogic;
 
-import gamelogic.BaseFactory;
+import gamelogic.MapLogic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import swag49.dao.DataAccessObject;
@@ -21,6 +21,9 @@ public class TroopActionLogic {
     @Autowired
     @Qualifier("baseDAO")
     private DataAccessObject<Base> baseDao;
+
+    @Autowired
+    private MapLogic mapLogic;
 
     @Autowired
     @Qualifier("squareDAO")
@@ -117,14 +120,7 @@ public class TroopActionLogic {
     }
 
     private Base createBase(Tile tile, Player owner) {
-        Base base = BaseFactory.createBase(tile);
-
-        base.setOwner(owner);
-
-        base = baseDao.create(base);
-
-        for (Square square : base.getConsistsOf())
-            squareDao.create(square);
+        Base base = mapLogic.createBase(tile, owner);
 
         //update players resources
         owner.getResources().add(base.getResourceProduction());
