@@ -155,10 +155,10 @@ public class MapController {
         return "redirect:../messaging/";
     }
 
-    @RequestMapping(value = "/mapoverview", method = RequestMethod.GET)
-    public String mapoverview() {
-        return "redirect:../mapoverview/";
-    }
+//    @RequestMapping(value = "/mapoverview", method = RequestMethod.GET)
+//    public String mapoverview() {
+//        return "redirect:../mapoverview/";
+//    }
 
     public UUID getUserToken() {
         return userToken;
@@ -177,6 +177,128 @@ public class MapController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
+    @Transactional
+    public String getHomeview(@RequestParam(value = "xLow", defaultValue = "-1") int x_low,
+                                 @RequestParam(value = "yLow", defaultValue = "-1") int y_low,
+                                 @RequestParam(value = "xHigh", defaultValue = "-1") int x_high,
+                                 @RequestParam(value = "yHigh", defaultValue = "-1") int y_high, Model model) {
+
+
+        //TODO: besser machen
+        player = playerDAO.get(player.getId());
+        map = mapDAO.get(map.getId());
+
+
+        //default values
+        if (x_low == x_high && y_low == y_high && y_low == x_low && x_low == -1) {
+            //focus on home base
+            Base homeBase = null;
+            if (player.getOwns() != null && !player.getOwns().isEmpty()) {
+                for (Base base : player.getOwns()) {
+                    if (base.isHome()) {
+                        homeBase = base;
+                        break;
+                    }
+                }
+                int maxVal = (int) Math.sqrt(map.getConsistsOf().size());
+
+                x_low = Math.max(0, homeBase.getLocatedOn().getId().getX() - VIEWSIZE);
+                x_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getX() + VIEWSIZE + 1);
+                y_low = Math.max(0, homeBase.getLocatedOn().getId().getY() - VIEWSIZE);
+                y_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getY() + VIEWSIZE + 1);
+            } else {
+                x_low = 0;
+                y_low = 0;
+                x_high = 2 * VIEWSIZE + 1;
+                y_high = 2 * VIEWSIZE + 1;
+            }
+        }
+        model.addAttribute("xLow", x_low);
+        model.addAttribute("yLow: ", y_low);
+        model.addAttribute("xHigh: ", x_high);
+        model.addAttribute("yHigh: ", y_high);
+        ArrayList<ArrayList<TileOverviewDTO>> displayedTiles = new ArrayList<ArrayList<TileOverviewDTO>>();
+
+        // get all visible tiles
+        Tile.Id id = new Tile.Id(map.getId(), 0, 0);
+        for (int y = y_low; y <= y_high; y++) {
+            ArrayList<TileOverviewDTO> currentRow = new ArrayList<TileOverviewDTO>();
+            for (int x = x_low; x <= x_high; x++) {
+                id.setX(Integer.valueOf(x));
+                id.setY(Integer.valueOf(y));
+                Tile tile = tileDAO.get(id);
+                if (tile != null) {
+                    TileOverviewDTO dto = new TileOverviewDTO(tile);
+
+                    dto.setSpecialResource(tile.getSpecial());
+
+                    // TODO: TOOLTIP Java Script???
+
+                    // create info
+                    StringBuilder sb = new StringBuilder();
+
+                    // check if base
+                    if (tile.getBase() != null) {
+                        if (tile.getBase().getOwner().getId() != player.getId()) {
+                            sb.append("Enemy base owned by ");
+                            sb.append(tile.getBase().getOwner());
+                        } else {
+                            sb.append("Your base!");
+                        }
+                        System.out.println("BAse found: " + tile.getId().getX() + tile.getId().getY());
+                        sb.append("<br/>");
+                    }
+
+                    // check for troops
+                    if (!tile.getTroops().isEmpty()) {
+                        for (Troop troop : tile.getTroops()) {
+                            sb.append("TODO");
+                            sb.append("<br/>");
+                        }
+
+                        sb.append("<br/>");
+                    }
+
+                    // check for special resources
+                    if (tile.getSpecial() != ResourceType.NONE) {
+                        sb.append("Special resouce: ");
+                        sb.append(tile.getSpecial().toString());
+                    }
+
+                    if (sb.length() == 0) {
+                        sb.append("Empty Tile...");
+                    }
+
+                    dto.setInfo(sb.toString());
+
+                    if (tile.getBase() != null)
+                        dto.setHasBase(true);
+                    else
+                        dto.setHasBase(false);
+
+                    if (checkForEnemyTerritory(tile))
+                        dto.setEnemyTerritory(true);
+                    else
+                        dto.setEnemyTerritory(false);
+
+                    if (tile.getTroops().isEmpty())
+                        dto.setHasTroops(false);
+                    else
+                        dto.setHasTroops(true);
+
+                    currentRow.add(dto);
+                }
+
+            }
+            displayedTiles.add(currentRow);
+        }
+        model.addAttribute("tiles", displayedTiles);
+
+        return "home";
+    }
+
+
+        @RequestMapping(value = "/mapoverview", method = RequestMethod.GET)
     @Transactional
     public String getMapOverview(@RequestParam(value = "xLow", defaultValue = "-1") int x_low,
                                  @RequestParam(value = "yLow", defaultValue = "-1") int y_low,
@@ -294,7 +416,7 @@ public class MapController {
         }
         model.addAttribute("tiles", displayedTiles);
 
-        return "home";
+        return "mapoverview";
     }
 
     private boolean checkForEnemyTerritory(Tile tile) {
