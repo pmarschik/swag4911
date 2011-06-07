@@ -8,6 +8,8 @@
 </head>
 <body>
 <h1>Welcome to SWAG</h1>
+<spring:url value="/resources/images" var="resourcePath"/>
+<img src="${resourcePath}/test.jpg" width="800" height="200"/>
 <c:if test="${loggedInUser == null}">
     <h3>You have to register or login!</h3>
     <ul>

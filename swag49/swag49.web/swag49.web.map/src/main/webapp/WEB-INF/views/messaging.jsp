@@ -17,11 +17,20 @@
 <c:if test="${user != null}">
     <h3>You are logged in as: ${user}</h3>
     <ul>
-        <li><a href="incoming.html">Incoming Messages</a></li>
-        <li><a href="outgoing.html">Outgoing Messages</a></li>
-        <li><a href="message.html">New message</a></li>
-        <li><a href="map.html">Back</a></li>
+        <li><a class="messageLink" href="../messaging/incoming.html">Incoming Messages</a></li>
+        <li><a href="../messaging/outgoing.html">Outgoing Messages</a></li>
+        <li><a class="messageLink" href="../messaging/message.html">New message</a></li>
     </ul>
 </c:if>
+<script type="text/javascript">
+    $("a").live("click", function () {
+        $.get($(this).attr("href"),function (result) {
+            $("#content").html(result);
+        });
+
+        return false;
+    });
+</script>
+
 </body>
 </html>

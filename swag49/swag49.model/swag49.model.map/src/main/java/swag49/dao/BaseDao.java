@@ -1,17 +1,15 @@
 package swag49.dao;
 
-import java.util.Collection;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import swag49.model.Base;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Repository(value = "baseDAO")
 public class BaseDao implements DataAccessObject<Base> {
@@ -44,7 +42,7 @@ public class BaseDao implements DataAccessObject<Base> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<Base> queryByExample(Base model) {
+	public List<Base> queryByExample(Base model) {
 		Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(Base.class);
 

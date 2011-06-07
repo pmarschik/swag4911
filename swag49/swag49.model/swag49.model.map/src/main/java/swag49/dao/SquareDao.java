@@ -1,16 +1,14 @@
 package swag49.dao;
 
-import java.util.Collection;
-
-import javax.persistence.PersistenceContext;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import swag49.model.Square;
+
+import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Repository(value = "squareDAO")
 public class SquareDao implements DataAccessObject<Square> {
@@ -47,7 +45,7 @@ public class SquareDao implements DataAccessObject<Square> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<Square> queryByExample(Square model) {
+	public List<Square> queryByExample(Square model) {
 		Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(Square.class);
 

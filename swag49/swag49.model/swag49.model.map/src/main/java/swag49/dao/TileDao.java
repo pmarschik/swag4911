@@ -1,17 +1,15 @@
 package swag49.dao;
 
-import java.util.Collection;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import swag49.model.Tile;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Repository(value = "tileDAO")
 public class TileDao implements DataAccessObject<Tile> {
@@ -42,7 +40,7 @@ public class TileDao implements DataAccessObject<Tile> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<Tile> queryByExample(Tile model) {
+	public List<Tile> queryByExample(Tile model) {
 		Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(Tile.class);
 

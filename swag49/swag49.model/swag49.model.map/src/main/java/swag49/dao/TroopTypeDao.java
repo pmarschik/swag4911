@@ -1,17 +1,15 @@
 package swag49.dao;
 
-import java.util.Collection;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import swag49.model.TroopType;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Repository(value = "troopTypeDAO")
 public class TroopTypeDao implements DataAccessObject<TroopType> {
@@ -42,7 +40,7 @@ public class TroopTypeDao implements DataAccessObject<TroopType> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<TroopType> queryByExample(TroopType model) {
+	public List<TroopType> queryByExample(TroopType model) {
 		Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(TroopType.class);
 

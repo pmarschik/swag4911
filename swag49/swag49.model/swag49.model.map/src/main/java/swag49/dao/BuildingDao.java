@@ -1,17 +1,15 @@
 package swag49.dao;
 
-import java.util.Collection;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import swag49.model.Building;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Repository(value = "buildingDAO")
 public class BuildingDao implements DataAccessObject<Building> {
@@ -42,7 +40,7 @@ public class BuildingDao implements DataAccessObject<Building> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<Building> queryByExample(Building model) {
+	public List<Building> queryByExample(Building model) {
 		Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(Building.class);
 

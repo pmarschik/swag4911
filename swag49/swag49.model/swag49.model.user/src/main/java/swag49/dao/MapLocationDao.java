@@ -8,7 +8,7 @@ import swag49.model.MapLocation;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Collection;
+import java.util.List;
 
 @Repository(value="mapLoactionDAO")
 public class MapLocationDao implements DataAccessObject<MapLocation> {
@@ -42,7 +42,7 @@ public class MapLocationDao implements DataAccessObject<MapLocation> {
     }
 
     @Transactional
-    public Collection<MapLocation> queryByExample(MapLocation model) {
+    public List<MapLocation> queryByExample(MapLocation model) {
         Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(MapLocation.class);
 

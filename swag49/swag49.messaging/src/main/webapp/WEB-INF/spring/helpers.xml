@@ -47,6 +47,8 @@
             <util:list>
                 <value>swag49.messaging.model.MessageDTO</value>
                 <value>swag49.messaging.model.PlayerDTO</value>
+                <value>swag49.messaging.model.MessageQueryDTO</value>
+                <value>swag49.messaging.model.MessageQueryResponse</value>
             </util:list>
         </property>
     </bean>
