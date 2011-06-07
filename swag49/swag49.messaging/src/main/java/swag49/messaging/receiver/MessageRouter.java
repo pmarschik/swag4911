@@ -1,4 +1,4 @@
-package swag49.messaging;
+package swag49.messaging.receiver;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
