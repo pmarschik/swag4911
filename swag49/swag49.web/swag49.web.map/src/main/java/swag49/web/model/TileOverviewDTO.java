@@ -12,8 +12,17 @@ public class TileOverviewDTO {
 
 	private boolean hasBase;
 	private boolean enemyTerritory;
+    private boolean hasTroops;
 
-	public TileOverviewDTO(Tile tile) {
+    public boolean isHasTroops() {
+        return hasTroops;
+    }
+
+    public void setHasTroops(boolean hasTroops) {
+        this.hasTroops = hasTroops;
+    }
+
+    public TileOverviewDTO(Tile tile) {
 		this.x = tile.getId().getX();
 		this.y = tile.getId().getY();
 	}

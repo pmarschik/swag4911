@@ -42,6 +42,7 @@ public class MapDao implements DataAccessObject<Map> {
 	}
 
 	@SuppressWarnings("unchecked")
+    @Transactional
 	public Collection<Map> queryByExample(Map model) {
 		Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(Map.class);
