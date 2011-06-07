@@ -38,7 +38,7 @@ public class MessagingController {
 
     public MessagingController() {
         MessageDTO message = new MessageDTO("TestSubject", "This is a test message", 1L, "sender", 2L, "receiver",
-                new Date(), MAP_URL);
+                new Date(), null, MAP_URL);
         messages.put(0L, message);
     }
 

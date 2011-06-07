@@ -4,6 +4,6 @@ import swag49.messaging.model.Message;
 
 public interface MessageReceiver {
 
-    public Message handleMessage(Message message);
+    public void handleMessage(Message message);
 
 }

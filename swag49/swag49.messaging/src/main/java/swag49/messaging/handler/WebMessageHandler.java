@@ -1,4 +1,4 @@
-package swag49.messaging;
+package swag49.messaging.handler;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import swag49.util.Log;
 import java.util.Date;
 
 @Component("webMessageHandler")
-public class WebMessageHandler implements MessageReceiver {
+public class WebMessageHandler {
     @Log
     private Logger logger;
 
@@ -33,21 +33,20 @@ public class WebMessageHandler implements MessageReceiver {
 
     @ServiceActivator
     @Transactional("swag49.messaging")
-    public Message handleMessage(Message message) {
+    public void handleMessage(Message message) {
         logger.info("Sending message {} to web-server", message);
         message.setReceiveDate(new Date());
-        messageDAO.update(message);
+        message = messageDAO.create(message);
 
         String senderUsername = userDAO.get(message.getSenderUserId()).getUsername();
         String receiverUsername = userDAO.get(message.getReceiverUserId()).getUsername();
 
         MessageDTO messageDTO =
                 new MessageDTO(message.getSubject(), message.getContent(), message.getSenderUserId(), senderUsername,
-                        message.getReceiverUserId(), receiverUsername, message.getSendDate(), message.getMapUrl());
+                        message.getReceiverUserId(), receiverUsername, message.getSendDate(),
+                        message.getReceiveDate(), message.getMapUrl());
 
         String requestUri = message.getMapUrl() + "/swag-api/messaging/receive";
         restTemplate.put(requestUri, messageDTO);
-
-        return message;
     }
 }

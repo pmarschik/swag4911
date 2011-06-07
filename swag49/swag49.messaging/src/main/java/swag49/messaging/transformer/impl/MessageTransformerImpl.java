@@ -1,30 +1,26 @@
-package swag49.messaging;
+package swag49.messaging.transformer.impl;
 
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.integration.annotation.Transformer;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import swag49.dao.DataAccessObject;
 import swag49.messaging.model.Message;
 import swag49.messaging.model.MessageDTO;
+import swag49.messaging.transformer.MessageTransformer;
 import swag49.util.Log;
 
-@Component("playerMessageDTOTransformer")
-public class MessageTransformer {
+@Component("messageTransformer")
+public class MessageTransformerImpl implements MessageTransformer {
     @Log
     private Logger log;
 
-    @Autowired
-    @Qualifier("messageDAO")
-    private DataAccessObject<Message> messageDAO;
-
-    @Transactional("swag49.messaging")
-    public Message transform(MessageDTO input) {
+    @Override
+    @Transformer
+    public Message apply(MessageDTO input) {
         Message output = new Message();
 
         output.setContent(input.getContent());
         output.setSendDate(input.getSent());
+        output.setReceiveDate(input.getReceived());
 
         if (input.getReceiver() != null)
             output.setReceiverUserId(input.getReceiver().getId());
@@ -39,6 +35,6 @@ public class MessageTransformer {
         output.setSubject(input.getSubject());
         output.setMapUrl(input.getMapUrl());
 
-        return messageDAO.create(output);
+        return  output;
     }
 }

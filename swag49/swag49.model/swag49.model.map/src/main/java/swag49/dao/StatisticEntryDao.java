@@ -5,12 +5,11 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import swag49.model.Statistic;
 import swag49.model.StatisticEntry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Collection;
+import java.util.List;
 
 @Repository(value = "statisticEntryDAO")
 public class StatisticEntryDao implements DataAccessObject<StatisticEntry> {
@@ -41,7 +40,7 @@ public class StatisticEntryDao implements DataAccessObject<StatisticEntry> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<StatisticEntry> queryByExample(StatisticEntry model) {
+	public List<StatisticEntry> queryByExample(StatisticEntry model) {
 		Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(StatisticEntry.class);
 

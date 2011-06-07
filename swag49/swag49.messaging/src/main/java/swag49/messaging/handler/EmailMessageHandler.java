@@ -1,4 +1,4 @@
-package swag49.messaging;
+package swag49.messaging.handler;
 
 import com.google.common.collect.Maps;
 import org.apache.velocity.app.VelocityEngine;
@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.Map;
 
 @Component("emailMessageHandler")
-public class EmailMessageHandler implements MessageReceiver {
+public class EmailMessageHandler {
     @Log
     private Logger logger;
 
@@ -47,10 +47,10 @@ public class EmailMessageHandler implements MessageReceiver {
 
     @ServiceActivator
     @Transactional
-    public Message handleMessage(Message message) {
+    public void handleMessage(Message message) {
         logger.info("Sending email with content {}", message.getContent());
         message.setReceiveDate(new Date());
-        messageDAO.update(message);
+        message = messageDAO.create(message);
 
         User receiverUser = userDAO.get(message.getReceiverUserId());
         User senderUser = userDAO.get(message.getSenderUserId());
@@ -63,8 +63,6 @@ public class EmailMessageHandler implements MessageReceiver {
         } catch (MailException mailException) {
             logger.warn("Unable to send mail", mailException);
         }
-
-        return message;
     }
 
     private static class PlayerMessageMimeMessagePreparator implements MimeMessagePreparator {

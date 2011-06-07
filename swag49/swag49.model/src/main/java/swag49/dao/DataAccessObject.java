@@ -1,6 +1,6 @@
 package swag49.dao;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface DataAccessObject<T> {
 
@@ -12,7 +12,7 @@ public interface DataAccessObject<T> {
 
 	public T get(Object id);
 
-	public Collection<T> queryByExample(T model);
+	public List<T> queryByExample(T model);
 
 	public T update(T model);
 }

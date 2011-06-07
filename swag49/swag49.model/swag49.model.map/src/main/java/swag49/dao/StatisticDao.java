@@ -9,7 +9,7 @@ import swag49.model.Statistic;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Collection;
+import java.util.List;
 
 @Repository(value = "statisticDAO")
 public class StatisticDao implements DataAccessObject<Statistic> {
@@ -40,7 +40,7 @@ public class StatisticDao implements DataAccessObject<Statistic> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<Statistic> queryByExample(Statistic model) {
+	public List<Statistic> queryByExample(Statistic model) {
 		Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(Statistic.class);
 
