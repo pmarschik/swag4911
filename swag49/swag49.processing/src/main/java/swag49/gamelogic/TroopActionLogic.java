@@ -1,5 +1,6 @@
 package swag49.gamelogic;
 
+import gamelogic.BaseFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import swag49.dao.DataAccessObject;

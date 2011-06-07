@@ -35,13 +35,25 @@ public class TokenService {
 
     @Log
     private Logger log;
-    private Map<UUID, Long> tokens = Maps.newHashMap();
+    private Map<UUID, TokenDTO> tokens = Maps.newHashMap();
 
-    public UUID generateToken(User user) {
+    public synchronized boolean hasTokenForUser(User user) {
+
+        for (TokenDTO token : tokens.values()) {
+            if (token.getUserId().equals(user.getId()))
+                return true;
+        }
+
+        return false;
+    }
+
+    public synchronized UUID generateToken(User user) {
         try {
             UUID token = UUID.randomUUID();
 
-            tokens.put(token, user.getId());
+            TokenDTO tokenDTO = new TokenDTO(token, user.getId(), user.getUsername());
+
+            tokens.put(token, tokenDTO);
 
             return token;
         } catch (Exception ex) {
@@ -50,15 +62,25 @@ public class TokenService {
         }
     }
 
+    public synchronized void removeToken(UUID userToken) {
+        try {
+            tokens.remove(userToken);
+        } catch (Exception ex) {
+            log.warn("Unable to remove login token", ex);
+        }
+    }
+
     @RequestMapping(value = "/token/{token}", method = RequestMethod.GET)
     @ResponseBody
     public TokenDTO verifyToken(@PathVariable("token") UUID token) throws TokenNotFoundException {
-        Long userId = tokens.get(token);
+        TokenDTO tokenDTO = null;
+        synchronized (tokens) {
+            tokenDTO = tokens.get(token);
+        }
 
-        if (userId == null)
+        if (tokenDTO == null)
             throw new TokenNotFoundException("no mapping for token " + token.toString() + " found!");
 
-        return new TokenDTO(token, userId);
+        return tokenDTO;
     }
-
 }

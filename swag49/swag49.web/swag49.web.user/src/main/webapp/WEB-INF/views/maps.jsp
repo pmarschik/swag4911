@@ -19,12 +19,14 @@
         <tr>
             <th>Id</th>
             <th>URL</th>
+            <th>Map-Name</th>
             <th>&nbsp;</th>
         </tr>
         <c:forEach items="${availableMapLocations}" var="mapLocation">
             <tr>
                 <td>${mapLocation.id}</td>
                 <td>${mapLocation.url}</td>
+                <td>${mapLocation.mapName}</td>
                 <td><a href="join/${mapLocation.id}">join</a></td>
             </tr>
         </c:forEach>
@@ -39,12 +41,14 @@
         <tr>
             <th>Id</th>
             <th>URL</th>
+            <th>Map-Name</th>
             <th>&nbsp;</th>
         </tr>
         <c:forEach items="${myMapLocations}" var="mapLocation">
             <tr>
                 <td>${mapLocation.id}</td>
                 <td>${mapLocation.url}</td>
+                <td>${mapLocation.mapName}</td>
                 <td><a href="play/${mapLocation.id}">play</a></td>
             </tr>
         </c:forEach>

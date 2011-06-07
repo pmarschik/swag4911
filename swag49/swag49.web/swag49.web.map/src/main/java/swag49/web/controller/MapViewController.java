@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,15 +26,58 @@ public class MapViewController {
     @Qualifier("tileDAO")
     private DataAccessObject<Tile> tileDAO;
 
+    @Autowired
+    @Qualifier("mapDAO")
+    private DataAccessObject<Map> mapDAO;
+
+
+    private static final int VIEWSIZE = 3;
+
     private Player player;
 
     private Map map;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String getMapOverview(@RequestParam(value="xLow", defaultValue="1") int x_low,
-                                 @RequestParam(value="yLow", defaultValue="1") int y_low,
-                                 @RequestParam(value="xHigh", defaultValue="1") int x_high,
-                                 @RequestParam(value="yHigh", defaultValue="1") int y_high, Model model) {
+    @Transactional
+    public String getMapOverview(@RequestParam(value = "xLow", defaultValue = "-1") int x_low,
+                                 @RequestParam(value = "yLow", defaultValue = "-1") int y_low,
+                                 @RequestParam(value = "xHigh", defaultValue = "-1") int x_high,
+                                 @RequestParam(value = "yHigh", defaultValue = "-1") int y_high, Model model) {
+
+        //TESTCODE - MUST BE REMOVED ASAP
+        if (map == null) {
+            //Map emptyMap = new Map();
+           // emptyMap.setId());
+            map = mapDAO.get(Long.valueOf(2) );
+          //  map = mapDAO.queryByExample(emptyMap).iterator().next();
+        }
+
+        //default values
+        if (x_low == x_high && y_low == y_high && y_low == x_low && x_low == -1) {
+            //focus on home base
+            Base homeBase = null;
+            if(player.getOwns() != null && !player.getOwns().isEmpty())
+            {
+            for (Base base : player.getOwns()) {
+                if (base.isHome()) {
+                    homeBase = base;
+                    break;
+                }
+            }
+
+            x_low = homeBase.getLocatedOn().getId().getX() - VIEWSIZE;
+            x_high = homeBase.getLocatedOn().getId().getX() + VIEWSIZE+1;
+            y_low = homeBase.getLocatedOn().getId().getY() - VIEWSIZE;
+            y_high = homeBase.getLocatedOn().getId().getY() + VIEWSIZE+1;
+            }
+            else
+            {
+                x_low = 0;
+                y_low = 0;
+                x_high = 2*   VIEWSIZE + 1;
+                y_high = 2*VIEWSIZE+1;
+            }
+        }
 
         ArrayList<ArrayList<TileOverviewDTO>> displayedTiles = new ArrayList<ArrayList<TileOverviewDTO>>();
 

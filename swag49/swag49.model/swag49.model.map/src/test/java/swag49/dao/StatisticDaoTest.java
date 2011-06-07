@@ -1,7 +1,5 @@
 package swag49.dao;
 
-import com.google.common.collect.Sets;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,146 +7,70 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-import swag49.model.*;
+import swag49.model.Map;
+import swag49.model.Player;
+import swag49.model.Statistic;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Set;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/test-context.xml"})
+@ContextConfiguration(locations = {"/test-context.xml"})
 public class StatisticDaoTest {
+    @PersistenceContext
+    private EntityManager em;
+
     // must use interface, qualifier is optional, use only if several beans that match interface
-    @Autowired @Qualifier("statisticDAO")
+    @Autowired
+    @Qualifier("statisticDAO")
     private DataAccessObject<Statistic> statisticDAO;
 
-    @Autowired @Qualifier("mapDAO")
+    @Autowired
+    @Qualifier("mapDAO")
     private DataAccessObject<Map> mapDAO;
 
-    @Autowired @Qualifier("playerDAO")
+    @Autowired
+    @Qualifier("playerDAO")
     private DataAccessObject<Player> playerDAO;
 
 
     @Test
     @Transactional
     public void create_shouldCreate() throws Exception {
-		Map map = new Map();
-		map.setMaxUsers(5);
-
-		map = mapDAO.create(map);
-
-		Player player1 = new Player();
-		player1.setDeleted(false);
-		player1.setOnline(true);
-		player1.setUserId(1L);
-		player1.setPlays(map);
-
-		player1 = playerDAO.create(player1);
-
-        Player player2 = new Player();
-		player2.setDeleted(false);
-		player2.setOnline(true);
-		player2.setUserId(2L);
-		player2.setPlays(map);
-
-		player2 = playerDAO.create(player2);
-
-		Statistic statistic = new Statistic();
+        Statistic statistic = new Statistic();
         statistic.setName("Most defeats");
         statistic = statisticDAO.create(statistic);
 
-        StatisticEntry entry1 = new StatisticEntry(statistic, 1);
-        entry1.setPlayer(player1);
-        statistic.getEntries().add(entry1);
-        StatisticEntry entry2 = new StatisticEntry(statistic, 2);
-        entry2.setPlayer(player2);
-        statistic.getEntries().add(entry2);
-
-		statistic = statisticDAO.update(statistic);
-
-        statistic = statisticDAO.get(statistic.getId());
-        Iterator<StatisticEntry> iterator = statistic.getEntries().iterator();
-        Assert.assertEquals(2, statistic.getEntries().size());
-        Assert.assertEquals(new Integer(1), iterator.next().getRanking());
-        Assert.assertEquals(new Integer(2), iterator.next().getRanking());
+        Statistic loadedStatistic = em.find(Statistic.class, statistic.getId());
+        assertThat(loadedStatistic.getName(), is(statistic.getName()));
     }
 
     @Test
     public void update_shouldUpdate() throws Exception {
-		Map map = new Map();
-		map.setMaxUsers(5);
-
-		map = mapDAO.create(map);
-
-		Player player1 = new Player();
-		player1.setDeleted(false);
-		player1.setOnline(true);
-		player1.setUserId(1L);
-		player1.setPlays(map);
-
-		player1 = playerDAO.create(player1);
-
-        Player player2 = new Player();
-		player2.setDeleted(false);
-		player2.setOnline(true);
-		player2.setUserId(2L);
-		player2.setPlays(map);
-
-		player2 = playerDAO.create(player2);
-
-		Statistic statistic = new Statistic();
+        Statistic statistic = new Statistic();
         statistic.setName("Most defeats");
-        statistic = statisticDAO.create(statistic);
-
-        StatisticEntry entry1 = new StatisticEntry(statistic, 1);
-        entry1.setPlayer(player1);
-        statistic.getEntries().add(entry1);
-        StatisticEntry entry2 = new StatisticEntry(statistic, 2);
-        entry2.setPlayer(player2);
-        statistic.getEntries().add(entry2);
-        statistic = statisticDAO.update(statistic);
+        em.persist(statistic);
 
         statistic.setName("Most bases");
-        statisticDAO.update(statistic);
+        statistic = statisticDAO.update(statistic);
+
+        Statistic loadedStatistic = em.find(Statistic.class, statistic.getId());
+        assertThat(loadedStatistic.getName(), is(statistic.getName()));
     }
 
     @Test
-    public void delete_shouldDelete() throws Exception{
-		Map map = new Map();
-		map.setMaxUsers(5);
-
-		map = mapDAO.create(map);
-
-		Player player1 = new Player();
-		player1.setDeleted(false);
-		player1.setOnline(true);
-		player1.setUserId(1L);
-		player1.setPlays(map);
-
-		player1 = playerDAO.create(player1);
-
-        Player player2 = new Player();
-		player2.setDeleted(false);
-		player2.setOnline(true);
-		player2.setUserId(2L);
-		player2.setPlays(map);
-
-		player2 = playerDAO.create(player2);
-
-		Statistic statistic = new Statistic();
+    public void delete_shouldDelete() throws Exception {
+        Statistic statistic = new Statistic();
         statistic.setName("Most defeats");
-        statistic = statisticDAO.create(statistic);
-
-        StatisticEntry entry1 = new StatisticEntry(statistic, 1);
-        entry1.setPlayer(player1);
-        statistic.getEntries().add(entry1);
-        StatisticEntry entry2 = new StatisticEntry(statistic, 2);
-        entry2.setPlayer(player2);
-        statistic.getEntries().add(entry2);
-        statistic = statisticDAO.update(statistic);
+        em.persist(statistic);
 
         statisticDAO.delete(statistic);
+
+        assertThat(em.find(Statistic.class, statistic.getId()), is(nullValue()));
     }
 }

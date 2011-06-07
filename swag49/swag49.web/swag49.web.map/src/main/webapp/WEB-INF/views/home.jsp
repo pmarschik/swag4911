@@ -21,6 +21,9 @@
     <ul>
         <li><a href="messaging.html">Messaging</a></li>
     </ul>
+    <ul>
+        <li><a href="statistics.html">Statistics</a></li>
+    </ul>
 </c:if>
 </body>
 </html>

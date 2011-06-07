@@ -13,13 +13,16 @@ public class TokenDTO {
     private UUID token;
     @XmlElement(name="user")
     private Long userId;
+    @XmlElement(name="userName")
+    private String userName;
 
     public TokenDTO() {
     }
 
-    public TokenDTO(UUID token, Long userId) {
+    public TokenDTO(UUID token, Long userId, String userName) {
         this.token = token;
         this.userId = userId;
+        this.userName = userName;
     }
 
     public UUID getToken() {
@@ -36,5 +39,13 @@ public class TokenDTO {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }
