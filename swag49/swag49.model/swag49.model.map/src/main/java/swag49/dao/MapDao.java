@@ -1,17 +1,15 @@
 package swag49.dao;
 
-import java.util.Collection;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import swag49.model.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Repository(value = "mapDAO")
 public class MapDao implements DataAccessObject<Map> {
@@ -42,7 +40,7 @@ public class MapDao implements DataAccessObject<Map> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<Map> queryByExample(Map model) {
+	public List<Map> queryByExample(Map model) {
 		Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(Map.class);
 

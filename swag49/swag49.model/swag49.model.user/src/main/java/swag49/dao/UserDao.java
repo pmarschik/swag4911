@@ -9,7 +9,7 @@ import swag49.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Collection;
+import java.util.List;
 
 // annotate with @Repository because it is a DAO, other components should be annotated with @Component
 @Repository(value="userDAO")
@@ -44,7 +44,7 @@ public class UserDao implements DataAccessObject<User> {
 
 	@SuppressWarnings("unchecked")
     @Transactional
-	public Collection<User> queryByExample(User model) {
+	public List<User> queryByExample(User model) {
 		Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(User.class);
 

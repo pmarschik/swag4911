@@ -1,17 +1,15 @@
 package swag49.dao;
 
-import java.util.Collection;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import swag49.model.BuildAction;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Repository(value = "buildActionDAO")
 public class BuildActionDao implements DataAccessObject<BuildAction> {
@@ -42,7 +40,7 @@ public class BuildActionDao implements DataAccessObject<BuildAction> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<BuildAction> queryByExample(BuildAction model) {
+	public List<BuildAction> queryByExample(BuildAction model) {
 		Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(BuildAction.class);
 

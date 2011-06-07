@@ -1,7 +1,5 @@
 package swag49.dao;
 
-import java.util.Collection;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
@@ -11,6 +9,7 @@ import swag49.model.Action;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Repository(value = "actionDAO")
 public class ActionDao implements DataAccessObject<Action> {
@@ -41,7 +40,7 @@ public class ActionDao implements DataAccessObject<Action> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<Action> queryByExample(Action model) {
+	public List<Action> queryByExample(Action model) {
 		Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(Action.class);
 
