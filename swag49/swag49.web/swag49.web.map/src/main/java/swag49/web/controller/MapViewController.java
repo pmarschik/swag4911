@@ -19,7 +19,7 @@ import java.util.Collection;
 
 @Controller
 @Scope(value = "session")
-@RequestMapping(value = "/test")
+@RequestMapping(value = "/mapoverview")
 public class MapViewController {
 
     @Autowired

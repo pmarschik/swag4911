@@ -108,6 +108,11 @@ public class MapController {
         return "redirect:../messaging/";
     }
 
+    @RequestMapping(value = "/mapoverview", method = RequestMethod.GET)
+    public String mapoverview() {
+        return "redirect:../mapoverview/";
+    }
+
     public UUID getUserToken() {
         return userToken;
     }
