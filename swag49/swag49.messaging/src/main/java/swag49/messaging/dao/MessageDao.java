@@ -13,12 +13,12 @@ import javax.persistence.PersistenceContext;
 import java.util.Collection;
 
 @Repository(value = "messageDAO")
-public class MessageDAO implements DataAccessObject<Message> {
+public class MessageDao implements DataAccessObject<Message> {
 
     @PersistenceContext(unitName = "swag49.messaging")
     private EntityManager em;
 
-    public MessageDAO() {
+    public MessageDao() {
     }
 
     public boolean contains(Message message) {
