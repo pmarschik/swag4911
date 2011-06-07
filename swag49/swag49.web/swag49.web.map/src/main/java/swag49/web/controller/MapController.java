@@ -294,7 +294,7 @@ public class MapController {
         }
         model.addAttribute("tiles", displayedTiles);
 
-        return "mapoverview";
+        return "home";
     }
 
     private boolean checkForEnemyTerritory(Tile tile) {
