@@ -35,4 +35,13 @@
         </property>
     </bean>
 
+    <bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver">
+        <property name="defaultThemeName" value="themes.default"/>
+    </bean>
+    <bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource"/>
+
+    <bean id="mapLogic" class="gamelogic.MapLogic">
+    </bean>
+
+
 </beans>

@@ -86,7 +86,7 @@ public class Tile {
 	private Map map;
 
 	@Enumerated(value = EnumType.STRING)
-	private ResourceType special;
+	private ResourceType special = ResourceType.NONE;
 
 	@OneToMany(mappedBy = "position")
 	private Set<Troop> troops;
@@ -109,7 +109,7 @@ public class Tile {
 		this.map = map;
         this.id = new Id(map.getId(),x,y);
 
-		map.getConsistsOf().add(this);
+//		map.getConsistsOf().add(this);
 	}
 
 	public Id getId() {

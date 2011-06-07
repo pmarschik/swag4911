@@ -21,6 +21,7 @@ public class MapLocationHelper {
     @Qualifier("mapLoactionDAO")
     private DataAccessObject<MapLocation> mapLocationDAO;
 
+
     @PostConstruct
     @Transactional
     public void init() {
@@ -30,8 +31,10 @@ public class MapLocationHelper {
             MapLocation mapLocation = new MapLocation();
             mapLocation.setUrl("http://localhost:8080/map");
             mapLocation.setMapName("Map - Venice");
-            if (mapLocationDAO.queryByExample(mapLocation).isEmpty())
+            if (mapLocationDAO.queryByExample(mapLocation).isEmpty()) {
                 mapLocationDAO.create(mapLocation);
+            }
+
         } catch (Exception e) {
             // nothing to do
         }
@@ -40,8 +43,9 @@ public class MapLocationHelper {
             MapLocation mapLocation = new MapLocation();
             mapLocation.setUrl("http://localhost:8080/map1");
             mapLocation.setMapName("Map - Vienna");
-            if (mapLocationDAO.queryByExample(mapLocation).isEmpty())
+            if (mapLocationDAO.queryByExample(mapLocation).isEmpty()) {
                 mapLocationDAO.create(mapLocation);
+            }
         } catch (Exception e) {
             // nothing to do
         }
