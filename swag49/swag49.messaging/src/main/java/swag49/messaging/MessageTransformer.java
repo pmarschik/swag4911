@@ -3,6 +3,7 @@ package swag49.messaging;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.integration.annotation.Transformer;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import swag49.dao.DataAccessObject;
@@ -19,6 +20,7 @@ public class MessageTransformer {
     @Qualifier("messageDAO")
     private DataAccessObject<Message> messageDAO;
 
+    @Transformer
     @Transactional("swag49.messaging")
     public Message transform(MessageDTO input) {
         Message output = new Message();
