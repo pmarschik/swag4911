@@ -2,6 +2,7 @@ package swag49.messaging.model;
 
 import com.google.common.base.Objects;
 
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.*;
 import java.util.Date;
 
@@ -11,20 +12,22 @@ public class MessageDTO {
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class UserDTO {
         @XmlElement(name = "username")
+        @Nullable
         private String username;
         @XmlAttribute(name = "id")
         private Long id;
 
         public UserDTO() {}
 
-        public UserDTO(String username, Long id) {
+        public UserDTO(@Nullable String username, Long id) {
             this.username = username;
             this.id = id;
         }
 
+        @Nullable
         public String getUsername() { return username; }
 
-        public void setUsername(String username) { this.username = username; }
+        public void setUsername(@Nullable String username) { this.username = username; }
 
         public Long getId() { return id; }
 
@@ -62,15 +65,20 @@ public class MessageDTO {
     @XmlAttribute(name = "sent")
     private Date sent;
 
+    @XmlAttribute(name = "received", required = false)
+    @Nullable
+    private Date received;
+
     public MessageDTO() { }
 
-    public MessageDTO(String subject, String content, Long senderId, String senderUsername, Long receiverId,
-                      String receiverUsername, Date sent, String mapUrl) {
+    public MessageDTO(String subject, String content, Long senderId, @Nullable String senderUsername, Long receiverId,
+                      @Nullable String receiverUsername, Date sent, @Nullable Date received, String mapUrl) {
         this.subject = subject;
         this.content = content;
         this.sender = new UserDTO(senderUsername, senderId);
         this.receiver = new UserDTO(receiverUsername, receiverId);
         this.sent = sent;
+        this.received = received;
         this.mapUrl = mapUrl;
     }
 
@@ -122,9 +130,18 @@ public class MessageDTO {
         this.sent = sent;
     }
 
+    @Nullable
+    public Date getReceived() {
+        return received;
+    }
+
+    public void setReceived(@Nullable Date received) {
+        this.received = received;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hashCode(sender, receiver, sent, subject, content);
+        return Objects.hashCode(sender, receiver, sent, received, subject, content);
     }
 
     @Override
@@ -133,6 +150,7 @@ public class MessageDTO {
                 .add("sender", sender)
                 .add("receiver", receiver)
                 .add("sent", sent)
+                .add("received", received)
                 .add("subject", subject)
                 .add("content", content)
                 .toString();

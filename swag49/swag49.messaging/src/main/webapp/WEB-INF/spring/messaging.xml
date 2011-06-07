@@ -18,10 +18,10 @@
                                   request-payload-type="swag49.messaging.model.MessageDTO"
                                   supported-methods="PUT, POST" name="/send" message-converters="messageConverter"/>
 
-    <si:channel id="playerMessageXmlChannel" datatype="swag49.messaging.model.MessageDTO" />
+    <si:channel id="playerMessageXmlChannel" datatype="swag49.messaging.model.MessageDTO"/>
 
     <si:transformer id="playerMessageTransformer" input-channel="playerMessageXmlChannel"
-                    output-channel="playerMessageChannel" ref="playerMessageDTOTransformer" />
+                    output-channel="playerMessageChannel" ref="messageTransformer"/>
     <!--<si:gateway id="playerMessageGateway" service-interface="swag49.messaging.MessageSender"-->
     <!--default-request-channel="playerMessageChannel"/>-->
 
@@ -46,5 +46,17 @@
     <si:poller max-messages-per-poll="1" id="defaultPoller" default="true">
         <si:interval-trigger interval="30000"/>
     </si:poller>
+
+    <!-- - - - -->
+    <!-- - - - -->
+    <!-- - - - -->
+
+    <http:inbound-channel-adapter id="listMessagesChannelAdapter" channel="listMessagesXmlChannel"
+                                  request-payload-type="swag49.messaging.model.MessageQueryDTO"
+                                  supported-methods="PUT, POST" name="/get" message-converters="messageConverter"/>
+
+    <si:channel id="listMessagesXmlChannel" datatype="swag49.messaging.model.MessageQueryDTO"/>
+
+    <si:service-activator id="listMessagesActivator" input-channel="listMessagesXmlChannel" ref="messageListHandler"/>
 
 </beans>

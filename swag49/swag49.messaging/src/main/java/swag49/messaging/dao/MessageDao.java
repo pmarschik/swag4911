@@ -10,7 +10,7 @@ import swag49.messaging.model.Message;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Collection;
+import java.util.List;
 
 @Repository(value = "messageDAO")
 public class MessageDao implements DataAccessObject<Message> {
@@ -21,27 +21,30 @@ public class MessageDao implements DataAccessObject<Message> {
     public MessageDao() {
     }
 
+    @Transactional("swag49.messaging")
     public boolean contains(Message message) {
         return em.contains(message);
     }
 
-    @Transactional(value="swag49.messaging")
+    @Transactional("swag49.messaging")
     public Message create(Message message) {
         return em.merge(message);
     }
 
-    @Transactional(value="swag49.messaging")
+    @Transactional("swag49.messaging")
     public void delete(Message message) {
         message = em.merge(message);
         em.remove(message);
     }
 
+    @Transactional("swag49.messaging")
     public Message get(Object id) {
         return em.find(Message.class, id);
     }
 
+    @Transactional("swag49.messaging")
     @SuppressWarnings("unchecked")
-    public Collection<Message> queryByExample(Message model) {
+    public List<Message> queryByExample(Message model) {
         Session session = (Session) em.getDelegate();
         Criteria criteria = session.createCriteria(Message.class);
 
@@ -51,7 +54,7 @@ public class MessageDao implements DataAccessObject<Message> {
         return criteria.list();
     }
 
-    @Transactional(value="swag49.messaging")
+    @Transactional("swag49.messaging")
     public Message update(Message message) {
         return em.merge(message);
     }
