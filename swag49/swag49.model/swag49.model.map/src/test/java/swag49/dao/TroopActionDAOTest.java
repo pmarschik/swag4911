@@ -36,6 +36,7 @@ public class TroopActionDAOTest {
     public void create_shouldCreate() throws Exception {
         Map map = new Map();
         map.setMaxUsers(5);
+        map.setUrl("test");
 
         map = mapDAO.create(map);
 
@@ -64,6 +65,7 @@ public class TroopActionDAOTest {
     public void delete_shouldDelete() throws Exception {
         Map map = new Map();
         map.setMaxUsers(5);
+        map.setUrl("test");
 
         map = mapDAO.create(map);
 
@@ -93,6 +95,7 @@ public class TroopActionDAOTest {
     public void update_shouldUpdate() throws Exception {
         Map map = new Map();
         map.setMaxUsers(5);
+        map.setUrl("test");
 
         map = mapDAO.create(map);
 

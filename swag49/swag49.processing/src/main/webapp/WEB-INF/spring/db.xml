@@ -11,21 +11,24 @@
        default-autowire="byName">
 
     <!-- Scans within the base package of the application for @Components to configure as beans -->
-    <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location" value="classpath:db.test.properties"/>
+    <bean id="placeholderConfig"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:db.properties"/>
     </bean>
 
-    <bean id="mapEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    <bean id="mapEntityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                 <property name="showSql" value="true"/>
-                <property name="generateDdl" value="false"/>
+                <property name="generateDdl" value="true"/>
                 <property name="databasePlatform" value="${db.dialect}"/>
             </bean>
         </property>
     </bean>
 
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close">
         <property name="driverClassName" value="${db.driver}"/>
         <property name="url" value="${db.url}"/>
         <property name="username" value="${db.username}"/>
@@ -34,7 +37,7 @@
 
     <bean id="mapTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="mapEntityManagerFactory"/>
-        <qualifier value="swag49.map"/>
+        <qualifier value="swag49.user"/>
     </bean>
 
     <tx:annotation-driven transaction-manager="mapTransactionManager"/>

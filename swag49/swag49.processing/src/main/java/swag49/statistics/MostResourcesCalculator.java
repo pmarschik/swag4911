@@ -2,7 +2,7 @@ package swag49.statistics;
 
 import swag49.model.Player;
 
-public class MostResourcesEvaluatorJob extends StatisticJobBase {
+public class MostResourcesCalculator extends StatisticCalculatorBase {
 
     public static final String NAME = "Most resources";
 

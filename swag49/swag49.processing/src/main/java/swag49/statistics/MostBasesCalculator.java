@@ -2,8 +2,7 @@ package swag49.statistics;
 
 import swag49.model.Player;
 
-public class MostBasesEvaluatorJob extends StatisticJobBase {
-
+public class MostBasesCalculator extends StatisticCalculatorBase {
     public static final String NAME = "Most bases";
 
     @Override

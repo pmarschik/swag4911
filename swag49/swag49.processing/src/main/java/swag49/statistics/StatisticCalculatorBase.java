@@ -1,6 +1,5 @@
 package swag49.statistics;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.Collection;
 
-public abstract class StatisticJobBase implements Job {
+public abstract class StatisticCalculatorBase implements StatisticCalculator {
 
-    private static final int DEFAULT_LIMIT = 25;
+     private static final int DEFAULT_LIMIT = 25;
 
     @PersistenceContext
     private EntityManager em;
@@ -43,7 +42,7 @@ public abstract class StatisticJobBase implements Job {
 
     @Override
     @Transactional
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    public void calculate() {
         Statistic statistic = new Statistic();
         statistic.setName(getStatisticName());
         Collection<Statistic> statistics = statisticDAO.queryByExample(statistic);
