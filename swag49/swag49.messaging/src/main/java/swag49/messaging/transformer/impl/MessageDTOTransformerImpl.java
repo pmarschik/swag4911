@@ -25,8 +25,8 @@ public class MessageDTOTransformerImpl implements MessageDTOTransformer {
         User receiver = Preconditions.checkNotNull(userDAO.get(input.getReceiverUserId()), "receiver not existing");
         User sender = Preconditions.checkNotNull(userDAO.get(input.getSenderUserId()), "sender not existing");
 
-        return new MessageDTO(input.getSubject(), input.getContent(), input.getSenderUserId(), sender.getUsername(),
-                input.getReceiverUserId(), receiver.getUsername(), input.getSendDate(), input.getReceiveDate(),
-                input.getMapUrl());
+        return new MessageDTO(input.getId(), input.getSubject(), input.getContent(), input.getSenderUserId(),
+                sender.getUsername(), input.getReceiverUserId(), receiver.getUsername(), input.getSendDate(),
+                input.getReceiveDate(), input.getMapUrl());
     }
 }

@@ -10,6 +10,8 @@
 <h1>
     Register User
 </h1>
+<spring:url value="/resources/images" var="resourcePath"/>
+<img src="${resourcePath}/test.jpg" width="800" height="200"/>
 <form:form method="post" action="register" commandName="user">
     <table>
         <tr>

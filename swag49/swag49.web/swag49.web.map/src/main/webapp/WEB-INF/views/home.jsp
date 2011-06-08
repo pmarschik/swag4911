@@ -38,7 +38,7 @@
 			<li><a class="contentLink" href="mapoverview.html">Map Overview</a></li>
 			<li><a id="messagingLink" class="contentLink" href="messaging.html">Messaging</a></li>
             <li><a class="contentLink" href="actions.html">Actions</a></li>
-			<li><a class="contentLink" href="statistics.html">Statistics</a></li>
+			<li><a class="contentLink" href="../statistics/">Statistics</a></li>
 		</ul>
 
 		</div>

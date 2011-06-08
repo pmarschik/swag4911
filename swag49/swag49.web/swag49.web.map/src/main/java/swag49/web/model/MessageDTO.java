@@ -47,6 +47,10 @@ public class MessageDTO {
         }
     }
 
+    @XmlAttribute(name = "id")
+    @Nullable
+    private Long id;
+
     @XmlAttribute(name = "map")
     private String mapUrl;
 
@@ -71,8 +75,10 @@ public class MessageDTO {
 
     public MessageDTO() { }
 
-    public MessageDTO(String subject, String content, Long senderId, @Nullable String senderUsername, Long receiverId,
-                      @Nullable String receiverUsername, Date sent, @Nullable Date received, String mapUrl) {
+    public MessageDTO(@Nullable Long id, String subject, String content, Long senderId, @Nullable String senderUsername,
+                      Long receiverId, @Nullable String receiverUsername, Date sent, @Nullable Date received,
+                      String mapUrl) {
+        this.id = id;
         this.subject = subject;
         this.content = content;
         this.sender = new UserDTO(senderUsername, senderId);
@@ -139,14 +145,37 @@ public class MessageDTO {
         this.received = received;
     }
 
+    @Nullable
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(@Nullable Long id) {
+        this.id = id;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hashCode(sender, receiver, sent, received, subject, content);
+        return Objects.hashCode(id, mapUrl, sender, receiver, sent, received, subject, content);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MessageDTO that = (MessageDTO) o;
+
+        return Objects.equal(id, that.id) && Objects.equal(sender, that.sender) &&
+                Objects.equal(receiver, that.receiver) && Objects.equal(sent, that.sent) &&
+                Objects.equal(received, that.received) && Objects.equal(subject, that.subject) &&
+                Objects.equal(content, that.content) && Objects.equal(mapUrl, that.mapUrl);
     }
 
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
+                .add("id", id)
                 .add("sender", sender)
                 .add("receiver", receiver)
                 .add("sent", sent)

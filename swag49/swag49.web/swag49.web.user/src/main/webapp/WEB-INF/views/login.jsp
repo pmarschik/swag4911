@@ -10,6 +10,8 @@
 <h1>
     Login User
 </h1>
+<spring:url value="/resources/images" var="resourcePath"/>
+<img src="${resourcePath}/test.jpg" width="800" height="200"/>
 <form:form method="post" action="login" commandName="user">
     <table>
         <tr>
