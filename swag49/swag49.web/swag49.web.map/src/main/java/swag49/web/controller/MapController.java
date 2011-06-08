@@ -271,9 +271,9 @@ public class MapController {
             }
         }
         model.addAttribute("xLow", x_low);
-        model.addAttribute("yLow: ", y_low);
-        model.addAttribute("xHigh: ", x_high);
-        model.addAttribute("yHigh: ", y_high);
+        model.addAttribute("yLow", y_low);
+        model.addAttribute("xHigh", x_high);
+        model.addAttribute("yHigh", y_high);
         ArrayList<ArrayList<TileOverviewDTO>> displayedTiles = new ArrayList<ArrayList<TileOverviewDTO>>();
 
         // get all visible tiles
@@ -393,9 +393,9 @@ public class MapController {
             }
         }
         model.addAttribute("xLow", x_low);
-        model.addAttribute("yLow: ", y_low);
-        model.addAttribute("xHigh: ", x_high);
-        model.addAttribute("yHigh: ", y_high);
+        model.addAttribute("yLow", y_low);
+        model.addAttribute("xHigh", x_high);
+        model.addAttribute("yHigh", y_high);
         ArrayList<ArrayList<TileOverviewDTO>> displayedTiles = new ArrayList<ArrayList<TileOverviewDTO>>();
 
         // get all visible tiles

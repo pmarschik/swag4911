@@ -30,7 +30,7 @@
 <table>
     <tr>
         <td colspan="3">
-            <a class="contentLink" href="./?xLow=${xLow}&yLow=${yLow - 1}&xHigh=${xHigh}&yHigh=${yHigh - 1}">
+            <a class="contentLink" href="./mapoverview.html?xLow=${xLow}&yLow=${yLow - 1}&xHigh=${xHigh}&yHigh=${yHigh - 1}">
                 <img src="${resourcePath}<spring:theme code='theme.image.misc.up'/>" alt="Up" title="UP"/>
             </a>
         </td>
@@ -38,7 +38,7 @@
 
     <tr>
         <td>
-            <a class="contentLink" href="./?xLow=${xLow - 1}&yLow=${yLow}&xHigh=${xHigh - 1}&yHigh=${yHigh}">
+            <a class="contentLink" href="./mapoverview.html?xLow=${xLow - 1}&yLow=${yLow}&xHigh=${xHigh - 1}&yHigh=${yHigh}">
                 <img src="${resourcePath}<spring:theme code='theme.image.misc.left'/>"
                      alt="Left" title="Left"/>
             </a>
@@ -210,7 +210,7 @@
 
         </td>
         <td>
-            <a class="contentLink" href="./?xLow=${xLow+1}&yLow=${yLow}&xHigh=${xHigh+1}&yHigh=${yHigh}">
+            <a class="contentLink" href="./mapoverview.html?xLow=${xLow+1}&yLow=${yLow}&xHigh=${xHigh+1}&yHigh=${yHigh}">
                  <img src="${resourcePath}<spring:theme code='theme.image.misc.right'/>"
                      alt="Right" title="Right"/>
             </a>
@@ -219,7 +219,7 @@
 
     <tr>
         <td colspan="3">
-            <a class="contentLink" href="./?xLow=${xLow}&yLow=${yLow + 1}&xHigh=${xHigh}&yHigh=${yHigh + 1}"><img
+            <a class="contentLink" href="./mapoverview.html?xLow=${xLow}&yLow=${yLow + 1}&xHigh=${xHigh}&yHigh=${yHigh + 1}"><img
                     src="<spring:theme code='theme.image.misc.down'/>" alt="Down" title="Down"/>
             </a>
         </td>
