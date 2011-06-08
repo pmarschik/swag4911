@@ -2,10 +2,6 @@ package swag49.statistic;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
@@ -16,7 +12,8 @@ import org.springframework.test.jdbc.SimpleJdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import swag49.model.Statistic;
 import swag49.model.StatisticEntry;
-import swag49.statistics.MostBasesEvaluatorJob;
+import swag49.statistics.MostBasesCalculator;
+import swag49.statistics.StatisticCalculator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,34 +25,31 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/test-context.xml"})
-public class MostBasesEvaluatorJobTest {
-    @PersistenceContext
+public class MostBasesCalculatorTest {
+    @PersistenceContext (unitName = "swag49.map")
     private EntityManager em;
 
     @Autowired
-    @Qualifier("mostBasesJob")
-    private Job job;
+    @Qualifier("mostBasesCalculator")
+    private StatisticCalculator calculator;
 
     @Autowired
     @Qualifier("dataSource")
     private DataSource dataSource;
 
-    JobExecutionContext context;
-
     @Before
     public void setUp() {
         SimpleJdbcTemplate jt = new SimpleJdbcTemplate(dataSource);
         SimpleJdbcTestUtils.executeSqlScript(jt, new ClassPathResource("testdata_statistics.sql"), false);
-        context = Mockito.mock(JobExecutionContext.class);
     }
 
     @org.junit.Test
-    @Transactional
-    public void execute_statisticNotYetPersisted_shouldPersistCorrectEntries() throws JobExecutionException {
-        job.execute(context);
+    @Transactional("swag49.map")
+    public void execute_statisticNotYetPersisted_shouldPersistCorrectEntries() {
+        calculator.calculate();
 
         TypedQuery<Statistic> query = em.createQuery("select statistic from Statistic statistic where statistic.name = :name", Statistic.class);
-        query.setParameter("name", MostBasesEvaluatorJob.NAME);
+        query.setParameter("name", MostBasesCalculator.NAME);
         Statistic statistic = query.getSingleResult();
 
         assertThat(statistic.getEntries().size(), is(5));
@@ -83,10 +77,10 @@ public class MostBasesEvaluatorJobTest {
     }
 
     @org.junit.Test
-    @Transactional
-    public void execute_statisticAlreadyPersisted_shouldPersistCorrectEntries() throws JobExecutionException {
+    @Transactional("swag49.map")
+    public void execute_statisticAlreadyPersisted_shouldPersistCorrectEntries() {
         Statistic statistic = new Statistic();
-        statistic.setName(MostBasesEvaluatorJob.NAME);
+        statistic.setName(MostBasesCalculator.NAME);
         em.persist(statistic);
 
         execute_statisticNotYetPersisted_shouldPersistCorrectEntries();

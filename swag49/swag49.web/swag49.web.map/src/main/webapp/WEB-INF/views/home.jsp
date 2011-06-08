@@ -11,8 +11,24 @@
 <body>
 	<div id="header">
         <div id="playerResources">
+           <spring:url value="/resources" var="resourcePath"/>
+	<table id="resourceTable">
+	<tr>
+		<th><img src="${resourcePath}/images/misc/gold.jpg" alt="Gold" /></th>
+        <th><img src="${resourcePath}/images/misc/stone.jpg" alt="Stone" /></th>
+        <th><img src="${resourcePath}/images/misc/wood.jpg" alt="Wood" /></th>
+        <th><img src="${resourcePath}/images/misc/crops.jpg" alt="Crops" /></th>
+	</tr>
+	<tr>
+		<td>${resources.getAmount_gold()}</td>
+        <td>${resources.getAmount_stone()}</td>
+        <td>${resources.getAmount_wood()}</td>
+        <td>${resources.getAmount_crops()}</td>
+	</tr>
+    <tr>
 
-
+    </tr>
+	</table>
         </div>
         <a id="resourceRefresh" href="playerresources.html">Refresh</a>
 	</div>
@@ -22,7 +38,7 @@
 			<li><a class="contentLink" href="mapoverview.html">Map Overview</a></li>
 			<li><a id="messagingLink" class="contentLink" href="messaging.html">Messaging</a></li>
             <li><a class="contentLink" href="actions.html">Actions</a></li>
-			<li><a class="contentLink" href="statistics.html">Statistics</a></li>
+			<li><a class="contentLink" href="../statistics/">Statistics</a></li>
 		</ul>
 
 		</div>

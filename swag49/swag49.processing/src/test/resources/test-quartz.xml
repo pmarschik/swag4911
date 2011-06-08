@@ -9,7 +9,7 @@
 		 <property name="dataSource">
             <ref bean="dataSource"/>
         </property>
-		<property name="configLocation" value="classpath:quartz.properties"/>
+		<property name="configLocation" value="classpath:quartz.test.properties"/>
 		<property name="autoStartup" value="false" />
 	</bean>
 

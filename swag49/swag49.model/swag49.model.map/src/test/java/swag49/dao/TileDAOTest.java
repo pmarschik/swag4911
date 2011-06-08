@@ -23,6 +23,7 @@ public class TileDAOTest {
     @Test
     public void create_shouldCreate() throws Exception {
 		Map map = new Map();
+        map.setUrl("test");
 		map.setMaxUsers(5);
 
 		map = mapDAO.create(map);
@@ -34,6 +35,7 @@ public class TileDAOTest {
     @Test
     public void delete_shouldDelete() throws Exception {
 		Map map = new Map();
+        map.setUrl("test");
 		map.setMaxUsers(5);
 
 		map = mapDAO.create(map);
@@ -47,6 +49,7 @@ public class TileDAOTest {
     @Test
     public void update_shouldUpdate() throws Exception{
 		Map map = new Map();
+        map.setUrl("test");
 		map.setMaxUsers(5);
 
 		map = mapDAO.create(map);

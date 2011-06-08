@@ -1,8 +1,10 @@
 package swag49.statistics;
 
+import org.springframework.stereotype.Component;
 import swag49.model.Player;
 
-public class MostBasesEvaluatorJob extends StatisticJobBase {
+@Component("mostBasesCalculator")
+public class MostBasesCalculator extends StatisticCalculatorBase {
 
     public static final String NAME = "Most bases";
 

@@ -1,24 +1,28 @@
 package swag49.statistics;
 
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.hibernate.annotations.OptimisticLock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import swag49.dao.DataAccessObject;
 import swag49.model.Player;
 import swag49.model.Statistic;
 import swag49.model.StatisticEntry;
+import swag49.util.Log;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.Collection;
 
-public abstract class StatisticJobBase implements Job {
+public abstract class StatisticCalculatorBase implements StatisticCalculator {
 
-    private static final int DEFAULT_LIMIT = 25;
+    @Log
+    private Logger log;
 
     @PersistenceContext
     private EntityManager em;
@@ -31,19 +35,14 @@ public abstract class StatisticJobBase implements Job {
     @Qualifier("statisticEntryDAO")
     private DataAccessObject<StatisticEntry, StatisticEntry.Id> statisticEntryDAO;
 
-    private Integer limit = DEFAULT_LIMIT;
-
-    public Integer getLimit() {
-        return limit;
-    }
-
-    public void setLimit(Integer limit) {
-        this.limit = limit;
-    }
+    @Value("$processing{statistic.limit}")
+    private Integer limit;
 
     @Override
-    @Transactional
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    @Transactional("swag49.map")
+    public void calculate() {
+        log.info("Calculation of {} started (limit: {}).", getStatisticName(), limit);
+
         Statistic statistic = new Statistic();
         statistic.setName(getStatisticName());
         Collection<Statistic> statistics = statisticDAO.queryByExample(statistic);
@@ -68,6 +67,8 @@ public abstract class StatisticJobBase implements Job {
         }
 
         statisticDAO.update(statistic);
+
+        log.info("Calculation of {} finished (limit: {}).", getStatisticName(), limit);
     }
 
     protected abstract String getRankedPlayersQuery();

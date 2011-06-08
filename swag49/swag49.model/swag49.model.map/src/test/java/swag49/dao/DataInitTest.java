@@ -38,6 +38,7 @@ public class DataInitTest  {
 
 		Map map = new Map();
 		map.setMaxUsers(5);
+        map.setUrl("test");
 
 		map = mapDAO.create(map);
 

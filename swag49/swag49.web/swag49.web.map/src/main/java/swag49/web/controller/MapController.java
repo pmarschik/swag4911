@@ -212,11 +212,6 @@ public class MapController {
         return "tile";
      }
 
-//    @RequestMapping(value = "/mapoverview", method = RequestMethod.GET)
-//    public String mapoverview() {
-//        return "redirect:../mapoverview/";
-//    }
-
     public UUID getUserToken() {
         return userToken;
     }
@@ -349,7 +344,12 @@ public class MapController {
             }
             displayedTiles.add(currentRow);
         }
+        ResourceValue resourceValue = player.getResources();
+
+        model.addAttribute("resources", resourceValue);
+
         model.addAttribute("tiles", displayedTiles);
+        model.addAttribute("resources", resourceValue);
 
         return "home";
     }
