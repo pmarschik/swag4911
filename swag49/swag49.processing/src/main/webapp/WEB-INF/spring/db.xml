@@ -37,7 +37,7 @@
 
     <bean id="mapTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="mapEntityManagerFactory"/>
-        <qualifier value="swag49.user"/>
+        <qualifier value="swag49.map"/>
     </bean>
 
     <tx:annotation-driven transaction-manager="mapTransactionManager"/>

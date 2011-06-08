@@ -1,7 +1,12 @@
 package swag49.statistics;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import swag49.model.Player;
 
+@Component("mostResourcesCalculator")
 public class MostResourcesCalculator extends StatisticCalculatorBase {
 
     public static final String NAME = "Most resources";
