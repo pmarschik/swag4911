@@ -14,7 +14,7 @@ import java.util.Date;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/test-context.xml"})
-public class MessageDAOTest {
+public class MessageDaoTest {
     // must use interface, qualifier is optional, use only if several beans that match interface
     @Autowired
     @Qualifier("messageDAO")
