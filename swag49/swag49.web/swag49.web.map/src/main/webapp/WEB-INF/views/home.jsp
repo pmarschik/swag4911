@@ -10,14 +10,9 @@
 </head>
 <body>
 	<div id="header">
-	<table id="resourceTable">
-	<tr>
-		<th>Gold</th><th>Stone</th><th>Wood</th><th>Crops</th>
-	</tr>
-	<tr>
-		<td>100</td><td>2323</td><td>324</td><td>87</td>
-	</tr>
-	</table>
+        <div id="playerResources">
+
+        </div>
 	</div>
 	<div id="subContent">
 		<div id="menu">Menu:<br />

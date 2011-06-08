@@ -298,7 +298,7 @@ public class MapController {
     }
 
 
-        @RequestMapping(value = "/mapoverview", method = RequestMethod.GET)
+    @RequestMapping(value = "/mapoverview", method = RequestMethod.GET)
     @Transactional
     public String getMapOverview(@RequestParam(value = "xLow", defaultValue = "-1") int x_low,
                                  @RequestParam(value = "yLow", defaultValue = "-1") int y_low,
@@ -418,6 +418,23 @@ public class MapController {
 
         return "mapoverview";
     }
+
+    @RequestMapping(value = "/playerresources", method = RequestMethod.GET)
+    @Transactional
+    public String getPlayerResources(Model model)
+    {
+
+
+        //TODO: besser machen
+        player = playerDAO.get(player.getId());
+        map = mapDAO.get(map.getId());
+
+        ResourceValue resourceValue = player.getResources()
+
+        model.addAttribute("resources", resourceValue);
+
+        return "playerresources";
+     }
 
     private boolean checkForEnemyTerritory(Tile tile) {
         if (tile.getBase() != null && tile.getBase().getOwner() != player)
