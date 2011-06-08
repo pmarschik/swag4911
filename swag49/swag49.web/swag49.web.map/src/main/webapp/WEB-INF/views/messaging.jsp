@@ -10,13 +10,10 @@
 <h1>[SWAG] Messaging</h1>
 <c:if test="${user == null}">
     <h3>You have to register or login!</h3>
-    <ul>
-        <li><a href="map.html">Back</a></li>
-    </ul>
 </c:if>
 <c:if test="${user != null}">
     <h3>You are logged in as: ${user}</h3>
-    <ul>
+    <ul class="messagingMenu">
         <li><a class="messageLink" href="../messaging/incoming.html">Incoming Messages</a></li>
         <li><a href="../messaging/outgoing.html">Outgoing Messages</a></li>
         <li><a class="messageLink" href="../messaging/message.html">New message</a></li>
