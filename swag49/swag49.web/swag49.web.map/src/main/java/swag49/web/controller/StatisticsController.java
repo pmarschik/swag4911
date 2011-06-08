@@ -3,6 +3,7 @@ package swag49.web.controller;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/statistics")
+@Scope("session")
 public class StatisticsController {
 
     @Autowired
