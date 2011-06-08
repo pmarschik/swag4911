@@ -245,7 +245,7 @@ public class MapController {
                         } else {
                             sb.append("Your base!");
                         }
-                        System.out.println("BAse found: " + tile.getId().getX() + tile.getId().getY());
+                        System.out.println("Base found: " + tile.getId().getX() + tile.getId().getY());
                         sb.append("<br/>");
                     }
 
