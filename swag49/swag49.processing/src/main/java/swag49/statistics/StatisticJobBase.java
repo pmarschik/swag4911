@@ -25,11 +25,11 @@ public abstract class StatisticJobBase implements Job {
 
     @Autowired
     @Qualifier("statisticDAO")
-    private DataAccessObject<Statistic> statisticDAO;
+    private DataAccessObject<Statistic, Long> statisticDAO;
 
     @Autowired
     @Qualifier("statisticEntryDAO")
-    private DataAccessObject<StatisticEntry> statisticEntryDAO;
+    private DataAccessObject<StatisticEntry, StatisticEntry.Id> statisticEntryDAO;
 
     private Integer limit = DEFAULT_LIMIT;
 

@@ -24,7 +24,7 @@ import static org.junit.Assert.assertThat;
 public class MessagingTest {
     @Autowired
     @Qualifier("userDAO")
-    private DataAccessObject<User> userDAO;
+    private DataAccessObject<User, Long> userDAO;
 
     @Autowired
     private MessageSender messageSender;

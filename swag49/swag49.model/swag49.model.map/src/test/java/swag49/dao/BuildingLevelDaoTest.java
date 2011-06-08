@@ -1,30 +1,29 @@
 package swag49.dao;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import swag49.model.BuildingLevel;
 import swag49.model.BuildingType;
 import swag49.model.ResourceValue;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-context.xml" })
-public class BuildingLevelDaoTest {
+public class BuildingLevelDAOTest {
 	@Autowired
 	@Qualifier("buildingTypeDAO")
-	private DataAccessObject<BuildingType> buildingTypeDAO;
+	private DataAccessObject<BuildingType, Long> buildingTypeDAO;
 
 	@Autowired
 	@Qualifier("buildingLevelDAO")
-	private DataAccessObject<BuildingLevel> buildingLevelDAO;
+	private DataAccessObject<BuildingLevel, BuildingLevel.Id> buildingLevelDAO;
 
 	@Test
 	public void create_shouldCreate() throws Exception {

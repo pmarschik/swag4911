@@ -11,7 +11,7 @@ public class BuildActionJob extends ActionJobBase<BuildAction> {
 
 	@Autowired
 	@Qualifier("buildActionDAO")
-	private DataAccessObject<BuildAction> buildActionDao;
+	private DataAccessObject<BuildAction, Long> buildActionDao;
 
 	@Override
 	protected void doWork(BuildAction action, JobExecutionContext context) {
@@ -19,7 +19,7 @@ public class BuildActionJob extends ActionJobBase<BuildAction> {
 	}
 
 	@Override
-	protected DataAccessObject<BuildAction> getDao() {
+	protected DataAccessObject<BuildAction, Long> getDAO() {
 		return buildActionDao;
 	}
 

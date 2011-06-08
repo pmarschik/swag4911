@@ -18,7 +18,7 @@ public class MessageDaoTest {
     // must use interface, qualifier is optional, use only if several beans that match interface
     @Autowired
     @Qualifier("messageDAO")
-    private DataAccessObject<Message> messageDAO;
+    private DataAccessObject<Message, Long> messageDAO;
 
     @Test
     public void create_shouldCreate() throws Exception {

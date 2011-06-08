@@ -19,11 +19,11 @@ public class MapLocationHelper {
 
     @Autowired
     @Qualifier("mapLoactionDAO")
-    private DataAccessObject<MapLocation> mapLocationDAO;
+    private DataAccessObject<MapLocation, Long> mapLocationDAO;
 
 
     @PostConstruct
-    @Transactional
+    @Transactional("swag49.user")
     public void init() {
         try {
 

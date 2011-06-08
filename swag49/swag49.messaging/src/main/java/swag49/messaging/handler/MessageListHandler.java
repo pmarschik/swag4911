@@ -25,7 +25,7 @@ public class MessageListHandler {
 
     @Autowired
     @Qualifier("messageDAO")
-    private DataAccessObject<Message> messageDAO;
+    private DataAccessObject<Message, Long> messageDAO;
 
     @Autowired
     @Qualifier("messageDTOTransformer")

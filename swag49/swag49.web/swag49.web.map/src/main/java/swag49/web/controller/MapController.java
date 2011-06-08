@@ -41,15 +41,15 @@ public class MapController {
 
     @Autowired
     @Qualifier("mapDAO")
-    private DataAccessObject<swag49.model.Map> mapDAO;
+    private DataAccessObject<swag49.model.Map, Long> mapDAO;
 
     @Autowired
     @Qualifier("playerDAO")
-    private DataAccessObject<Player> playerDAO;
+    private DataAccessObject<Player, Long> playerDAO;
 
     @Autowired
     @Qualifier("tileDAO")
-    private DataAccessObject<Tile> tileDAO;
+    private DataAccessObject<Tile, Tile.Id> tileDAO;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -298,7 +298,7 @@ public class MapController {
     }
 
 
-        @RequestMapping(value = "/mapoverview", method = RequestMethod.GET)
+    @RequestMapping(value = "/mapoverview", method = RequestMethod.GET)
     @Transactional
     public String getMapOverview(@RequestParam(value = "xLow", defaultValue = "-1") int x_low,
                                  @RequestParam(value = "yLow", defaultValue = "-1") int y_low,
@@ -418,6 +418,23 @@ public class MapController {
 
         return "mapoverview";
     }
+
+    @RequestMapping(value = "/playerresources", method = RequestMethod.GET)
+    @Transactional
+    public String getPlayerResources(Model model)
+    {
+
+
+        //TODO: besser machen
+        player = playerDAO.get(player.getId());
+        map = mapDAO.get(map.getId());
+
+        ResourceValue resourceValue = player.getResources();
+
+        model.addAttribute("resources", resourceValue);
+
+        return "playerresources";
+     }
 
     private boolean checkForEnemyTerritory(Tile tile) {
         if (tile.getBase() != null && tile.getBase().getOwner() != player)

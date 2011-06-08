@@ -11,48 +11,48 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Repository(value = "statisticDAO")
-public class StatisticDao implements DataAccessObject<Statistic> {
+@Repository("statisticDAO")
+public class StatisticDAO implements DataAccessObject<Statistic, Long> {
 
-	@PersistenceContext
-	private EntityManager em;
+    @PersistenceContext(unitName = "swag49.map")
+    private EntityManager em;
 
-	public StatisticDao() {
-	}
+    @Transactional("swag49.map")
+    public boolean contains(Statistic statistic) {
+        return em.contains(statistic);
+    }
 
-	public boolean contains(Statistic statistic) {
-		return em.contains(statistic);
-	}
+    @Transactional("swag49.map")
+    public Statistic create(Statistic statistic) {
+        return em.merge(statistic);
+    }
 
-	@Transactional
-	public Statistic create(Statistic statistic) {
-		return em.merge(statistic);
-	}
+    @Transactional("swag49.map")
+    public void delete(Statistic statistic) {
+        statistic = em.merge(statistic);
+        em.remove(statistic);
+    }
 
-	@Transactional
-	public void delete(Statistic statistic) {
-		statistic = em.merge(statistic);
-		em.remove(statistic);
-	}
+    @Transactional("swag49.map")
+    public Statistic get(Long id) {
+        return em.find(Statistic.class, id);
+    }
 
-	public Statistic get(Object id) {
-		return em.find(Statistic.class, id);
-	}
+    @SuppressWarnings("unchecked")
+    @Transactional("swag49.map")
+    public List<Statistic> queryByExample(Statistic model) {
+        Session session = (Session) em.getDelegate();
+        Criteria criteria = session.createCriteria(Statistic.class);
 
-	@SuppressWarnings("unchecked")
-	public List<Statistic> queryByExample(Statistic model) {
-		Session session = (Session) em.getDelegate();
-		Criteria criteria = session.createCriteria(Statistic.class);
+        if (model != null)
+            criteria.add(Example.create(model));
 
-		if (model != null)
-			criteria.add(Example.create(model));
+        return criteria.list();
+    }
 
-		return criteria.list();
-	}
-
-	@Transactional
-	public Statistic update(Statistic statistic) {
-		return em.merge(statistic);
-	}
+    @Transactional("swag49.map")
+    public Statistic update(Statistic statistic) {
+        return em.merge(statistic);
+    }
 
 }

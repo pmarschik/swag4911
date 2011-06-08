@@ -13,13 +13,10 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository(value = "messageDAO")
-public class MessageDao implements DataAccessObject<Message> {
+public class MessageDAO implements DataAccessObject<Message, Long> {
 
     @PersistenceContext(unitName = "swag49.messaging")
     private EntityManager em;
-
-    public MessageDao() {
-    }
 
     @Transactional("swag49.messaging")
     public boolean contains(Message message) {
@@ -38,7 +35,7 @@ public class MessageDao implements DataAccessObject<Message> {
     }
 
     @Transactional("swag49.messaging")
-    public Message get(Object id) {
+    public Message get(Long id) {
         return em.find(Message.class, id);
     }
 

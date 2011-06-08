@@ -11,48 +11,48 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Repository(value = "actionDAO")
-public class ActionDao implements DataAccessObject<Action> {
+@Repository("actionDAO")
+public class ActionDAO implements DataAccessObject<Action, Long> {
 
-	@PersistenceContext
-	private EntityManager em;
+    @PersistenceContext(unitName = "swag49.map")
+    private EntityManager em;
 
-	public ActionDao() {
-	}
+    @Transactional("swag49.map")
+    public boolean contains(Action action) {
+        return em.contains(action);
+    }
 
-	public boolean contains(Action action) {
-		return em.contains(action);
-	}
+    @Transactional("swag49.map")
+    public Action create(Action action) {
+        return em.merge(action);
+    }
 
-	@Transactional
-	public Action create(Action action) {
-		return em.merge(action);
-	}
+    @Transactional("swag49.map")
+    public void delete(Action action) {
+        action = em.merge(action);
+        em.remove(action);
+    }
 
-	@Transactional
-	public void delete(Action action) {
-		action = em.merge(action);
-		em.remove(action);
-	}
+    @Transactional("swag49.map")
+    public Action get(Long id) {
+        return em.find(Action.class, id);
+    }
 
-	public Action get(Object id) {
-		return em.find(Action.class, id);
-	}
+    @SuppressWarnings("unchecked")
+    @Transactional("swag49.map")
+    public List<Action> queryByExample(Action model) {
+        Session session = (Session) em.getDelegate();
+        Criteria criteria = session.createCriteria(Action.class);
 
-	@SuppressWarnings("unchecked")
-	public List<Action> queryByExample(Action model) {
-		Session session = (Session) em.getDelegate();
-		Criteria criteria = session.createCriteria(Action.class);
+        if (model != null)
+            criteria.add(Example.create(model));
 
-		if (model != null)
-			criteria.add(Example.create(model));
+        return criteria.list();
+    }
 
-		return criteria.list();
-	}
-
-	@Transactional
-	public Action update(Action action) {
-		return em.merge(action);
-	}
+    @Transactional("swag49.map")
+    public Action update(Action action) {
+        return em.merge(action);
+    }
 
 }

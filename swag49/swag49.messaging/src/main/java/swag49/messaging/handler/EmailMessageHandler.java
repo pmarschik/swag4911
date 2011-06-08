@@ -30,11 +30,11 @@ public class EmailMessageHandler {
 
     @Autowired
     @Qualifier("messageDAO")
-    private DataAccessObject<Message> messageDAO;
+    private DataAccessObject<Message, Long> messageDAO;
 
     @Autowired
     @Qualifier("userDAO")
-    private DataAccessObject<User> userDAO;
+    private DataAccessObject<User, Long> userDAO;
 
     @Autowired
     private JavaMailSender mailSender;

@@ -13,7 +13,7 @@ public class PeriodicResourceUpdateLogic {
 
     @Autowired
     @Qualifier("buildingLevelDao")
-    private DataAccessObject<Player> playerDao;
+    private DataAccessObject<Player, Long> playerDao;
 
     // TODO: "periodisch" machen
     // http://static.springsource.org/spring/docs/current/spring-framework-reference/html/scheduling.html

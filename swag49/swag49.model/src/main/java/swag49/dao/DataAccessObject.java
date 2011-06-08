@@ -2,7 +2,7 @@ package swag49.dao;
 
 import java.util.List;
 
-public interface DataAccessObject<T> {
+public interface DataAccessObject<T, PK> {
 
 	public boolean contains(T model);
 
@@ -10,7 +10,7 @@ public interface DataAccessObject<T> {
 
 	public void delete(T model);
 
-	public T get(Object id);
+	public T get(PK id);
 
 	public List<T> queryByExample(T model);
 

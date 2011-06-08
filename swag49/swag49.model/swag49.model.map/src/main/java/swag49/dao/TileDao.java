@@ -11,48 +11,48 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Repository(value = "tileDAO")
-public class TileDao implements DataAccessObject<Tile> {
+@Repository("tileDAO")
+public class TileDAO implements DataAccessObject<Tile, Tile.Id> {
 
-	@PersistenceContext
-	private EntityManager em;
+    @PersistenceContext(unitName = "swag49.map")
+    private EntityManager em;
 
-	public TileDao() {
-	}
+    @Transactional("swag49.map")
+    public boolean contains(Tile tile) {
+        return em.contains(tile);
+    }
 
-	public boolean contains(Tile tile) {
-		return em.contains(tile);
-	}
+    @Transactional("swag49.map")
+    public Tile create(Tile tile) {
+        return em.merge(tile);
+    }
 
-	@Transactional
-	public Tile create(Tile tile) {
-		return em.merge(tile);
-	}
+    @Transactional("swag49.map")
+    public void delete(Tile tile) {
+        tile = em.merge(tile);
+        em.remove(tile);
+    }
 
-	@Transactional
-	public void delete(Tile tile) {
-		tile = em.merge(tile);
-		em.remove(tile);
-	}
+    @Transactional("swag49.map")
+    public Tile get(Tile.Id id) {
+        return em.find(Tile.class, id);
+    }
 
-	public Tile get(Object id) {
-		return em.find(Tile.class, id);
-	}
+    @SuppressWarnings("unchecked")
+    @Transactional("swag49.map")
+    public List<Tile> queryByExample(Tile model) {
+        Session session = (Session) em.getDelegate();
+        Criteria criteria = session.createCriteria(Tile.class);
 
-	@SuppressWarnings("unchecked")
-	public List<Tile> queryByExample(Tile model) {
-		Session session = (Session) em.getDelegate();
-		Criteria criteria = session.createCriteria(Tile.class);
+        if (model != null)
+            criteria.add(Example.create(model));
 
-		if (model != null)
-			criteria.add(Example.create(model));
+        return criteria.list();
+    }
 
-		return criteria.list();
-	}
-
-	@Transactional
-	public Tile update(Tile tile) {
-		return em.merge(tile);
-	}
+    @Transactional("swag49.map")
+    public Tile update(Tile tile) {
+        return em.merge(tile);
+    }
 
 }

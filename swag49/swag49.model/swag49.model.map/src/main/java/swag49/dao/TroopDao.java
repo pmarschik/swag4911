@@ -12,48 +12,48 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 //annotate with @Repository because it is a DAO, other components should be annotated with @Component
-@Repository(value = "troopDAO")
-public class TroopDao implements DataAccessObject<Troop> {
+@Repository("troopDAO")
+public class TroopDAO implements DataAccessObject<Troop, Long> {
 
-	@PersistenceContext
-	private EntityManager em;
+    @PersistenceContext(unitName = "swag49.map")
+    private EntityManager em;
 
-	public TroopDao() {
-	}
+    @Transactional("swag49.map")
+    public boolean contains(Troop troop) {
+        return em.contains(troop);
+    }
 
-	public boolean contains(Troop troop) {
-		return em.contains(troop);
-	}
+    @Transactional("swag49.map")
+    public Troop create(Troop troop) {
+        return em.merge(troop);
+    }
 
-	@Transactional
-	public Troop create(Troop troop) {
-		return em.merge(troop);
-	}
+    @Transactional("swag49.map")
+    public void delete(Troop troop) {
+        troop = em.merge(troop);
+        em.remove(troop);
+    }
 
-	@Transactional
-	public void delete(Troop troop) {
-		troop = em.merge(troop);
-		em.remove(troop);
-	}
+    @Transactional("swag49.map")
+    public Troop get(Long id) {
+        return em.find(Troop.class, id);
+    }
 
-	public Troop get(Object id) {
-		return em.find(Troop.class, id);
-	}
+    @SuppressWarnings("unchecked")
+    @Transactional("swag49.map")
+    public List<Troop> queryByExample(Troop model) {
+        Session session = (Session) em.getDelegate();
+        Criteria criteria = session.createCriteria(Troop.class);
 
-	@SuppressWarnings("unchecked")
-	public List<Troop> queryByExample(Troop model) {
-		Session session = (Session) em.getDelegate();
-		Criteria criteria = session.createCriteria(Troop.class);
+        if (model != null)
+            criteria.add(Example.create(model));
 
-		if (model != null)
-			criteria.add(Example.create(model));
+        return criteria.list();
+    }
 
-		return criteria.list();
-	}
-
-	@Transactional
-	public Troop update(Troop troop) {
-		return em.merge(troop);
-	}
+    @Transactional("swag49.map")
+    public Troop update(Troop troop) {
+        return em.merge(troop);
+    }
 
 }

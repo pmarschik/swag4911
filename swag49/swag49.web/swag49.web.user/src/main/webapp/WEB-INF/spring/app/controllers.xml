@@ -11,7 +11,9 @@
 		configure as beans -->
 	<context:component-scan base-package="swag49" />
 
-	<tx:annotation-driven />
+    <import resource="../db.xml"/>
+
+	<tx:annotation-driven transaction-manager="userTransactionManager"/>
 	<mvc:annotation-driven />
 
 	<mvc:resources mapping="/resources/**" location="/resources/" />

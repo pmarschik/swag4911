@@ -26,7 +26,7 @@ public class StatisticsController {
 
     @Autowired
     @Qualifier("statisticDAO")
-    private DataAccessObject<Statistic> statisticDAO;
+    private DataAccessObject<Statistic, Long> statisticDAO;
 
     private Map<Long, StatisticDTO> statistics;
 

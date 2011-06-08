@@ -38,11 +38,11 @@ public class UserController {
 
     @Autowired
     @Qualifier("userDAO")
-    private DataAccessObject<User> userDAO;
+    private DataAccessObject<User, Long> userDAO;
 
     @Autowired
     @Qualifier("mapLoactionDAO")
-    private DataAccessObject<MapLocation> mapLocationDAO;
+    private DataAccessObject<MapLocation, Long> mapLocationDAO;
 
     @Autowired
     private TokenService tokenService;
@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    @Transactional
+    @Transactional("swag49.user")
     public String registerUser(@Valid @ModelAttribute("user")
                                UserDTO userDTO, BindingResult bingBindingResult,
                                Map<String, Object> map) {
@@ -91,7 +91,7 @@ public class UserController {
         return "register";
     }
 
-    @Transactional
+    @Transactional("swag49.user")
     private List<UserDTO> getRegisteredUsers() {
         List<UserDTO> users = new ArrayList<UserDTO>();
 
@@ -105,7 +105,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/delete/{id}")
-    @Transactional
+    @Transactional("swag49.user")
     public String deleteUser(@PathVariable("id") Long userID) {
         User user = userDAO.get(userID);
         if (user != null) {
@@ -197,7 +197,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    @Transactional
+    @Transactional("swag49.user")
     public String editUser(@Valid @ModelAttribute("user")
                            UserDTO userDTO, BindingResult bingBindingResult) {
         if (bingBindingResult.hasErrors())
@@ -214,7 +214,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/maps", method = RequestMethod.GET)
-    @Transactional
+    @Transactional("swag49.user")
     public String maps(Map<String, Object> map) {
         if (loggedInUser == null)
             return "redirect:./";
@@ -228,7 +228,7 @@ public class UserController {
         return "maps";
     }
 
-    @Transactional
+    @Transactional("swag49.user")
     private List<MapLocationDTO> getUserMapLocations(User user) {
         List<MapLocationDTO> mapLocations = new ArrayList<MapLocationDTO>();
 
@@ -239,7 +239,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/join/{id}")
-    @Transactional
+    @Transactional("swag49.user")
     public String joinMap(@PathVariable("id") Long mapLocationID) {
 
         User user = userDAO.get(loggedInUser.getId());
@@ -258,13 +258,13 @@ public class UserController {
         return "redirect:" + mapLocation.getUrl() + mapController + userToken.toString();
     }
 
-    @Transactional
+    @Transactional("swag49.user")
     public MapLocation getMapLocation(Long mapLocationID) {
         MapLocation mapLocation = mapLocationDAO.get(mapLocationID);
         return mapLocation;
     }
 
-    @Transactional
+    @Transactional("swag49.user")
     public List<MapLocationDTO> getMapLocations(User user) {
         List<MapLocationDTO> mapLocations = new ArrayList<MapLocationDTO>();
 

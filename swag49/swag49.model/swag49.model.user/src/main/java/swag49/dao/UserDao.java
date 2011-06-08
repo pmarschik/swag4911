@@ -13,37 +13,37 @@ import java.util.List;
 
 // annotate with @Repository because it is a DAO, other components should be annotated with @Component
 @Repository(value="userDAO")
-public class UserDao implements DataAccessObject<User> {
+public class UserDAO implements DataAccessObject<User, Long> {
 
 	@PersistenceContext(unitName = "swag49.user")
 	private EntityManager em;
 
-	public UserDao() {
+	public UserDAO() {
 	}
 
-    @Transactional
+    @Transactional("swag49.user")
 	public boolean contains(User user) {
 		return em.contains(user);
 	}
 
-	@Transactional
+	@Transactional("swag49.user")
 	public User create(User user) {
 		return em.merge(user);
 	}
 
-	@Transactional
+	@Transactional("swag49.user")
 	public void delete(User user) {
 		user = em.merge(user);
 		em.remove(user);
 	}
 
-    @Transactional
-	public User get(Object id) {
+    @Transactional("swag49.user")
+	public User get(Long id) {
 		return em.find(User.class, id);
 	}
 
 	@SuppressWarnings("unchecked")
-    @Transactional
+    @Transactional("swag49.user")
 	public List<User> queryByExample(User model) {
 		Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(User.class);
@@ -54,7 +54,7 @@ public class UserDao implements DataAccessObject<User> {
 		return criteria.list();
 	}
 
-	@Transactional
+	@Transactional("swag49.user")
 	public User update(User user) {
 		return em.merge(user);
 	}
