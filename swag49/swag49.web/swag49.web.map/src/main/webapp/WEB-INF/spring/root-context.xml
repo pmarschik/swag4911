@@ -11,6 +11,8 @@
             <array>
                 <value>swag49.web.model.TokenDTO</value>
                 <value>swag49.web.model.MessageDTO</value>
+                <value>swag49.web.model.MessageQueryResponse</value>
+                <value>swag49.web.model.MessageQueryDTO</value>
                 <value>swag49.web.model.PlayerDTO</value>
                 <value>swag49.web.model.StatisticDTO</value>
             </array>
