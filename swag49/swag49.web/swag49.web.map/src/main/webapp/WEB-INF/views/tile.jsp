@@ -2,10 +2,10 @@
 <%@ page session="false" %>
 <body>
 	<c:choose>
-		<c:when test="${tileInfo.haseBase && tileInfo.enemyTerritory}">
+		<c:when test="${tileInfo.hasBase && tileInfo.enemyTerritory}">
 			<jsp:include page="enemybaseview.jsp"></jsp:include>
 		</c:when>
-		<c:when test="${tileInfo.haseBase && !tileInfo.enemyTerritory}">
+		<c:when test="${tileInfo.hasBase && !tileInfo.enemyTerritory}">
 			<jsp:include page="ownbaseview.jsp"></jsp:include>
 		</c:when>
 		<c:otherwise>

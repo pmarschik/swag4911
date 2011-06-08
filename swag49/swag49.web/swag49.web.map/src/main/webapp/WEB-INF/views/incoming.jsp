@@ -8,6 +8,17 @@
 </head>
 <body>
 <h1>[SWAG] Incoming Messages</h1>
+<c:if test="${user == null}">
+    <h3>You have to register or login!</h3>
+</c:if>
+<c:if test="${user != null}">
+    <h3>You are logged in as: ${user}</h3>
+    <ul class="messagingMenu">
+        <li><a class="messageLink" href="../messaging/incoming.html">Incoming Messages</a></li>
+        <li><a href="../messaging/outgoing.html">Outgoing Messages</a></li>
+        <li><a class="messageLink" href="../messaging/message.html">New message</a></li>
+    </ul>
+</c:if>
 <c:if test="${!empty incomingMessages}">
     <table class="data">
         <tr>
@@ -26,8 +37,5 @@
         </c:forEach>
     </table>
 </c:if>
-<ul>
-    <li><a href="index.html">Back</a></li>
-</ul>
 </body>
 </html>

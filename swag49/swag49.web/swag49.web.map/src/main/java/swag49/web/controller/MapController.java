@@ -155,6 +155,11 @@ public class MapController {
         return "redirect:../messaging/";
     }
 
+    @RequestMapping(value = "/tile", method = RequestMethod.GET)
+    public String tile() {
+        return "redirect:../tile/";
+    }
+
 //    @RequestMapping(value = "/mapoverview", method = RequestMethod.GET)
 //    public String mapoverview() {
 //        return "redirect:../mapoverview/";
