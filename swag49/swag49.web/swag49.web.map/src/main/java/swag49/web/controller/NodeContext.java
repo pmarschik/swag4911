@@ -2,13 +2,14 @@ package swag49.web.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
 /**
  * @author michael
  */
-@Controller
-public class NodeController {
+@Component
+@Scope("singleton")
+public class NodeContext {
 
     @Value("$map{map.node.url}")
     private String mapNodeUrl;

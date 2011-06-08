@@ -11,11 +11,10 @@ public class ResourceValue {
     private Integer amount_crops;
 
     public ResourceValue() {
-        amount_gold = Integer.valueOf(0);
-        amount_stone = Integer.valueOf(0);
-        amount_wood = Integer.valueOf(0);
-        amount_crops = Integer.valueOf(0);
-
+        amount_gold = 0;
+        amount_stone = 0;
+        amount_wood = 0;
+        amount_crops = 0;
     }
 
     public ResourceValue(int wood, int crops, int gold, int stone) {
@@ -23,6 +22,14 @@ public class ResourceValue {
         amount_crops = crops;
         amount_gold = gold;
         amount_stone = stone;
+    }
+
+    public ResourceValue(ResourceValue value) {
+        amount_wood = value.getAmount_wood();
+        amount_crops = value.getAmount_crops();
+        amount_gold = value.getAmount_gold();
+        amount_stone = value.getAmount_stone();
+
     }
 
     @Override
@@ -107,5 +114,6 @@ public class ResourceValue {
 
         return true;
     }
+
 
 }

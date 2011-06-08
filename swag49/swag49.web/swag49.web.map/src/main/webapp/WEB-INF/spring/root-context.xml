@@ -26,6 +26,7 @@
         <property name="supportedMediaTypes">
             <util:list>
                 <value>application/xml</value>
+                <value>application/x-www-from-urlencoded</value>
             </util:list>
         </property>
     </bean>

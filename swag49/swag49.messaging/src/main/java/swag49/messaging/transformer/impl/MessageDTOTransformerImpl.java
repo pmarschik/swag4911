@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.annotation.Transformer;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import swag49.dao.DataAccessObject;
 import swag49.messaging.model.Message;
 import swag49.messaging.model.MessageDTO;
@@ -19,6 +20,7 @@ public class MessageDTOTransformerImpl implements MessageDTOTransformer {
 
     @Override
     @Transformer
+    @Transactional("swag49.user")
     public MessageDTO apply(Message input) {
         User receiver = Preconditions.checkNotNull(userDAO.get(input.getReceiverUserId()), "receiver not existing");
         User sender = Preconditions.checkNotNull(userDAO.get(input.getSenderUserId()), "sender not existing");

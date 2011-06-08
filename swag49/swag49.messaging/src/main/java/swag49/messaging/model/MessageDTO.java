@@ -141,7 +141,20 @@ public class MessageDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(sender, receiver, sent, received, subject, content);
+        return Objects.hashCode(mapUrl, sender, receiver, sent, received, subject, content);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MessageDTO that = (MessageDTO) o;
+
+        return Objects.equal(sender, that.sender) && Objects.equal(receiver, that.receiver) &&
+                Objects.equal(sent, that.sent) && Objects.equal(received, that.received) &&
+                Objects.equal(subject, that.subject) && Objects.equal(content, that.content) &&
+                Objects.equal(mapUrl, that.mapUrl);
     }
 
     @Override

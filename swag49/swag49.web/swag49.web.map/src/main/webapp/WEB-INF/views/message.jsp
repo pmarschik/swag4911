@@ -47,8 +47,8 @@
     <form:form method="post" action="send" commandName="message">
         <table>
             <tr>
-                <td><form:label path="receiver.id">Receiver</form:label></td>
-                <td><form:input path="receiver.id"/></td>
+                <td><form:label path="receiver.username">Receiver</form:label></td>
+                <td><form:input path="receiver.username"/></td>
                 <td style="color:red;0"><form:errors path="receiver"/></td>
             </tr>
             <tr>
@@ -68,9 +68,6 @@
             </tr>
         </table>
     </form:form>
-    <ul>
-        <li><a href="index.html">Back</a></li>
-    </ul>
 </c:if>
 </body>
 </html>

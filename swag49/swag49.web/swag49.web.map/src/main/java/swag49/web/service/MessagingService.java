@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import swag49.web.model.PlayerDTO;
 import java.util.Collection;
 
 @Controller
+@Scope("singleton")
 public class MessagingService {
 
     @Log
@@ -35,6 +37,12 @@ public class MessagingService {
     @Transactional
     public PlayerDTO getUser(@PathVariable("userId") long userId) {
         Player playerExample = new Player();
+        //noinspection NullableProblems
+        playerExample.setResources(null);
+        //noinspection NullableProblems
+        playerExample.setUpkeep(null);
+        //noinspection NullableProblems
+        playerExample.setIncome(null);
         playerExample.setUserId(userId);
 
         Collection<Player> queryResult = playerDAO.queryByExample(playerExample);
@@ -46,6 +54,7 @@ public class MessagingService {
     }
 
     @RequestMapping(value = "/messaging/receive", method = RequestMethod.PUT)
+    @ResponseBody
     public void receiveMessage(@RequestBody MessageDTO message) {
         log.info("received message {}", message);
 
@@ -53,6 +62,7 @@ public class MessagingService {
     }
 
     @RequestMapping(value="/messaging/list", method = RequestMethod.PUT)
+    @ResponseBody
     public void listMessages(@RequestBody MessageQueryResponse messageQueryResponse) {
         log.info("received {} messages", messageQueryResponse.getMessages().size());
 

@@ -1,6 +1,7 @@
 package swag49.messaging.handler;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,6 +18,7 @@ import swag49.messaging.transformer.MessageDTOTransformer;
 import swag49.util.Log;
 
 import java.util.List;
+import java.util.Set;
 
 @Component("messageListHandler")
 public class MessageListHandler {
@@ -34,28 +36,34 @@ public class MessageListHandler {
     @Autowired
     private RestTemplate restTemplate;
 
-    @ServiceActivator
     @Transactional("swag49.messaging")
-    public void handleMessage(MessageQueryDTO messageQuery) {
+    private List<Message> getAllMessagesByUser(Long userId, String mapUrl) {
         Message messageExample = new Message();
-        messageExample.setReceiverUserId(messageQuery.getUserId());
-        messageExample.setMapUrl(messageQuery.getMapURL());
+        messageExample.setReceiverUserId(userId);
+        messageExample.setMapUrl(mapUrl);
 
         List<Message> receiverMessages = messageDAO.queryByExample(messageExample);
-        logger.info("got {} messages with receiver={}", receiverMessages.size(), messageQuery.getUserId());
+        logger.info("got {} messages with receiver={}", receiverMessages.size(), userId);
 
         //noinspection NullableProblems
         messageExample.setReceiverUserId(null);
-        messageExample.setSenderUserId(messageQuery.getUserId());
+        messageExample.setSenderUserId(userId);
 
         List<Message> senderMessages = messageDAO.queryByExample(messageExample);
-        logger.info("got {} messages with sender={}", senderMessages.size(), messageQuery.getUserId());
+        logger.info("got {} messages with sender={}", senderMessages.size(), userId);
 
         List<Message> messages = Lists.newArrayList(senderMessages);
         messages.addAll(receiverMessages);
         messages.addAll(messageDAO.queryByExample(messageExample));
 
-        List<MessageDTO> messageDTOs = Lists.transform(messages, messageDTOTransformer);
+        return messages;
+    }
+
+    @ServiceActivator
+    public void handleMessage(MessageQueryDTO messageQuery) {
+        List<Message> allMessages = getAllMessagesByUser(messageQuery.getUserId(), messageQuery.getMapURL());
+        List<MessageDTO> allMessageDTOs = Lists.transform(allMessages, messageDTOTransformer);
+        Set<MessageDTO> messageDTOs = Sets.newHashSet(allMessageDTOs);
 
         String requestUri = messageQuery.getMapURL() + "/swag-api/messaging/list";
         restTemplate.put(requestUri, new MessageQueryResponse(messageQuery, messageDTOs));

@@ -6,7 +6,7 @@
 <table>
     <tr>
         <td colspan="3">
-            <a href="./?xLow=${xLow}&yLow=${yLow - 1}&xHigh=${xHigh}&yHigh=${yHigh - 1}">
+            <a class="contentLink" href="./mapoverview.html?xLow=${xLow}&yLow=${yLow - 1}&xHigh=${xHigh}&yHigh=${yHigh - 1}">
                 <img src="${resourcePath}<spring:theme code='theme.image.misc.up'/>" alt="Up" title="UP"/>
             </a>
         </td>
@@ -14,7 +14,7 @@
 
     <tr>
         <td>
-            <a href="./?xLow=${xLow - 1}&yLow=${yLow}&xHigh=${xHigh - 1}&yHigh=${yHigh}">
+            <a class="contentLink" href="./mapoverview.html?xLow=${xLow - 1}&yLow=${yLow}&xHigh=${xHigh - 1}&yHigh=${yHigh}">
                 <img src="${resourcePath}<spring:theme code='theme.image.misc.left'/>"
                      alt="Left" title="Left"/>
             </a>
@@ -26,7 +26,7 @@
                         <c:forEach items="${tileLine}" var="tile">
                             <td class="tilePic">
                                 <!-- TODO link should be replaced!!! (Or tiles-framework used) -->
-                                <a href="tile/?x=${tile.x}&y=${tile.y}">
+                                <a class="contentLink" href="tile/?x=${tile.x}&y=${tile.y}">
                                     <c:choose>
                                         <c:when test="${tile.specialResource == 'NONE'}">
                                             <c:choose>
@@ -186,7 +186,7 @@
 
         </td>
         <td>
-            <a href="./?xLow=${xLow+1}&yLow=${yLow}&xHigh=${xHigh+1}&yHigh=${yHigh}">
+            <a class="contentLink" href="./mapoverview.html?xLow=${xLow+1}&yLow=${yLow}&xHigh=${xHigh+1}&yHigh=${yHigh}">
                  <img src="${resourcePath}<spring:theme code='theme.image.misc.right'/>"
                      alt="Right" title="Right"/>
             </a>
@@ -195,9 +195,19 @@
 
     <tr>
         <td colspan="3">
-            <a href="./?xLow=${xLow}&yLow=${yLow + 1}&xHigh=${xHigh}&yHigh=${yHigh + 1}"><img
+            <a class="contentLink" href="./mapoverview.html?xLow=${xLow}&yLow=${yLow + 1}&xHigh=${xHigh}&yHigh=${yHigh + 1}"><img
                     src="<spring:theme code='theme.image.misc.down'/>" alt="Down" title="Down"/>
             </a>
         </td>
     </tr>
 </table>
+
+<script type="text/javascript">
+    $(".contentLink").live("click", function () {
+        $.get($(this).attr("href"),function (result) {
+            $("#content").html(result);
+        });
+
+        return false;
+    });
+</script>

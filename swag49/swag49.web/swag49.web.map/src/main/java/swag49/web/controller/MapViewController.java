@@ -14,6 +14,7 @@ import swag49.dao.DataAccessObject;
 import swag49.model.*;
 import swag49.util.Log;
 import swag49.web.model.TileOverviewDTO;
+import swag49.web.model.TileOverviewDTOFull;
 import swag49.web.model.TroopDTO;
 
 import javax.annotation.PostConstruct;
@@ -37,7 +38,7 @@ public class MapViewController {
     private static Logger logger;
 
     @Autowired
-    private NodeController nodeController;
+    private NodeContext nodeController;
 
     private static final int VIEWSIZE = 3;
 
