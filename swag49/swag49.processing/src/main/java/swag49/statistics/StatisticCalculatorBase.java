@@ -1,5 +1,6 @@
 package swag49.statistics;
 
+import org.hibernate.annotations.OptimisticLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,6 @@ import java.util.Collection;
 
 public abstract class StatisticCalculatorBase implements StatisticCalculator {
 
-    private static final int DEFAULT_LIMIT = 25;
-
     @Log
     private Logger log;
 
@@ -37,7 +36,7 @@ public abstract class StatisticCalculatorBase implements StatisticCalculator {
     private DataAccessObject<StatisticEntry, StatisticEntry.Id> statisticEntryDAO;
 
     @Value("$processing{statistic.limit}")
-    private Integer limit = DEFAULT_LIMIT;
+    private Integer limit;
 
     @Override
     @Transactional("swag49.map")

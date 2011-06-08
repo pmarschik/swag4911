@@ -11,15 +11,14 @@
     <!-- Scans within the base package of the application for @Components to
          configure as beans -->
     <import resource="test-db.xml"/>
-    <import resource="test-quartz.xml"/>
+    <!--<import resource="test-quartz.xml"/>-->
 
-    <bean id="mostBasesCalculator" class="swag49.statistics.MostBasesCalculator" autowire-candidate="true">
-        <property name="limit" value="5" />
+    <bean id="propertyPlaceHolder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:swag49.processing.test.properties"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="placeholderPrefix" value="$processing{"/>
+        <property name="placeholderSuffix" value="}"/>
     </bean>
 
-     <bean id="mostResourcesCalculator" class="swag49.statistics.MostResourcesCalculator" autowire-candidate="true">
-        <property name="limit" value="5" />
-    </bean>
-    
     <context:component-scan base-package="swag49"/>
 </beans>
