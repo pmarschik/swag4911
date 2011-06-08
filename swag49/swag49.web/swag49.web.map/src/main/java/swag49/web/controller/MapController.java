@@ -70,12 +70,12 @@ public class MapController {
     public void init() {
         swag49.model.Map example = new swag49.model.Map();
         example.setUrl(nodeController.getMapNodeUrl());
-        logger.error("Map url: " + nodeController.getMapNodeUrl());
+        logger.debug("Map url: " + nodeController.getMapNodeUrl());
 
         Collection<swag49.model.Map> maps = mapDAO.queryByExample(example);
         if (maps != null && maps.size() == 1) {
             map = maps.iterator().next();
-            logger.error("Map with id " + map.getId() + " found");
+            logger.debug("Map with id " + map.getId() + " found");
         } else {
             logger.error("Error while finding map");
         }
@@ -115,6 +115,7 @@ public class MapController {
 
             example.setUserId(this.userID);
             Collection<Player> playerValues = playerDAO.queryByExample(example);
+
             if (playerValues != null && playerValues.size() == 1) {
                 player = playerValues.iterator().next();
                 logger.error("Player " + player.getId() + " found");
