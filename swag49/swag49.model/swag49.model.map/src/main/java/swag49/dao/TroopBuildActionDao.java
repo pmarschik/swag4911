@@ -12,7 +12,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository(value = "troopBuildActionDAO")
-public class TroopBuildActionDao implements DataAccessObject<TroopBuildAction> {
+public class TroopBuildActionDao implements DataAccessObject<TroopBuildAction, Long> {
 
     public boolean contains(TroopBuildAction troopBuildAction) {
         return em.contains(troopBuildAction);
@@ -32,7 +32,7 @@ public class TroopBuildActionDao implements DataAccessObject<TroopBuildAction> {
         em.remove(troopBuildAction);
     }
 
-    public TroopBuildAction get(Object id) {
+    public TroopBuildAction get(Long id) {
         return em.find(TroopBuildAction.class, id);
     }
 
