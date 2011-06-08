@@ -37,7 +37,7 @@ public class MapViewController {
     private static Logger logger;
 
     @Autowired
-    private NodeController nodeController;
+    private NodeContext nodeController;
 
     private static final int VIEWSIZE = 3;
 

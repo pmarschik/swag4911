@@ -1,7 +1,7 @@
 package swag49.messaging.model;
 
 import javax.xml.bind.annotation.*;
-import java.util.List;
+import java.util.Set;
 
 @XmlRootElement(name = "messagequeryresponse")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -11,11 +11,11 @@ public class MessageQueryResponse {
 
     @XmlElementWrapper(name = "messages")
     @XmlElement(name = "message")
-    private List<MessageDTO> messages;
+    private Set<MessageDTO> messages;
 
     public MessageQueryResponse() {}
 
-    public MessageQueryResponse(MessageQueryDTO messageQuery, List<MessageDTO> messages) {
+    public MessageQueryResponse(MessageQueryDTO messageQuery, Set<MessageDTO> messages) {
         this.messageQuery = messageQuery;
         this.messages = messages;
     }
@@ -28,11 +28,11 @@ public class MessageQueryResponse {
         this.messageQuery = messageQuery;
     }
 
-    public List<MessageDTO> getMessages() {
+    public Set<MessageDTO> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<MessageDTO> messages) {
+    public void setMessages(Set<MessageDTO> messages) {
         this.messages = messages;
     }
 }
