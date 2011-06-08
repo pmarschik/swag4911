@@ -11,15 +11,15 @@ public class TroopBuildActionJob extends ActionJobBase<TroopBuildAction> {
 
 	@Autowired
 	@Qualifier("troopBuildActionDAO")
-	private DataAccessObject<TroopBuildAction> troopBuildActionDao;
+	private DataAccessObject<TroopBuildAction, Long> troopBuildActionDao;
 
 	@Override
 	protected void doWork(TroopBuildAction action, JobExecutionContext context) {
 		mapLogic.handleAction(action);
 	}
 
-	@Override
-	protected DataAccessObject<TroopBuildAction> getDao() {
+     @Override
+	protected DataAccessObject<TroopBuildAction, Long> getDAO() {
 		return troopBuildActionDao;
 	}
 

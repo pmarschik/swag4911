@@ -32,7 +32,7 @@ public class MapLogic {
 
     @Autowired
     @Qualifier("troopDAO")
-    private DataAccessObject<Troop, Long> troopDao;
+    private DataAccessObject<Troop, Long > troopDao;
 
 
     @Autowired
@@ -46,11 +46,11 @@ public class MapLogic {
 
     @Autowired
     @Qualifier("buildingDAO")
-    private DataAccessObject<Building, Square.Id> buildingDao;
+    private DataAccessObject<Building,Square.Id> buildingDao;
 
     @Autowired
     @Qualifier("buildingLevelDAO")
-    private DataAccessObject<BuildingLevel, BuildingLevel.Id> buildingLevelDao;
+    private DataAccessObject<BuildingLevel,BuildingLevel.Id> buildingLevelDao;
 
     @Autowired
     @Qualifier("buildActionDAO")
@@ -97,8 +97,7 @@ public class MapLogic {
 
         player.setIncome(homeBase.getResourceProduction());
         player.setUpkeep(new ResourceValue());
-        player.setResources(
-                new ResourceValue(START_AMOUNT_WOOD, START_AMOUNT_CROPS, START_AMOUNT_GOLD, START_AMOUNT_STONE));
+        player.setResources(new ResourceValue(START_AMOUNT_WOOD, START_AMOUNT_CROPS, START_AMOUNT_GOLD, START_AMOUNT_STONE));
 
         player = playerDAO.update(player);
 
@@ -298,7 +297,8 @@ public class MapLogic {
 
         tile.setBase(base);
         tileDAO.update(tile);
-
+                        System.out.println(owner.getResources());
+        System.out.println(resourceProduction.getAmount_gold());
         owner.getResources().add(resourceProduction);
         playerDAO.update(owner);
 
@@ -596,7 +596,7 @@ public class MapLogic {
     private void sendMessage(Player sender, Player receiver, String subject, String content) {
 
         MessageDTO message = new MessageDTO(subject, content, sender.getUserId(), null, receiver.getUserId(),
-                null, new Date(), sender.getPlays().getUrl());
+                null, new Date(), new Date(), sender.getPlays().getUrl());
 
         restTemplate.put("http://localhost:8080/messaging/send", message);
     }

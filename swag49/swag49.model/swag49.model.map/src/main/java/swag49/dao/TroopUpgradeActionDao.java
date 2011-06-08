@@ -12,7 +12,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository(value = "troopUpgradeActionDAO")
-public class TroopUpgradeActionDao implements DataAccessObject<TroopUpgradeAction,Long> {
+public class TroopUpgradeActionDAO implements DataAccessObject<TroopUpgradeAction,Long> {
 
     public boolean contains(TroopUpgradeAction troopUpgradeAction) {
         return em.contains(troopUpgradeAction);

@@ -11,7 +11,7 @@ public class TroopUpgradeActionJob extends ActionJobBase<TroopUpgradeAction> {
 
 	@Autowired
 	@Qualifier("troopUpgradeActionDAO")
-	private DataAccessObject<TroopUpgradeAction> troopUpgradeActionDao;
+	private DataAccessObject<TroopUpgradeAction, Long> troopUpgradeActionDao;
 
 	@Override
 	protected void doWork(TroopUpgradeAction action, JobExecutionContext context) {
@@ -19,7 +19,7 @@ public class TroopUpgradeActionJob extends ActionJobBase<TroopUpgradeAction> {
 	}
 
 	@Override
-	protected DataAccessObject<TroopUpgradeAction> getDao() {
+	protected DataAccessObject<TroopUpgradeAction, Long> getDAO() {
 		return troopUpgradeActionDao;
 	}
 
