@@ -32,7 +32,7 @@ public class Player {
 			@AttributeOverride(name = "amount_stone", column = @Column(name = "resources_stone")),
 			@AttributeOverride(name = "amount_wood", column = @Column(name = "resources_wood")),
 			@AttributeOverride(name = "amount_crops", column = @Column(name = "resources_crops")) })
-	private ResourceValue resources = new ResourceValue();
+	private ResourceValue resources;
 
 	@Embedded
 	@AttributeOverrides({
@@ -40,7 +40,7 @@ public class Player {
 			@AttributeOverride(name = "amount_stone", column = @Column(name = "income_stone")),
 			@AttributeOverride(name = "amount_wood", column = @Column(name = "income_wood")),
 			@AttributeOverride(name = "amount_crops", column = @Column(name = "income_crops")) })
-	private ResourceValue income = new ResourceValue();
+	private ResourceValue income;
 
 	@Embedded
 	@AttributeOverrides({
@@ -48,7 +48,7 @@ public class Player {
 			@AttributeOverride(name = "amount_stone", column = @Column(name = "upkeep_stone")),
 			@AttributeOverride(name = "amount_wood", column = @Column(name = "upkeep_wood")),
 			@AttributeOverride(name = "amount_crops", column = @Column(name = "upkeep_crops")) })
-	private ResourceValue upkeep = new ResourceValue();
+	private ResourceValue upkeep;
 
 	public ResourceValue getUpkeep() {
 		return upkeep;
