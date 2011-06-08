@@ -42,8 +42,8 @@ public class MapHelper {
                 map.setMaxUsers(100);
                 Set<Tile> tiles = new HashSet<Tile>();
                 map = mapDAO.create(map);
-                for (int i = 0; i < 4; i++) {
-                    for (int j = 0; j < 4; j++) {
+                for (int i = 0; i < 10; i++) {
+                    for (int j = 0; j < 10; j++) {
                         Tile tile = new Tile(map, i, j);
                         tile.setSpecial(ResourceType.NONE);
                         tile.setBase(null);
@@ -69,8 +69,8 @@ public class MapHelper {
                 map.setMaxUsers(100);
                 Set<Tile> tiles = new HashSet<Tile>();
                 map = mapDAO.create(map);
-                for (int i = 0; i < 4; i++) {
-                    for (int j = 0; j < 4; j++) {
+                for (int i = 0; i < 10; i++) {
+                    for (int j = 0; j < 10; j++) {
                         Tile tile = new Tile(map, i, j);
                         tile.setSpecial(ResourceType.NONE);
                         tile.setBase(null);

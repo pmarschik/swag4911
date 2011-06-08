@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import swag49.dao.DataAccessObject;
-import swag49.gamelogic.BuildActionLogic;
 import swag49.model.BuildAction;
 
 public class BuildActionJob extends ActionJobBase<BuildAction> {
@@ -16,9 +15,7 @@ public class BuildActionJob extends ActionJobBase<BuildAction> {
 
 	@Override
 	protected void doWork(BuildAction action, JobExecutionContext context) {
-		BuildActionLogic logic = new BuildActionLogic();
-		logic.handleAction(action);
-
+		mapLogic.handleBuildAction(action);
 	}
 
 	@Override
