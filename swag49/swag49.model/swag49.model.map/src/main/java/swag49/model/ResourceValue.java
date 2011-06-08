@@ -15,7 +15,6 @@ public class ResourceValue {
         amount_stone = Integer.valueOf(0);
         amount_wood = Integer.valueOf(0);
         amount_crops = Integer.valueOf(0);
-
     }
 
     public ResourceValue(int wood, int crops, int gold, int stone) {

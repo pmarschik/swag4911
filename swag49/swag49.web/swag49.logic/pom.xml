@@ -10,7 +10,7 @@
     </parent>
     <groupId>swag49</groupId>
     <artifactId>swag49.logic</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>swag49.logic</name>
 

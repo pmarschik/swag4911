@@ -26,7 +26,7 @@
                         <c:forEach items="${tileLine}" var="tile">
                             <td class="tilePic">
                                 <!-- TODO link should be replaced!!! (Or tiles-framework used) -->
-                                <a href="tile/?x=${tile.x}&y=${tile.y}">
+                                <a class="contentLink" href="tile/?x=${tile.x}&y=${tile.y}">
                                     <c:choose>
                                         <c:when test="${tile.specialResource == 'NONE'}">
                                             <c:choose>
@@ -201,3 +201,13 @@
         </td>
     </tr>
 </table>
+
+<script type="text/javascript">
+    $(".contentLink").live("click", function () {
+        $.get($(this).attr("href"),function (result) {
+            $("#content").html(result);
+        });
+
+        return false;
+    });
+</script>
