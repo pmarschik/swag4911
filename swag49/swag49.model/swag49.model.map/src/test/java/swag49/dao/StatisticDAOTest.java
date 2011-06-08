@@ -40,7 +40,7 @@ public class StatisticDAOTest {
 
 
     @Test
-    @Transactional
+    @Transactional("swag49.map")
     public void create_shouldCreate() throws Exception {
         Statistic statistic = new Statistic();
         statistic.setName("Most defeats");

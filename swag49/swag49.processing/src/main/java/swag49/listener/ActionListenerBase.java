@@ -1,60 +1,39 @@
 package swag49.listener;
 
-import static org.quartz.JobBuilder.newJob;
-import static org.quartz.TriggerBuilder.newTrigger;
+import org.quartz.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import swag49.model.Action;
 
 import javax.persistence.PostPersist;
 import javax.persistence.PostRemove;
 
-import org.quartz.Job;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import swag49.model.Action;
-
 public abstract class ActionListenerBase {
 
-	@Autowired
-	private Scheduler scheduler;
+    @Autowired
+    private Scheduler scheduler;
 
-	protected abstract Class<? extends Job> getJobClass();
+    protected abstract Class<? extends Job> getJobClass();
 
-	@PostRemove
-	public void postRemove(Action action) throws SchedulerException {
-		scheduler.deleteJob(getJobKey(action));
-	}
+    @PostRemove
+    public void postRemove(Action action) throws SchedulerException {
+        scheduler.deleteJob(getJobId(action), getJobGroup(action));
+    }
 
-	@PostPersist
-	public void postPersist(Action action) throws SchedulerException {
-		JobDetail jobDetail = newJob(getJobClass()).withIdentity(
-				getJobKey(action)).usingJobData("actionId", action.getId())
-				.build();
+    @PostPersist
+    public void postPersist(Action action) throws SchedulerException {
+        JobDetail jobDetail = new JobDetail(getJobId(action), getJobGroup(action), getJobClass());
+        jobDetail.getJobDataMap().put("actionId", action.getId());
 
-		Trigger trigger = newTrigger().withIdentity(action.getId().toString(),
-				action.getClass().getName()).startAt(action.getEndDate())
-				.build();
+        Trigger trigger = new SimpleTrigger(getJobId(action), getJobGroup(action), action.getEndDate());
 
-		scheduler.scheduleJob(jobDetail, trigger);
-	}
+        scheduler.scheduleJob(jobDetail, trigger);
+    }
 
-	private JobKey getJobKey(Action action) {
-		return new JobKey(action.getId().toString(), action.getClass()
-				.getName());
-	}
+    private String getJobId(Action action) {
+        return action.getId().toString();
+    }
 
-	// private JobDataMap getJobDataMap(TroopAction action) {
-	// JobDataMap jobData = new JobDataMap();
-	// ArrayList<Long> troopIds = new ArrayList<Long>();
-	// for (Troop troop : action.getConcerns()) {
-	// troopIds.add(troop.getId());
-	// }
-	// jobData.put("actionId", action.getId());
-	// jobData.put("tile", action.getTarget().getId());
-	// jobData.put("player", action.getPlayer().getId());
-	// return jobData;
-	// }
+    private String getJobGroup(Action action) {
+        return action.getClass().getName();
+    }
 }

@@ -46,6 +46,7 @@ public class StatisticEntryDAOTest {
     private void createTestdata() {
         Map map = new Map();
         map.setMaxUsers(5);
+        map.setUrl("test");
         em.persist(map);
 
         player1 = new Player();
@@ -68,7 +69,7 @@ public class StatisticEntryDAOTest {
     }
 
     @Test
-    @Transactional
+    @Transactional("swag49.map")
     public void create_shouldCreate() throws Exception {
         StatisticEntry entry1 = new StatisticEntry(statistic, 1);
         entry1.setPlayer(player1);
@@ -94,7 +95,7 @@ public class StatisticEntryDAOTest {
     }
 
     @Test
-    @Transactional
+    @Transactional("swag49.map")
     public void update_shouldUpdate() throws Exception {
         StatisticEntry entry1 = new StatisticEntry(statistic, 1);
         entry1.setPlayer(player1);
@@ -113,7 +114,7 @@ public class StatisticEntryDAOTest {
 
 
     @Test
-    @Transactional
+    @Transactional("swag49.map")
     public void delete_shouldDelete() throws Exception {
         StatisticEntry entry1 = new StatisticEntry(statistic, 1);
         entry1.setPlayer(player1);

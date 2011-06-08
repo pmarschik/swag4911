@@ -6,43 +6,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import swag49.model.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/test-context.xml"})
+@ContextConfiguration(locations = {"/test-context.xml"})
 public class MapDAOTest {
-	// must use interface, qualifier is optional, use only if several beans that match interface
-    @Autowired @Qualifier("mapDAO")
+    // must use interface, qualifier is optional, use only if several beans that match interface
+    @Autowired
+    @Qualifier("mapDAO")
     private DataAccessObject<Map, Long> mapDAO;
 
     @Test
     public void create_shouldCreate() throws Exception {
-		Map map = new Map();
-		map.setMaxUsers(5);
+        Map map = new Map();
+        map.setMaxUsers(5);
+        map.setUrl("test");
 
-		map = mapDAO.create(map);
+        map = mapDAO.create(map);
     }
 
     @Test
     public void delete_shouldDelete() throws Exception {
-		Map map = new Map();
-		map.setMaxUsers(5);
+        Map map = new Map();
+        map.setMaxUsers(5);
+        map.setUrl("test");
 
-		map = mapDAO.create(map);
+        map = mapDAO.create(map);
 
-		mapDAO.delete(map);
+        mapDAO.delete(map);
     }
 
     @Test
-    public void update_shouldUpdate() throws Exception{
-		Map map = new Map();
-		map.setMaxUsers(5);
+    public void update_shouldUpdate() throws Exception {
+        Map map = new Map();
+        map.setMaxUsers(5);
+        map.setUrl("test");
 
-		map = mapDAO.create(map);
+        map = mapDAO.create(map);
 
-		map.setMaxUsers(1);
+        map.setMaxUsers(1);
+        map.setUrl("test1");
 
-		mapDAO.update(map);
+        mapDAO.update(map);
     }
 }
