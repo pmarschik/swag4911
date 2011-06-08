@@ -14,8 +14,6 @@
         </property>
     </bean>
 
-    <mvc:resources mapping="/resources/**" location="/resources/"/>
-
     <context:component-scan base-package="swag49"/>
     <import resource="../db.xml"/>
     <mvc:annotation-driven/>

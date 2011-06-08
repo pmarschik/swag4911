@@ -20,7 +20,7 @@
             <tr>
                 <td>${message.sender}</td>
                 <td>${message.subject}</td>
-                <td>${message.receiveDate}</td>
+                <td>${message.received}</td>
                 <td><a href="view/${message.id}">View</a></td>
             </tr>
         </c:forEach>

@@ -46,7 +46,7 @@ public class MessagingService {
     }
 
     @RequestMapping(value = "/messaging/receive", method = RequestMethod.PUT)
-    public void receiveMessage(@RequestParam("message") MessageDTO message) {
+    public void receiveMessage(@RequestBody MessageDTO message) {
         log.info("received message {}", message);
 
         receivedMessages.put(message.getReceiver().getId(), message);

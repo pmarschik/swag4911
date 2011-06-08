@@ -31,22 +31,31 @@ public class WebMessageHandler {
     @Autowired
     private RestTemplate restTemplate;
 
-    @ServiceActivator
+    @Transactional("swag49.user")
+    public String getUsername(Long userId) {
+        return userDAO.get(userId).getUsername();
+    }
+
     @Transactional("swag49.messaging")
+    public Message storeAndReceiveMessage(Message message) {
+        message.setReceiveDate(new Date());
+        return messageDAO.create(message);
+    }
+
+    @ServiceActivator
     public void handleMessage(Message message) {
         logger.info("Sending message {} to web-server", message);
-        message.setReceiveDate(new Date());
-        message = messageDAO.create(message);
+        message = storeAndReceiveMessage(message);
 
-        String senderUsername = userDAO.get(message.getSenderUserId()).getUsername();
-        String receiverUsername = userDAO.get(message.getReceiverUserId()).getUsername();
+        String senderUsername = getUsername(message.getSenderUserId());
+        String receiverUsername = getUsername(message.getReceiverUserId());
 
         MessageDTO messageDTO =
                 new MessageDTO(message.getSubject(), message.getContent(), message.getSenderUserId(), senderUsername,
                         message.getReceiverUserId(), receiverUsername, message.getSendDate(),
                         message.getReceiveDate(), message.getMapUrl());
 
-        String requestUri = message.getMapUrl() + "/swag-api/messaging/receive";
+        String requestUri = message.getMapUrl() + "swag-api/messaging/receive";
         restTemplate.put(requestUri, messageDTO);
     }
 }
