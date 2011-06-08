@@ -111,7 +111,7 @@ public class MapLogic {
     }
 
     @Transactional
-    public void handleTroopUpgradeAction(TroopUpgradeAction action) {
+    public void handleAction(TroopUpgradeAction action) {
         //TODO
     }
 
@@ -121,7 +121,7 @@ public class MapLogic {
     }
 
     @Transactional
-    public void handleTroopBuildAction(TroopUpgradeAction action) {
+    public void handleAction(TroopBuildAction action) {
         //TODO
     }
 
@@ -307,7 +307,7 @@ public class MapLogic {
 
 
     @Transactional
-    public void handleBuildAction(BuildAction action) {
+    public void handleAction(BuildAction action) {
         Building building = action.getConcerns();
 
         // get current level
@@ -339,7 +339,7 @@ public class MapLogic {
 
 
     @Transactional
-    public void handleTroopAction(TroopAction action) {
+    public void handleAction(TroopAction action) {
         Tile tile = action.getTarget();
 
         boolean canBuildBase = false;
@@ -596,7 +596,7 @@ public class MapLogic {
     private void sendMessage(Player sender, Player receiver, String subject, String content) {
 
         MessageDTO message = new MessageDTO(subject, content, sender.getUserId(), null, receiver.getUserId(),
-                null, new Date(), null, sender.getPlays().getUrl());
+                null, new Date(), sender.getPlays().getUrl());
 
         restTemplate.put("http://localhost:8080/messaging/send", message);
     }

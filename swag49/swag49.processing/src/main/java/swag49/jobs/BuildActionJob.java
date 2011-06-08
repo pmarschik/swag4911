@@ -15,7 +15,7 @@ public class BuildActionJob extends ActionJobBase<BuildAction> {
 
 	@Override
 	protected void doWork(BuildAction action, JobExecutionContext context) {
-		mapLogic.handleBuildAction(action);
+		mapLogic.handleAction(action);
 	}
 
 	@Override

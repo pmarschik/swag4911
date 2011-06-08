@@ -15,7 +15,7 @@ public class TroopActionJob extends ActionJobBase<TroopAction> {
 
 	@Override
 	protected void doWork(TroopAction action, JobExecutionContext context) {
-		mapLogic.handleTroopAction(action);
+		mapLogic.handleAction(action);
 	}
 
 	@Override
