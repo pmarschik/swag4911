@@ -12,6 +12,7 @@
 	<div id="header">
         <div id="playerResources">
 
+        <a href="playerresources.html">Refresh</a>
         </div>
 	</div>
 	<div id="subContent">

@@ -429,7 +429,7 @@ public class MapController {
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
 
-        ResourceValue resourceValue = player.getResources()
+        ResourceValue resourceValue = player.getResources();
 
         model.addAttribute("resources", resourceValue);
 
