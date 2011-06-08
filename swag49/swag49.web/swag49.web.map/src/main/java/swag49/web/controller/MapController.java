@@ -41,15 +41,15 @@ public class MapController {
 
     @Autowired
     @Qualifier("mapDAO")
-    private DataAccessObject<swag49.model.Map> mapDAO;
+    private DataAccessObject<swag49.model.Map, Long> mapDAO;
 
     @Autowired
     @Qualifier("playerDAO")
-    private DataAccessObject<Player> playerDAO;
+    private DataAccessObject<Player, Long> playerDAO;
 
     @Autowired
     @Qualifier("tileDAO")
-    private DataAccessObject<Tile> tileDAO;
+    private DataAccessObject<Tile, Tile.Id> tileDAO;
 
     @Autowired
     private RestTemplate restTemplate;

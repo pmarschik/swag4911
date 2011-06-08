@@ -17,7 +17,7 @@
     <mvc:resources mapping="/resources/**" location="/resources/"/>
 
     <context:component-scan base-package="swag49"/>
-    <tx:annotation-driven/>
+    <import resource="../db.xml"/>
     <mvc:annotation-driven/>
 
 </beans>

@@ -11,48 +11,48 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Repository(value = "buildingTypeDAO")
-public class BuildingTypeDao implements DataAccessObject<BuildingType> {
+@Repository("buildingTypeDAO")
+public class BuildingTypeDAO implements DataAccessObject<BuildingType, Long> {
 
-	@PersistenceContext
-	private EntityManager em;
+    @PersistenceContext(unitName = "swag49.map")
+    private EntityManager em;
 
-	public BuildingTypeDao() {
-	}
+    @Transactional("swag49.map")
+    public boolean contains(BuildingType buildingType) {
+        return em.contains(buildingType);
+    }
 
-	public boolean contains(BuildingType buildingType) {
-		return em.contains(buildingType);
-	}
+    @Transactional("swag49.map")
+    public BuildingType create(BuildingType buildingType) {
+        return em.merge(buildingType);
+    }
 
-	@Transactional
-	public BuildingType create(BuildingType buildingType) {
-		return em.merge(buildingType);
-	}
+    @Transactional("swag49.map")
+    public void delete(BuildingType buildingType) {
+        buildingType = em.merge(buildingType);
+        em.remove(buildingType);
+    }
 
-	@Transactional
-	public void delete(BuildingType buildingType) {
-		buildingType = em.merge(buildingType);
-		em.remove(buildingType);
-	}
+    @Transactional("swag49.map")
+    public BuildingType get(Long id) {
+        return em.find(BuildingType.class, id);
+    }
 
-	public BuildingType get(Object id) {
-		return em.find(BuildingType.class, id);
-	}
+    @SuppressWarnings("unchecked")
+    @Transactional("swag49.map")
+    public List<BuildingType> queryByExample(BuildingType model) {
+        Session session = (Session) em.getDelegate();
+        Criteria criteria = session.createCriteria(BuildingType.class);
 
-	@SuppressWarnings("unchecked")
-	public List<BuildingType> queryByExample(BuildingType model) {
-		Session session = (Session) em.getDelegate();
-		Criteria criteria = session.createCriteria(BuildingType.class);
+        if (model != null)
+            criteria.add(Example.create(model));
 
-		if (model != null)
-			criteria.add(Example.create(model));
+        return criteria.list();
+    }
 
-		return criteria.list();
-	}
-
-	@Transactional
-	public BuildingType update(BuildingType buildingType) {
-		return em.merge(buildingType);
-	}
+    @Transactional("swag49.map")
+    public BuildingType update(BuildingType buildingType) {
+        return em.merge(buildingType);
+    }
 
 }

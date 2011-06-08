@@ -16,20 +16,20 @@ import swag49.model.TroopType;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-context.xml" })
-public class TroopDaoTest {
+public class TroopDAOTest {
 	// must use interface, qualifier is optional, use only if several beans that
 	// match interface
 	@Autowired
 	@Qualifier("troopDAO")
-	private DataAccessObject<Troop> troopDAO;
+	private DataAccessObject<Troop, Long> troopDAO;
 
 	@Autowired
 	@Qualifier("troopLevelDAO")
-	private DataAccessObject<TroopLevel> troopLevelDAO;
+	private DataAccessObject<TroopLevel, TroopLevel.Id> troopLevelDAO;
 
 	@Autowired
 	@Qualifier("troopTypeDAO")
-	private DataAccessObject<TroopType> troopTypeDAO;
+	private DataAccessObject<TroopType, Long> troopTypeDAO;
 
 	private TroopType troopType = null;
 	private TroopLevel troopLevel = null;

@@ -1,44 +1,37 @@
 package swag49.dao;
 
-import java.util.Date;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import swag49.model.Square;
-import swag49.model.Base;
-import swag49.model.Tile;
-import swag49.model.Map;
-import swag49.model.Player;
+import swag49.model.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-context.xml" })
-public class SquareDaoTest {
+public class SquareDAOTest {
 	// must use interface, qualifier is optional, use only if several beans that
 	// match interface
 	@Autowired
 	@Qualifier("squareDAO")
-	private DataAccessObject<Square> squareDAO;
+	private DataAccessObject<Square, Square.Id> squareDAO;
 
 	@Autowired
 	@Qualifier("baseDAO")
-	private DataAccessObject<Base> baseDAO;
+	private DataAccessObject<Base, Long> baseDAO;
 
 	@Autowired
 	@Qualifier("mapDAO")
-	private DataAccessObject<Map> mapDAO;
+	private DataAccessObject<Map, Long> mapDAO;
 
 	@Autowired
 	@Qualifier("tileDAO")
-	private DataAccessObject<Tile> tileDAO;
+	private DataAccessObject<Tile, Tile.Id> tileDAO;
 
 	@Autowired
 	@Qualifier("playerDAO")
-	private DataAccessObject<Player> playerDAO;
+	private DataAccessObject<Player, Long> playerDAO;
 
 	@Test
 	public void create_shouldCreate() throws Exception {

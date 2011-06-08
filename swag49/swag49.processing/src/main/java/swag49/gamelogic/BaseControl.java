@@ -15,23 +15,23 @@ public class BaseControl {
 
     @Autowired
     @Qualifier("buildingDao")
-    private DataAccessObject<Building> buildingDao;
+    private DataAccessObject<Building, Square.Id> buildingDao;
 
     @Autowired
     @Qualifier("buildingLevelDao")
-    private DataAccessObject<BuildingLevel> buildingLevelDao;
+    private DataAccessObject<BuildingLevel, BuildingLevel.Id> buildingLevelDao;
 
     @Autowired
     @Qualifier("buildActionDao")
-    private DataAccessObject<BuildAction> buildActionDao;
+    private DataAccessObject<BuildAction, Long> buildActionDao;
 
     @Autowired
     @Qualifier("troopoActionDao")
-    private DataAccessObject<TroopAction> troopActionDao;
+    private DataAccessObject<TroopAction, Long> troopActionDao;
 
     @Autowired
     @Qualifier("troopDao")
-    private DataAccessObject<Troop> troopDao;
+    private DataAccessObject<Troop, Long> troopDao;
 
     public ResourceValue getReourceProduction() {
         return base.getResourceProduction();

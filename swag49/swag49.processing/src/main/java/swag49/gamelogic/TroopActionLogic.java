@@ -12,22 +12,22 @@ public class TroopActionLogic {
 
     @Autowired
     @Qualifier("troopActionDAO")
-    private DataAccessObject<TroopAction> troopActionDao;
+    private DataAccessObject<TroopAction, Long> troopActionDao;
 
     @Autowired
     @Qualifier("troopDAO")
-    private DataAccessObject<Troop> troopDao;
+    private DataAccessObject<Troop, Long> troopDao;
 
     @Autowired
     @Qualifier("baseDAO")
-    private DataAccessObject<Base> baseDao;
+    private DataAccessObject<Base, Long> baseDao;
 
     @Autowired
     private MapLogic mapLogic;
 
     @Autowired
     @Qualifier("squareDAO")
-    private DataAccessObject<Square> squareDao;
+    private DataAccessObject<Square, Square.Id> squareDao;
 
     public void handleAction(TroopAction action) {
         Tile tile = action.getTarget();

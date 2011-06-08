@@ -23,11 +23,11 @@ public class MapHelper {
 
     @Autowired
     @Qualifier("mapDAO")
-    private DataAccessObject<Map> mapDAO;
+    private DataAccessObject<Map, Long> mapDAO;
 
     @Autowired
     @Qualifier("tileDAO")
-    private DataAccessObject<Tile> tileDAO;
+    private DataAccessObject<Tile, Tile.Id> tileDAO;
 
 
     @PostConstruct

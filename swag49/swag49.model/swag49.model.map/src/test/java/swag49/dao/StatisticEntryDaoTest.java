@@ -24,7 +24,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/test-context.xml"})
-public class StatisticEntryDaoTest {
+public class StatisticEntryDAOTest {
 
     @PersistenceContext
     private EntityManager em;
@@ -32,7 +32,7 @@ public class StatisticEntryDaoTest {
     // must use interface, qualifier is optional, use only if several beans that match interface
     @Autowired
     @Qualifier("statisticEntryDAO")
-    private DataAccessObject<StatisticEntry> statisticEntryDAO;
+    private DataAccessObject<StatisticEntry, StatisticEntry.Id> statisticEntryDAO;
 
     private Statistic statistic;
     private Player player1;

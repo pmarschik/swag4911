@@ -11,49 +11,48 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Repository(value = "mapDAO")
-public class MapDao implements DataAccessObject<Map> {
+@Repository("mapDAO")
+public class MapDAO implements DataAccessObject<Map, Long> {
 
-	@PersistenceContext
-	private EntityManager em;
+    @PersistenceContext(unitName = "swag49.map")
+    private EntityManager em;
 
-	public MapDao() {
-	}
+    @Transactional("swag49.map")
+    public boolean contains(Map map) {
+        return em.contains(map);
+    }
 
-	public boolean contains(Map map) {
-		return em.contains(map);
-	}
+    @Transactional("swag49.map")
+    public Map create(Map map) {
+        return em.merge(map);
+    }
 
-	@Transactional
-	public Map create(Map map) {
-		return em.merge(map);
-	}
+    @Transactional("swag49.map")
+    public void delete(Map map) {
+        map = em.merge(map);
+        em.remove(map);
+    }
 
-	@Transactional
-	public void delete(Map map) {
-		map = em.merge(map);
-		em.remove(map);
-	}
+    @Transactional("swag49.map")
+    public Map get(Long id) {
+        return em.find(Map.class, id);
+    }
 
-	public Map get(Object id) {
-		return em.find(Map.class, id);
-	}
+    @SuppressWarnings("unchecked")
+    @Transactional("swag49.map")
+    public List<Map> queryByExample(Map model) {
+        Session session = (Session) em.getDelegate();
+        Criteria criteria = session.createCriteria(Map.class);
 
-	@SuppressWarnings("unchecked")
-    @Transactional
-	public List<Map> queryByExample(Map model) {
-		Session session = (Session) em.getDelegate();
-		Criteria criteria = session.createCriteria(Map.class);
+        if (model != null)
+            criteria.add(Example.create(model));
 
-		if (model != null)
-			criteria.add(Example.create(model));
+        return criteria.list();
+    }
 
-		return criteria.list();
-	}
-
-	@Transactional
-	public Map update(Map map) {
-		return em.merge(map);
-	}
+    @Transactional("swag49.map")
+    public Map update(Map map) {
+        return em.merge(map);
+    }
 
 }

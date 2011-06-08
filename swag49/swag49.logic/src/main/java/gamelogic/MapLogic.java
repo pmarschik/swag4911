@@ -25,23 +25,23 @@ public class MapLogic {
 
     @Autowired
     @Qualifier("mapDAO")
-    private DataAccessObject<Map> mapDAO;
+    private DataAccessObject<Map, Long> mapDAO;
 
     @Autowired
     @Qualifier("baseDAO")
-    private DataAccessObject<Base> baseDAO;
+    private DataAccessObject<Base, Long> baseDAO;
 
     @Autowired
     @Qualifier("squareDAO")
-    private DataAccessObject<Square> squareDAO;
+    private DataAccessObject<Square, Square.Id> squareDAO;
 
     @Autowired
     @Qualifier("playerDAO")
-    private DataAccessObject<Player> playerDAO;
+    private DataAccessObject<Player, Long> playerDAO;
 
     @Autowired
     @Qualifier("tileDAO")
-    private DataAccessObject<Tile> tileDAO;
+    private DataAccessObject<Tile, Tile.Id> tileDAO;
 
     private static final int RANDOMTRIES = 1000;
     private static final int START_AMOUNT_WOOD = 100;
@@ -72,7 +72,8 @@ public class MapLogic {
 
         player.setIncome(homeBase.getResourceProduction());
         player.setUpkeep(new ResourceValue());
-        player.setResources(new ResourceValue(START_AMOUNT_WOOD, START_AMOUNT_CROPS, START_AMOUNT_GOLD, START_AMOUNT_STONE));
+        player.setResources(
+                new ResourceValue(START_AMOUNT_WOOD, START_AMOUNT_CROPS, START_AMOUNT_GOLD, START_AMOUNT_STONE));
 
         player = playerDAO.update(player);
 

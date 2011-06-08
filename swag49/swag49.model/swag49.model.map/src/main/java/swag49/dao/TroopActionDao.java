@@ -11,48 +11,48 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Repository(value = "troopActionDAO")
-public class TroopActionDao implements DataAccessObject<TroopAction> {
+@Repository("troopActionDAO")
+public class TroopActionDAO implements DataAccessObject<TroopAction, Long> {
 
-	@PersistenceContext
-	private EntityManager em;
+    @PersistenceContext(unitName = "swag49.map")
+    private EntityManager em;
 
-	public TroopActionDao() {
-	}
+    @Transactional("swag49.map")
+    public boolean contains(TroopAction troopAction) {
+        return em.contains(troopAction);
+    }
 
-	public boolean contains(TroopAction troopAction) {
-		return em.contains(troopAction);
-	}
+    @Transactional("swag49.map")
+    public TroopAction create(TroopAction troopAction) {
+        return em.merge(troopAction);
+    }
 
-	@Transactional
-	public TroopAction create(TroopAction troopAction) {
-		return em.merge(troopAction);
-	}
+    @Transactional("swag49.map")
+    public void delete(TroopAction troopAction) {
+        troopAction = em.merge(troopAction);
+        em.remove(troopAction);
+    }
 
-	@Transactional
-	public void delete(TroopAction troopAction) {
-		troopAction = em.merge(troopAction);
-		em.remove(troopAction);
-	}
+    @Transactional("swag49.map")
+    public TroopAction get(Long id) {
+        return em.find(TroopAction.class, id);
+    }
 
-	public TroopAction get(Object id) {
-		return em.find(TroopAction.class, id);
-	}
+    @SuppressWarnings("unchecked")
+    @Transactional("swag49.map")
+    public List<TroopAction> queryByExample(TroopAction model) {
+        Session session = (Session) em.getDelegate();
+        Criteria criteria = session.createCriteria(TroopAction.class);
 
-	@SuppressWarnings("unchecked")
-	public List<TroopAction> queryByExample(TroopAction model) {
-		Session session = (Session) em.getDelegate();
-		Criteria criteria = session.createCriteria(TroopAction.class);
+        if (model != null)
+            criteria.add(Example.create(model));
 
-		if (model != null)
-			criteria.add(Example.create(model));
+        return criteria.list();
+    }
 
-		return criteria.list();
-	}
-
-	@Transactional
-	public TroopAction update(TroopAction troopAction) {
-		return em.merge(troopAction);
-	}
+    @Transactional("swag49.map")
+    public TroopAction update(TroopAction troopAction) {
+        return em.merge(troopAction);
+    }
 
 }

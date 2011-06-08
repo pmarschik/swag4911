@@ -25,7 +25,7 @@ public class MessagingService {
 
     @Autowired
     @Qualifier("playerDAO")
-    private DataAccessObject<Player> playerDAO;
+    private DataAccessObject<Player, Long> playerDAO;
 
     private Multimap<Long, MessageDTO> receivedMessages = HashMultimap.create();
     private Multimap<Long, MessageDTO> messageListCache = HashMultimap.create();

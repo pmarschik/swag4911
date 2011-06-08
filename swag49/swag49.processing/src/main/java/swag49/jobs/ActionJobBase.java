@@ -13,12 +13,12 @@ public abstract class ActionJobBase<T extends Action> implements Job {
 			throws JobExecutionException {
 		Long actionId = context.getJobDetail().getJobDataMap().getLong(
 				"actionId");
-		T action = getDao().get(actionId);
+		T action = getDAO().get(actionId);
 		doWork(action, context);
 	}
 
 	protected abstract void doWork(T action, JobExecutionContext context);
-	
-	protected abstract DataAccessObject<T> getDao();
+
+	protected abstract DataAccessObject<T, Long> getDAO();
 
 }

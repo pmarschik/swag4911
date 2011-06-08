@@ -3,24 +3,21 @@ package swag49.gamelogic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import swag49.dao.DataAccessObject;
-import swag49.model.BuildAction;
-import swag49.model.Building;
-import swag49.model.BuildingLevel;
-import swag49.model.Player;
+import swag49.model.*;
 
 public class BuildActionLogic {
 
     @Autowired
     @Qualifier("buildingLevelDao")
-    private DataAccessObject<BuildingLevel> buildingLevelDao;
+    private DataAccessObject<BuildingLevel, BuildingLevel.Id> buildingLevelDao;
 
     @Autowired
     @Qualifier("playerDao")
-    private DataAccessObject<Player> playerDao;
+    private DataAccessObject<Player, Long> playerDao;
 
     @Autowired
     @Qualifier("buildingDao")
-    private DataAccessObject<Building> buildingDao;
+    private DataAccessObject<Building, Square.Id> buildingDao;
 
     public void handleAction(BuildAction action) {
         Building building = action.getConcerns();

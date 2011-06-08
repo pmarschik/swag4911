@@ -11,48 +11,48 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Repository(value = "buildingLevelDAO")
-public class BuildingLevelDao implements DataAccessObject<BuildingLevel> {
+@Repository("buildingLevelDAO")
+public class BuildingLevelDAO implements DataAccessObject<BuildingLevel, BuildingLevel.Id> {
 
-	@PersistenceContext
-	private EntityManager em;
+    @PersistenceContext(unitName = "swag49.map")
+    private EntityManager em;
 
-	public BuildingLevelDao() {
-	}
+    @Transactional("swag49.map")
+    public boolean contains(BuildingLevel buildingLevel) {
+        return em.contains(buildingLevel);
+    }
 
-	public boolean contains(BuildingLevel buildingLevel) {
-		return em.contains(buildingLevel);
-	}
+    @Transactional("swag49.map")
+    public BuildingLevel create(BuildingLevel buildingLevel) {
+        return em.merge(buildingLevel);
+    }
 
-	@Transactional
-	public BuildingLevel create(BuildingLevel buildingLevel) {
-		return em.merge(buildingLevel);
-	}
+    @Transactional("swag49.map")
+    public void delete(BuildingLevel buildingLevel) {
+        buildingLevel = em.merge(buildingLevel);
+        em.remove(buildingLevel);
+    }
 
-	@Transactional
-	public void delete(BuildingLevel buildingLevel) {
-		buildingLevel = em.merge(buildingLevel);
-		em.remove(buildingLevel);
-	}
+    @Transactional("swag49.map")
+    public BuildingLevel get(BuildingLevel.Id id) {
+        return em.find(BuildingLevel.class, id);
+    }
 
-	public BuildingLevel get(Object id) {
-		return em.find(BuildingLevel.class, id);
-	}
+    @SuppressWarnings("unchecked")
+    @Transactional("swag49.map")
+    public List<BuildingLevel> queryByExample(BuildingLevel model) {
+        Session session = (Session) em.getDelegate();
+        Criteria criteria = session.createCriteria(BuildingLevel.class);
 
-	@SuppressWarnings("unchecked")
-	public List<BuildingLevel> queryByExample(BuildingLevel model) {
-		Session session = (Session) em.getDelegate();
-		Criteria criteria = session.createCriteria(BuildingLevel.class);
+        if (model != null)
+            criteria.add(Example.create(model));
 
-		if (model != null)
-			criteria.add(Example.create(model));
+        return criteria.list();
+    }
 
-		return criteria.list();
-	}
-
-	@Transactional
-	public BuildingLevel update(BuildingLevel buildingLevel) {
-		return em.merge(buildingLevel);
-	}
+    @Transactional("swag49.map")
+    public BuildingLevel update(BuildingLevel buildingLevel) {
+        return em.merge(buildingLevel);
+    }
 
 }

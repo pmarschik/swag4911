@@ -10,38 +10,34 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Repository(value="mapLoactionDAO")
-public class MapLocationDao implements DataAccessObject<MapLocation> {
+@Repository("mapLoactionDAO")
+public class MapLocationDAO implements DataAccessObject<MapLocation, Long> {
 
 	@PersistenceContext(unitName = "swag49.user")
 	private EntityManager em;
 
-	public MapLocationDao() {
+	public MapLocationDAO() {
 	}
 
-    @Transactional
+    @Transactional("swag49.user")
 	public boolean contains(MapLocation mapLocation)
 	{
 		return em.contains(mapLocation);
 	}
 
-	@Transactional
+	@Transactional("swag49.user")
 	public MapLocation create(MapLocation mapLocation) {
 		return em.merge(mapLocation);
 	}
 
-	@Transactional
+	@Transactional("swag49.user")
 	public void delete(MapLocation mapLocation) {
 		mapLocation = em.merge(mapLocation);
 		em.remove(mapLocation);
 	}
 
-    @Transactional
-    public MapLocation get(Object id) {
-        return em.find(MapLocation.class, id);
-    }
-
-    @Transactional
+    @SuppressWarnings({"unchecked"})
+    @Transactional("swag49.user")
     public List<MapLocation> queryByExample(MapLocation model) {
         Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(MapLocation.class);
@@ -52,12 +48,12 @@ public class MapLocationDao implements DataAccessObject<MapLocation> {
 		return criteria.list();
     }
 
-    @Transactional
+    @Transactional("swag49.user")
     public MapLocation get(Long id) {
 		return em.find(MapLocation.class, id);
 	}
 
-	@Transactional
+	@Transactional("swag49.user")
 	public MapLocation update(MapLocation mapLocation) {
 		return em.merge(mapLocation);
 	}
