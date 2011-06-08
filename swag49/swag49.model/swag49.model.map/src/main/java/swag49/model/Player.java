@@ -26,6 +26,9 @@ public class Player {
 	@OneToMany(mappedBy = "owner")
 	private Set<Base> owns = new HashSet<Base>();
 
+    @OneToMany(mappedBy = "owner")
+	private Set<Troop> troops = new HashSet<Troop>();
+
 	@Embedded
 	@AttributeOverrides({
 			@AttributeOverride(name = "amount_gold", column = @Column(name = "resources_gold")),
@@ -135,4 +138,12 @@ public class Player {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
+
+    public Set<Troop> getTroops() {
+        return troops;
+    }
+
+    public void setTroops(Set<Troop> troops) {
+        this.troops = troops;
+    }
 }
