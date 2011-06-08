@@ -1,25 +1,25 @@
 package swag49.web.controller;
 
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
 import swag49.model.Statistic;
+import swag49.model.StatisticEntry;
 import swag49.web.model.StatisticDTO;
+import swag49.web.model.StatisticEntryDTO;
 
-import java.util.Collection;
+import javax.annotation.PostConstruct;
 import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/statistics")
-@Scope(value = "session")
 public class StatisticsController {
-
-    @Autowired
-    private MapController mapController;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -30,22 +30,33 @@ public class StatisticsController {
 
     private Map<Long, StatisticDTO> statistics;
 
-    private Collection<StatisticDTO> getStatistics() {
-        if (statistics == null) {
-            for (Statistic statistic : statisticDAO.queryByExample(new Statistic())) {
-                StatisticDTO dto = new StatisticDTO();
-                dto.setId(statistic.getId());
-                dto.setName(statistic.getName());
-                statistics.put(dto.getId(), dto);
+    @PostConstruct
+    @Transactional("swag49.map")
+    public void init() {
+        statistics = Maps.newHashMap();
+        for (Statistic statistic : statisticDAO.queryByExample(new Statistic())) {
+            StatisticDTO dto = new StatisticDTO();
+            dto.setId(statistic.getId());
+            dto.setName(statistic.getName());
+            for (StatisticEntry entry : statistic.getEntries()) {
+                StatisticEntryDTO entryDTO = new StatisticEntryDTO();
+                entryDTO.setRanking(entry.getRanking());
+                entryDTO.setPlayer(entry.getPlayer().getId());
+                entryDTO.setScore(entry.getScore());
+                dto.getEntries().add(entryDTO);
             }
+            statistics.put(dto.getId(), dto);
         }
+    }
 
-        return statistics.values();
+    private StatisticDTO getStatistic(String id) {
+        Long longId = Long.valueOf(id);
+        return statistics.get(longId);
     }
 
     @RequestMapping(value = "/")
     public String handle(Map<String, Object> map) {
-        map.put("user", mapController.getUserID());
+        map.put("statistics", statistics.values());
 
         return "statistics";
     }
@@ -53,5 +64,12 @@ public class StatisticsController {
     @RequestMapping(value = "/index")
     public String statistics() {
         return "redirect:./";
+    }
+
+    @RequestMapping(value = "/{id}")
+    public String show(@PathVariable("id") String id, Map<String, Object> map) {
+        map.put("statistic", getStatistic(id));
+
+        return "statistic";
     }
 }

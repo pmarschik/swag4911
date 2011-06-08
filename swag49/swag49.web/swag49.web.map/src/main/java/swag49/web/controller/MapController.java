@@ -158,6 +158,11 @@ public class MapController {
         return "redirect:../messaging/";
     }
 
+    @RequestMapping(value = "/statistics", method = RequestMethod.GET)
+    public String statistics() {
+        return "redirect:../statistics/";
+    }
+
     @RequestMapping(value = "/tile", method = RequestMethod.GET)
     @Transactional
     public String getTileOverview(@RequestParam(value = "x", defaultValue = "-1") int x,

@@ -15,6 +15,7 @@
                 <value>swag49.web.model.MessageQueryDTO</value>
                 <value>swag49.web.model.PlayerDTO</value>
                 <value>swag49.web.model.StatisticDTO</value>
+                <value>swag49.web.model.StatisticEntryDTO</value>
             </array>
         </property>
     </bean>
