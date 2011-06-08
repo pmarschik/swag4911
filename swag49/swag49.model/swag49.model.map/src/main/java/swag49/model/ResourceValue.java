@@ -25,6 +25,14 @@ public class ResourceValue {
         amount_stone = stone;
     }
 
+    public ResourceValue(ResourceValue value) {
+        amount_wood = value.getAmount_wood();
+        amount_crops = value.getAmount_crops();
+        amount_gold = value.getAmount_gold();
+        amount_stone = value.getAmount_stone();
+
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof ResourceValue) {
@@ -107,5 +115,6 @@ public class ResourceValue {
 
         return true;
     }
+
 
 }

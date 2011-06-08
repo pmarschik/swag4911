@@ -32,7 +32,7 @@ public class MapLogic {
 
     @Autowired
     @Qualifier("troopDAO")
-    private DataAccessObject<Troop, Long > troopDao;
+    private DataAccessObject<Troop, Long> troopDao;
 
 
     @Autowired
@@ -46,11 +46,16 @@ public class MapLogic {
 
     @Autowired
     @Qualifier("buildingDAO")
-    private DataAccessObject<Building,Square.Id> buildingDao;
+    private DataAccessObject<Building, Square.Id> buildingDAO;
 
     @Autowired
     @Qualifier("buildingLevelDAO")
-    private DataAccessObject<BuildingLevel,BuildingLevel.Id> buildingLevelDao;
+    private DataAccessObject<BuildingLevel, BuildingLevel.Id> buildingLevelDao;
+
+    @Autowired
+    @Qualifier("troopLevelDAO")
+    private DataAccessObject<TroopLevel, TroopLevel.Id> troopLevelDao;
+
 
     @Autowired
     @Qualifier("buildActionDAO")
@@ -59,10 +64,6 @@ public class MapLogic {
     @Autowired
     private RestTemplate restTemplate;
 
-
-    @Autowired
-    @Qualifier("playerDAO")
-    private DataAccessObject<Player, Long> playerDao;
 
     private static final int RANDOMTRIES = 1000;
 
@@ -105,23 +106,105 @@ public class MapLogic {
 
 
     @Transactional
-    public void upgradeTroop(Troop troop, TroopLevel troopLevel) {
-        //TODO
+    public void upgradeTroop(Player player, Troop troop, TroopLevel troopLevel) {
+
+        //calculate cost
+        ResourceValue cost = new ResourceValue(troopLevel.getBuildCosts());
+
+        //check if user can afford the troops
+        if (player.getResources().getAmount_crops() >= cost.getAmount_crops() &&
+                player.getResources().getAmount_gold() >= cost.getAmount_gold() &&
+                player.getResources().getAmount_wood() >= cost.getAmount_wood() &&
+                player.getResources().getAmount_stone() >= cost.getAmount_stone()) {
+
+            player.getResources().remove(cost);
+            Long duration = troopLevel.getUpgradeDuration();
+
+            playerDAO.update(player);
+
+            TroopUpgradeAction action = new TroopUpgradeAction(player, troop, troopLevel, duration);
+        }
     }
 
     @Transactional
     public void handleAction(TroopUpgradeAction action) {
-        //TODO
+        Troop troop = action.getTroop();
+
+        // get current level
+        TroopLevel currentLevel = troop.getIsOfLevel();
+
+
+        TroopLevel nextLevel = action.getTroopLevel();
+
+        if (nextLevel != null) {
+            troop.setIsOfLevel(nextLevel);
+
+            troopDao.update(troop);
+
+            //update upkeep
+            action.getPlayer().getUpkeep().remove(currentLevel.getUpkeepCosts());
+            action.getPlayer().getUpkeep().add(nextLevel.getUpkeepCosts());
+
+            playerDAO.update(action.getPlayer());
+        }
     }
 
     @Transactional
-    public void buildTroop(Player player, TroopType type, Tile baseTile, int amount) {
-        //TODO
+    public void buildTroop(Player player, TroopType type, TroopLevel level, Tile baseTile, int amount) {
+
+        //calculate cost
+        ResourceValue cost = new ResourceValue(level.getBuildCosts());
+
+        cost.setAmount_crops(cost.getAmount_crops() * amount);
+        cost.setAmount_gold(cost.getAmount_gold() * amount);
+        cost.setAmount_wood(cost.getAmount_wood() * amount);
+        cost.setAmount_stone(cost.getAmount_stone() * amount);
+
+        //check if user can afford the troops
+        if (player.getResources().getAmount_crops() >= cost.getAmount_crops() &&
+                player.getResources().getAmount_gold() >= cost.getAmount_gold() &&
+                player.getResources().getAmount_wood() >= cost.getAmount_wood() &&
+                player.getResources().getAmount_stone() >= cost.getAmount_stone()) {
+
+            player.getResources().remove(cost);
+            Long duration = level.getUpgradeDuration();
+
+            playerDAO.update(player);
+
+            TroopBuildAction action = new TroopBuildAction(player, baseTile, type, level, amount, duration);
+        }
+        else
+        {
+            //TODO wrte msg? throw Exception?
+        }
     }
 
     @Transactional
     public void handleAction(TroopBuildAction action) {
-        //TODO
+        TroopType type = action.getTroopType();
+
+        Tile tile = action.getTarget();
+
+        //check if a base on that tile exists and if that base is still under the control of that player
+        Base base = tile.getBase();
+        if (base != null && base.getOwner().getId() == action.getPlayer().getId()) {
+
+
+            for (int i = 0; i < action.getAmount(); i++) {
+                //ad troops to that base
+                Troop troop = new Troop(type, action.getTroopLevel(), tile, action.getPlayer());
+
+                troop = troopDao.create(troop);
+
+                //add troops to tile
+                tile.getTroops().add(troop);
+
+                //update upkeep
+                action.getPlayer().getUpkeep().add(action.getTroopLevel().getUpkeepCosts());
+            }
+
+            tileDAO.update(tile);
+        }
     }
 
 
@@ -140,7 +223,7 @@ public class MapLogic {
 
             constructionYard.setIsOfLevel(level);
 
-            constructionYard = buildingDao.create(constructionYard);
+            constructionYard = buildingDAO.create(constructionYard);
 
             // create BuildAction
             BuildAction action = new BuildAction();
@@ -297,7 +380,7 @@ public class MapLogic {
 
         tile.setBase(base);
         tileDAO.update(tile);
-                        System.out.println(owner.getResources());
+        System.out.println(owner.getResources());
         System.out.println(resourceProduction.getAmount_gold());
         owner.getResources().add(resourceProduction);
         playerDAO.update(owner);
@@ -322,7 +405,7 @@ public class MapLogic {
         if (nextLevel != null) {
             building.setIsOfLevel(nextLevel);
 
-            buildingDao.update(building);
+            buildingDAO.update(building);
 
             Player player = action.getPlayer();
             // update upkeep
@@ -333,7 +416,7 @@ public class MapLogic {
             player.getIncome().remove(currentLevel.getUpkeepCosts());
             player.getIncome().add(nextLevel.getUpkeepCosts());
 
-            playerDao.update(player);
+            playerDAO.update(player);
         }
     }
 
