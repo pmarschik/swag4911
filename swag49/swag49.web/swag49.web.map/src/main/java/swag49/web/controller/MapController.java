@@ -1,5 +1,6 @@
 package swag49.web.controller;
 
+import com.google.common.collect.Sets;
 import gamelogic.MapLogic;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import swag49.dao.DataAccessObject;
 import swag49.model.*;
 import swag49.util.Log;
 import swag49.web.model.TileOverviewDTO;
+import swag49.web.model.TileOverviewDTOFull;
 import swag49.web.model.TokenDTO;
 
 import javax.annotation.PostConstruct;
@@ -156,9 +158,58 @@ public class MapController {
     }
 
     @RequestMapping(value = "/tile", method = RequestMethod.GET)
-    public String tile() {
-        return "redirect:../tile/";
-    }
+    @Transactional
+    public String getTileOverview(@RequestParam(value = "x", defaultValue = "-1") int x,
+                                 @RequestParam(value = "y", defaultValue = "-1") int y,
+                                 Model model)
+    {
+        //TODO: besser machen
+        player = playerDAO.get(player.getId());
+        map = mapDAO.get(map.getId());
+
+        Tile tile = new Tile(map, x, y);
+
+        tile = tileDAO.get(tile.getId());
+
+        TileOverviewDTOFull tileInfo = new TileOverviewDTOFull(tile);
+        tileInfo.setBase(tile.getBase());
+        tileInfo.setTroops(Sets.newHashSet(tile.getTroops()));
+
+        if(tile.getBase() != null)
+        {
+//            tileInfo.setHasBase(true);
+
+            Base base = tile.getBase();
+            if(base.getOwner().getUserId() == player.getUserId())
+               tileInfo.setEnemyTerritory(false);
+            else
+               tileInfo.setEnemyTerritory(true);
+        }
+
+        else
+        {
+//              tileInfo.setHasBase(false);
+              tileInfo.setEnemyTerritory(false);
+        }
+
+
+        if(tile.getTroops() != null)
+        {
+//            if(!tile.getTroops().isEmpty())
+//                tileInfo.setHasTroops(true);
+//            else
+//                tileInfo.setHasTroops(false);
+        }
+        else
+        {
+//            tileInfo.setHasTroops(true);
+        }
+
+
+        model.addAttribute("tileInfo", tileInfo);
+
+        return "tile";
+     }
 
 //    @RequestMapping(value = "/mapoverview", method = RequestMethod.GET)
 //    public String mapoverview() {
