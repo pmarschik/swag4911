@@ -16,6 +16,7 @@
     <modules>
         <module>swag49.web.user</module>
         <module>swag49.web.map</module>
+        <module>swag49.logic</module>
     </modules>
 
     <dependencies>

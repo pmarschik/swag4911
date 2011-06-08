@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
-import swag49.messaging.model.MessageDTO;
 import swag49.model.*;
 import swag49.model.Map;
 import swag49.util.Log;
@@ -32,12 +31,12 @@ public class MapLogic {
     private DataAccessObject<Player, Long> playerDAO;
 
     @Autowired
-    @Qualifier("troopDao")
+    @Qualifier("troopDAO")
     private DataAccessObject<Troop, Long> troopDao;
 
 
     @Autowired
-    @Qualifier("troopActionDao")
+    @Qualifier("troopActionDAO")
     private DataAccessObject<TroopAction, Long> troopActionDao;
 
 
@@ -46,15 +45,15 @@ public class MapLogic {
     private DataAccessObject<Tile, Tile.Id> tileDAO;
 
     @Autowired
-    @Qualifier("buildingDao")
+    @Qualifier("buildingDAO")
     private DataAccessObject<Building, Square.Id> buildingDao;
 
     @Autowired
-    @Qualifier("buildingLevelDao")
+    @Qualifier("buildingLevelDAO")
     private DataAccessObject<BuildingLevel, BuildingLevel.Id> buildingLevelDao;
 
     @Autowired
-    @Qualifier("buildActionDao")
+    @Qualifier("buildActionDAO")
     private DataAccessObject<BuildAction, Long> buildActionDao;
 
     @Autowired
@@ -62,7 +61,7 @@ public class MapLogic {
 
 
     @Autowired
-    @Qualifier("playerDao")
+    @Qualifier("playerDAO")
     private DataAccessObject<Player, Long> playerDao;
 
     private static final int RANDOMTRIES = 1000;

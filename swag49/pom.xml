@@ -14,9 +14,7 @@
         <module>swag49.web</module>
         <module>swag49.util</module>
         <module>swag49.processing</module>
-        <module>swag49.model</module>
         <module>swag49.messaging</module>
-        <module>swag49.logic</module>
     </modules>
 
     <properties>
