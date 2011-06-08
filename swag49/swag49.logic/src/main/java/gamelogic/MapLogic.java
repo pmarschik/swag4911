@@ -106,6 +106,27 @@ public class MapLogic {
 
 
     @Transactional
+    public void upgradeTroop(Troop troop, TroopLevel troopLevel) {
+        //TODO
+    }
+
+    @Transactional
+    public void handleTroopUpgradeAction(TroopUpgradeAction action) {
+        //TODO
+    }
+
+    @Transactional
+    public void buildTroop(Player player, TroopType type, Tile baseTile, int amount) {
+        //TODO
+    }
+
+    @Transactional
+    public void handleTroopBuildAction(TroopUpgradeAction action) {
+        //TODO
+    }
+
+
+    @Transactional
     public void build(Square square, BuildingType type) throws Exception {
         if (square.getBuilding() != null) {
             throw new Exception("Square not empty");

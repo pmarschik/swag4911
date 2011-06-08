@@ -40,6 +40,7 @@ public class TroopActionDao implements DataAccessObject<TroopAction> {
 	}
 
 	@SuppressWarnings("unchecked")
+    @Transactional
 	public List<TroopAction> queryByExample(TroopAction model) {
 		Session session = (Session) em.getDelegate();
 		Criteria criteria = session.createCriteria(TroopAction.class);
