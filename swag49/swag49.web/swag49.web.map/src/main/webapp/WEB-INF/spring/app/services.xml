@@ -14,7 +14,10 @@
         </property>
     </bean>
 
-    <context:component-scan base-package="swag49"/>
+    <context:component-scan base-package="swag49">
+        <context:exclude-filter type="regex" expression="swag49.web.controller.*"/>
+        <context:exclude-filter type="regex" expression="swag49\.web\.InternalMessageStore.*"/>
+    </context:component-scan>
     <import resource="../db.xml"/>
     <mvc:annotation-driven/>
 

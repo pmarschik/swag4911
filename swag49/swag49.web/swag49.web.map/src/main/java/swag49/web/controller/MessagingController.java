@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
+import swag49.web.InternalMessageStore;
 import swag49.web.model.MessageDTO;
-import swag49.web.service.MessagingService;
 
 import javax.validation.Valid;
 import java.util.Date;
@@ -37,7 +37,7 @@ public class MessagingController {
     private RestTemplate restTemplate;
 
     @Autowired
-    private MessagingService messagingService;
+    private InternalMessageStore messageStore;
 
     private Map<Long, MessageDTO> messages = Maps.newHashMap();
 
@@ -129,7 +129,7 @@ public class MessagingController {
     public List<MessageDTO> getIncomingMessages() {
         List<MessageDTO> messages = Lists.newArrayList();
 
-        for(MessageDTO message : messagingService.getMessageList(mapController.getUserID())) {
+        for(MessageDTO message : messageStore.getMessageList(mapController.getUserID())) {
             if(message.getReceiver().getId().equals(mapController.getUserID()))
                 messages.add(message);
         }
@@ -140,7 +140,7 @@ public class MessagingController {
     public List<MessageDTO> getOutgoingMessages() {
         List<MessageDTO> messages = Lists.newArrayList();
 
-        for(MessageDTO message : messagingService.getMessageList(mapController.getUserID())) {
+        for(MessageDTO message : messageStore.getMessageList(mapController.getUserID())) {
             if(message.getSender().getId().equals(mapController.getUserID()))
                 messages.add(message);
         }

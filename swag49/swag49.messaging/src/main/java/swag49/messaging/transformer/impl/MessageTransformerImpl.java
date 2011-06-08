@@ -53,6 +53,7 @@ public class MessageTransformerImpl implements MessageTransformer {
     public Message apply(MessageDTO input) {
         Message output = new Message();
 
+        output.setId(input.getId());
         output.setContent(input.getContent());
         output.setSendDate(input.getSent());
         output.setReceiveDate(input.getReceived());

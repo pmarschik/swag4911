@@ -10,7 +10,10 @@
 
     <!-- Scans within the base package of the application for @Components to
          configure as beans -->
-    <context:component-scan base-package="swag49"/>
+    <context:component-scan base-package="swag49">
+        <context:exclude-filter type="regex" expression="swag49.web.service.*"/>
+        <context:exclude-filter type="regex" expression="swag49\.web\.InternalMessageStore.*"/>
+    </context:component-scan>
 
     <import resource="../db.xml"/>
     <mvc:annotation-driven/>

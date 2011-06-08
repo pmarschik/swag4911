@@ -51,8 +51,8 @@ public class WebMessageHandler {
         String receiverUsername = getUsername(message.getReceiverUserId());
 
         MessageDTO messageDTO =
-                new MessageDTO(message.getSubject(), message.getContent(), message.getSenderUserId(), senderUsername,
-                        message.getReceiverUserId(), receiverUsername, message.getSendDate(),
+                new MessageDTO(message.getId(), message.getSubject(), message.getContent(), message.getSenderUserId(),
+                        senderUsername, message.getReceiverUserId(), receiverUsername, message.getSendDate(),
                         message.getReceiveDate(), message.getMapUrl());
 
         String requestUri = message.getMapUrl() + "swag-api/messaging/receive";
