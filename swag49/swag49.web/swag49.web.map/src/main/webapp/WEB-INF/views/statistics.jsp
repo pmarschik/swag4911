@@ -12,7 +12,7 @@
 <c:if test="${!empty statistics}">
     <ul>
         <c:forEach items="${statistics}" var="statistic">
-            <li><a href="../statistics/${statistic.id}.html">${statistic.name}</a></li>
+            <li><a class="contentLink" href="../statistics/${statistic.id}.html">${statistic.name}</a></li>
         </c:forEach>
     </ul>
 </c:if>
