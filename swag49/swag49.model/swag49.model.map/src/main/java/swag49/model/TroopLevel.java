@@ -42,7 +42,23 @@ public class TroopLevel extends LevelBase {
 		public int hashCode() {
 			return level.hashCode() + troopTypeId.hashCode();
 		}
-	}
+
+        public Integer getLevel() {
+            return level;
+        }
+
+        public void setLevel(Integer level) {
+            this.level = level;
+        }
+
+        public Long getTroopTypeId() {
+            return troopTypeId;
+        }
+
+        public void setTroopTypeId(Long troopTypeId) {
+            this.troopTypeId = troopTypeId;
+        }
+    }
 
 	@EmbeddedId
 	private Id id = new Id();

@@ -12,15 +12,17 @@
 	<div id="header">
         <div id="playerResources">
 
-        <a href="playerresources.html">Refresh</a>
+
         </div>
+        <a id="resourceRefresh" href="playerresources.html">Refresh</a>
 	</div>
 	<div id="subContent">
 		<div id="menu">Menu:<br />
 		<ul>
-			<li><a href="mapoverview.html">Map Overview</a></li>
-			<li><a id="messagingLink" href="messaging.html">Messaging</a></li>
-			<li><a href="statistics.html">Statistics</a></li>
+			<li><a class="contentLink" href="mapoverview.html">Map Overview</a></li>
+			<li><a id="messagingLink" class="contentLink" href="messaging.html">Messaging</a></li>
+            <li><a class="contentLink" href="actions.html">Actions</a></li>
+			<li><a class="contentLink" href="statistics.html">Statistics</a></li>
 		</ul>
 
 		</div>
@@ -28,7 +30,7 @@
 <table>
     <tr>
         <td colspan="3">
-            <a href="./?xLow=${xLow}&yLow=${yLow - 1}&xHigh=${xHigh}&yHigh=${yHigh - 1}">
+            <a class="contentLink" href="./?xLow=${xLow}&yLow=${yLow - 1}&xHigh=${xHigh}&yHigh=${yHigh - 1}">
                 <img src="${resourcePath}<spring:theme code='theme.image.misc.up'/>" alt="Up" title="UP"/>
             </a>
         </td>
@@ -36,7 +38,7 @@
 
     <tr>
         <td>
-            <a href="./?xLow=${xLow - 1}&yLow=${yLow}&xHigh=${xHigh - 1}&yHigh=${yHigh}">
+            <a class="contentLink" href="./?xLow=${xLow - 1}&yLow=${yLow}&xHigh=${xHigh - 1}&yHigh=${yHigh}">
                 <img src="${resourcePath}<spring:theme code='theme.image.misc.left'/>"
                      alt="Left" title="Left"/>
             </a>
@@ -48,7 +50,7 @@
                         <c:forEach items="${tileLine}" var="tile">
                             <td class="tilePic">
                                 <!-- TODO link should be replaced!!! (Or tiles-framework used) -->
-                                <a href="tile/?x=${tile.x}&y=${tile.y}">
+                                <a class="contentLink" href="tile/?x=${tile.x}&y=${tile.y}">
                                     <c:choose>
                                         <c:when test="${tile.specialResource == 'NONE'}">
                                             <c:choose>
@@ -208,7 +210,7 @@
 
         </td>
         <td>
-            <a href="./?xLow=${xLow+1}&yLow=${yLow}&xHigh=${xHigh+1}&yHigh=${yHigh}">
+            <a class="contentLink" href="./?xLow=${xLow+1}&yLow=${yLow}&xHigh=${xHigh+1}&yHigh=${yHigh}">
                  <img src="${resourcePath}<spring:theme code='theme.image.misc.right'/>"
                      alt="Right" title="Right"/>
             </a>
@@ -217,7 +219,7 @@
 
     <tr>
         <td colspan="3">
-            <a href="./?xLow=${xLow}&yLow=${yLow + 1}&xHigh=${xHigh}&yHigh=${yHigh + 1}"><img
+            <a class="contentLink" href="./?xLow=${xLow}&yLow=${yLow + 1}&xHigh=${xHigh}&yHigh=${yHigh + 1}"><img
                     src="<spring:theme code='theme.image.misc.down'/>" alt="Down" title="Down"/>
             </a>
         </td>
@@ -226,9 +228,18 @@
 </div>
 	</div>
 <script type="text/javascript">
-    $("a").live("click", function () {
+    $(".contentLink").live("click", function () {
         $.get($(this).attr("href"),function (result) {
             $("#content").html(result);
+        });
+
+        return false;
+    });
+</script>
+<script type="text/javascript">
+    $("#resourceRefresh").live("click", function () {
+        $.get($(this).attr("href"),function (result) {
+            $("#playerResources").html(result);
         });
 
         return false;

@@ -8,60 +8,71 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Troop {
 
-	@Id
-	@GeneratedValue
-	private Long id;
+    @Id
+    @GeneratedValue
+    private Long id;
 
-	@ManyToOne(optional = false)
-	private TroopType type;
+    @ManyToOne(optional = false)
+    private TroopType type;
 
-	@ManyToOne
-	private Tile position;
+    @ManyToOne
+    private Tile position;
 
-	@ManyToOne(optional = false)
-	private TroopLevel isOfLevel;
-	
-	@ManyToOne(optional = false)
-	private Player owner;
+    @ManyToOne(optional = false)
+    private TroopLevel isOfLevel;
 
-	public Player getOwner() {
-		return owner;
-	}
+    @ManyToOne(optional = false)
+    private Player owner;
 
-	public void setOwner(Player owner) {
-		this.owner = owner;
-	}
+    public Troop() {
+    }
 
-	public Long getId() {
-		return id;
-	}
 
-	public TroopLevel getIsOfLevel() {
-		return isOfLevel;
-	}
+    public Troop(TroopType type, TroopLevel level, Tile position, Player owner) {
+        this.type = type;
+        this.position = position;
+        this.owner = owner;
+        this.isOfLevel = level;
+    }
 
-	public Tile getPosition() {
-		return position;
-	}
+    public Player getOwner() {
+        return owner;
+    }
 
-	public TroopType getType() {
-		return type;
-	}
+    public void setOwner(Player owner) {
+        this.owner = owner;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setIsOfLevel(TroopLevel isOfLevel) {
-		this.isOfLevel = isOfLevel;
-	}
+    public TroopLevel getIsOfLevel() {
+        return isOfLevel;
+    }
 
-	public void setPosition(Tile position) {
-		this.position = position;
-	}
+    public Tile getPosition() {
+        return position;
+    }
 
-	public void setType(TroopType type) {
-		this.type = type;
-	}
+    public TroopType getType() {
+        return type;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setIsOfLevel(TroopLevel isOfLevel) {
+        this.isOfLevel = isOfLevel;
+    }
+
+    public void setPosition(Tile position) {
+        this.position = position;
+    }
+
+    public void setType(TroopType type) {
+        this.type = type;
+    }
 
 }

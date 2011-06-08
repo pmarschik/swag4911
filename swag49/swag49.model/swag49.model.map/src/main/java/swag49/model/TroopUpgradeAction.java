@@ -11,7 +11,18 @@ public class TroopUpgradeAction extends Action {
     private Troop troop;
 
     @ManyToOne(optional = false)
-    private TroopLevel newLevel;
+    private TroopLevel troopLevel;
+
+    public TroopUpgradeAction() {
+
+    }
+
+    public TroopUpgradeAction(Player player, Troop troop, TroopLevel troopLevel, Long duration) {
+        this.setPlayer(player);
+        this.setTroop(troop);
+        this.setTroopLevel(troopLevel);
+        this.setDuration(duration);
+    }
 
     public Troop getTroop() {
         return troop;
@@ -21,11 +32,11 @@ public class TroopUpgradeAction extends Action {
         this.troop = troop;
     }
 
-    public TroopLevel getNewLevel() {
-        return newLevel;
+    public TroopLevel getTroopLevel() {
+        return troopLevel;
     }
 
-    public void setNewLevel(TroopLevel newLevel) {
-        this.newLevel = newLevel;
+    public void setTroopLevel(TroopLevel troopLevel) {
+        this.troopLevel = troopLevel;
     }
 }

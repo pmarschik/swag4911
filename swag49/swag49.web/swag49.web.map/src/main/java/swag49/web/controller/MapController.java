@@ -1,5 +1,6 @@
 package swag49.web.controller;
 
+import com.google.common.collect.Sets;
 import gamelogic.MapLogic;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import swag49.dao.DataAccessObject;
 import swag49.model.*;
 import swag49.util.Log;
 import swag49.web.model.TileOverviewDTO;
+import swag49.web.model.TileOverviewDTOFull;
 import swag49.web.model.TokenDTO;
 
 import javax.annotation.PostConstruct;
@@ -68,12 +70,12 @@ public class MapController {
     public void init() {
         swag49.model.Map example = new swag49.model.Map();
         example.setUrl(nodeContext.getMapNodeUrl());
-        logger.error("Map url: " + nodeContext.getMapNodeUrl());
+        logger.error("Map url {}", nodeContext.getMapNodeUrl());
 
         Collection<swag49.model.Map> maps = mapDAO.queryByExample(example);
         if (maps != null && maps.size() == 1) {
             map = maps.iterator().next();
-            logger.error("Map with id " + map.getId() + " found");
+            logger.debug("Map with id " + map.getId() + " found");
         } else {
             logger.error("Error while finding map");
         }
@@ -113,6 +115,7 @@ public class MapController {
 
             example.setUserId(this.userID);
             Collection<Player> playerValues = playerDAO.queryByExample(example);
+
             if (playerValues != null && playerValues.size() == 1) {
                 player = playerValues.iterator().next();
                 logger.error("Player " + player.getId() + " found");
@@ -154,6 +157,60 @@ public class MapController {
     public String messaging() {
         return "redirect:../messaging/";
     }
+
+    @RequestMapping(value = "/tile", method = RequestMethod.GET)
+    @Transactional
+    public String getTileOverview(@RequestParam(value = "x", defaultValue = "-1") int x,
+                                 @RequestParam(value = "y", defaultValue = "-1") int y,
+                                 Model model)
+    {
+        //TODO: besser machen
+        player = playerDAO.get(player.getId());
+        map = mapDAO.get(map.getId());
+
+        Tile tile = new Tile(map, x, y);
+
+        tile = tileDAO.get(tile.getId());
+
+        TileOverviewDTOFull tileInfo = new TileOverviewDTOFull(tile);
+        tileInfo.setBase(tile.getBase());
+        tileInfo.setTroops(Sets.newHashSet(tile.getTroops()));
+
+        if(tile.getBase() != null)
+        {
+//            tileInfo.setHasBase(true);
+
+            Base base = tile.getBase();
+            if(base.getOwner().getUserId() == player.getUserId())
+               tileInfo.setEnemyTerritory(false);
+            else
+               tileInfo.setEnemyTerritory(true);
+        }
+
+        else
+        {
+//              tileInfo.setHasBase(false);
+              tileInfo.setEnemyTerritory(false);
+        }
+
+
+        if(tile.getTroops() != null)
+        {
+//            if(!tile.getTroops().isEmpty())
+//                tileInfo.setHasTroops(true);
+//            else
+//                tileInfo.setHasTroops(false);
+        }
+        else
+        {
+//            tileInfo.setHasTroops(true);
+        }
+
+
+        model.addAttribute("tileInfo", tileInfo);
+
+        return "tile";
+     }
 
 //    @RequestMapping(value = "/mapoverview", method = RequestMethod.GET)
 //    public String mapoverview() {

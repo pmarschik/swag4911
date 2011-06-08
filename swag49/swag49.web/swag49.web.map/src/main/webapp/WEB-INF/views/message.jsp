@@ -68,9 +68,6 @@
             </tr>
         </table>
     </form:form>
-    <ul>
-        <li><a href="index.html">Back</a></li>
-    </ul>
 </c:if>
 </body>
 </html>

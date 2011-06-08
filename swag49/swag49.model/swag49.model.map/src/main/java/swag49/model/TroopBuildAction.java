@@ -6,10 +6,37 @@ import javax.persistence.ManyToOne;
 @Entity
 public class TroopBuildAction extends Action {
 
-    @ManyToOne(optional=false)
-	private TroopType troopType;
+    @ManyToOne(optional = false)
+    private TroopType troopType;
+
+    @ManyToOne(optional = false)
+    private TroopLevel troopLevel;
 
     private int amount;
+
+    public TroopLevel getTroopLevel() {
+        return troopLevel;
+    }
+
+    public void setTroopLevel(TroopLevel troopLevel) {
+        this.troopLevel = troopLevel;
+    }
+
+    public TroopBuildAction()
+    {
+
+    }
+
+    public TroopBuildAction(Player player, Tile tile, TroopType type, TroopLevel level, int amount, Long duration) {
+        super();
+        this.setPlayer(player);
+        this.setTarget(tile);
+        this.setDuration(duration);
+        this.setTroopType(type);
+        this.setAmount(amount);
+        this.setTroopLevel(level);
+
+    }
 
     public TroopType getTroopType() {
         return troopType;
