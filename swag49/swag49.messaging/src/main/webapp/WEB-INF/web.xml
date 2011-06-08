@@ -37,9 +37,20 @@
 		<load-on-startup>1</load-on-startup>
     </servlet>
 
+    <servlet>
+        <servlet-name>listMessagesChannelAdapter</servlet-name>
+        <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+    </servlet>
+
 	<servlet-mapping>
 		<servlet-name>playerMessageChannelAdapter</servlet-name>
 		<url-pattern>/send</url-pattern>
+	</servlet-mapping>
+
+    <servlet-mapping>
+		<servlet-name>listMessagesChannelAdapter</servlet-name>
+		<url-pattern>/get</url-pattern>
 	</servlet-mapping>
 
 </web-app>

@@ -1,40 +1,66 @@
 package swag49.messaging.transformer.impl;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.annotation.Transformer;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import swag49.dao.DataAccessObject;
 import swag49.messaging.model.Message;
 import swag49.messaging.model.MessageDTO;
 import swag49.messaging.transformer.MessageTransformer;
+import swag49.model.User;
 import swag49.util.Log;
+
+import java.util.List;
 
 @Component("messageTransformer")
 public class MessageTransformerImpl implements MessageTransformer {
     @Log
     private Logger log;
 
+    @Autowired
+    @Qualifier("userDAO")
+    private DataAccessObject<User, Long> userDAO;
+
+    @Transactional("swag49.user")
+    private Long getUserId(MessageDTO.UserDTO userDTO) {
+        userDTO = Preconditions.checkNotNull(userDTO);
+
+        if (userDTO.getId() != null)
+            return userDTO.getId();
+
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(userDTO.getUsername()),
+                "if id is null username mustn't be null or empty");
+
+        User user = new User();
+        user.setUsername(userDTO.getUsername());
+
+        List<User> users = userDAO.queryByExample(user);
+
+        Preconditions.checkArgument(users != null && users.size() == 1, "no user with name %s found",
+                userDTO.getUsername());
+
+        return users.get(0).getId();
+    }
+
     @Override
     @Transformer
+
     public Message apply(MessageDTO input) {
         Message output = new Message();
 
         output.setContent(input.getContent());
         output.setSendDate(input.getSent());
         output.setReceiveDate(input.getReceived());
-
-        if (input.getReceiver() != null)
-            output.setReceiverUserId(input.getReceiver().getId());
-        else
-            log.warn("receiver was null");
-
-        if (input.getSender() != null)
-            output.setSenderUserId(input.getSender().getId());
-        else
-            log.warn("sender was null");
-
+        output.setReceiverUserId(getUserId(input.getReceiver()));
+        output.setSenderUserId(getUserId(input.getSender()));
         output.setSubject(input.getSubject());
         output.setMapUrl(input.getMapUrl());
 
-        return  output;
+        return output;
     }
 }

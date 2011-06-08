@@ -37,8 +37,8 @@
         <property name="persistenceUnitName" value="swag49.user"/>
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="showSql" value="true"/>
-                <property name="generateDdl" value="false"/>
+                <property name="showSql" value="false"/>
+                <property name="generateDdl" value="true"/>
                 <property name="databasePlatform" value="${db.dialect}"/>
             </bean>
         </property>
@@ -49,8 +49,8 @@
         <property name="persistenceUnitName" value="swag49.messaging"/>
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="showSql" value="true"/>
-                <property name="generateDdl" value="false"/>
+                <property name="showSql" value="false"/>
+                <property name="generateDdl" value="true"/>
                 <property name="databasePlatform" value="${db.dialect}"/>
             </bean>
         </property>

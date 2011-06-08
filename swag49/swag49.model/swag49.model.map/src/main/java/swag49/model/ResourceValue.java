@@ -11,10 +11,10 @@ public class ResourceValue {
     private Integer amount_crops;
 
     public ResourceValue() {
-        amount_gold = Integer.valueOf(0);
-        amount_stone = Integer.valueOf(0);
-        amount_wood = Integer.valueOf(0);
-        amount_crops = Integer.valueOf(0);
+        amount_gold = 0;
+        amount_stone = 0;
+        amount_wood = 0;
+        amount_crops = 0;
     }
 
     public ResourceValue(int wood, int crops, int gold, int stone) {

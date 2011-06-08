@@ -57,7 +57,7 @@ public class MapController {
     private RestTemplate restTemplate;
 
     @Autowired
-    private NodeController nodeController;
+    private NodeContext nodeContext;
 
     @Autowired
     private MapLogic mapLogic;
@@ -69,8 +69,8 @@ public class MapController {
     @Transactional
     public void init() {
         swag49.model.Map example = new swag49.model.Map();
-        example.setUrl(nodeController.getMapNodeUrl());
-        logger.debug("Map url: " + nodeController.getMapNodeUrl());
+        example.setUrl(nodeContext.getMapNodeUrl());
+        logger.error("Map url {}", nodeContext.getMapNodeUrl());
 
         Collection<swag49.model.Map> maps = mapDAO.queryByExample(example);
         if (maps != null && maps.size() == 1) {
