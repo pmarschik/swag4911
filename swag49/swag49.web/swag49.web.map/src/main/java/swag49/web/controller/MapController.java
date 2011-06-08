@@ -85,7 +85,7 @@ public class MapController {
     private Player player;
 
 
-    @RequestMapping(value = "/{token}")
+    @RequestMapping(value = "/authenticate/{token}")
     @Transactional
     public String initPlayer(@PathVariable("token") String token) {
 
@@ -138,7 +138,7 @@ public class MapController {
                 return "HELP";
             }
         }
-        return "redirect:./";
+        return "redirect:../";
     }
 
 

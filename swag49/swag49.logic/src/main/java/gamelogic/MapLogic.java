@@ -575,7 +575,7 @@ public class MapLogic {
     private void sendMessage(Player sender, Player receiver, String subject, String content) {
 
         MessageDTO message = new MessageDTO(subject, content, sender.getUserId(), null, receiver.getUserId(),
-                null, new Date(), sender.getPlays().getUrl());
+                null, new Date(), null, sender.getPlays().getUrl());
 
         restTemplate.put("http://localhost:8080/messaging/send", message);
     }

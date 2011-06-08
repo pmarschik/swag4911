@@ -34,7 +34,7 @@ public class UserController {
     @Log
     private static Logger logger;
 
-    private static String mapController = "/swag/map/";
+    private static String mapController = "/swag/map/authenticate/";
 
     @Autowired
     @Qualifier("userDAO")

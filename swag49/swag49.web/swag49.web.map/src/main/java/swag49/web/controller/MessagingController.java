@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 import swag49.web.model.MessageDTO;
+import swag49.web.service.MessagingService;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -31,6 +32,9 @@ public class MessagingController {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private MessagingService messagingService;
 
     private Map<Long, MessageDTO> messages = Maps.newHashMap();
 
@@ -101,7 +105,10 @@ public class MessagingController {
         if (mapController.getUserID() == null)
             return "redirect:./";
 
-        map.put("message", new MessageDTO());
+        MessageDTO message = new MessageDTO();
+        message.setReceiver(new MessageDTO.UserDTO());
+        message.setSender(new MessageDTO.UserDTO());
+        map.put("message", message);
         map.put("view", false);
 
         return "message";
@@ -127,9 +134,9 @@ public class MessagingController {
     public List<MessageDTO> getIncomingMessages() {
         List<MessageDTO> messages = new ArrayList<MessageDTO>();
 
-        for (MessageDTO message : this.messages.values()) {
-            //if(message.getReceiver().equals(userController.getLoggedInUser().getUsername()))
-            messages.add(message);
+        for(MessageDTO message : messagingService.getMessageList(mapController.getUserID())) {
+            if(message.getReceiver().getId().equals(mapController.getUserID()))
+                messages.add(message);
         }
 
         return messages;
@@ -138,9 +145,9 @@ public class MessagingController {
     public List<MessageDTO> getOutgoingMessages() {
         List<MessageDTO> messages = new ArrayList<MessageDTO>();
 
-        for (MessageDTO message : this.messages.values()) {
-            //if(message.getSender().equals(userController.getLoggedInUser().getUsername()))
-            messages.add(message);
+        for(MessageDTO message : messagingService.getMessageList(mapController.getUserID())) {
+            if(message.getSender().getId().equals(mapController.getUserID()))
+                messages.add(message);
         }
 
         return messages;
@@ -151,12 +158,12 @@ public class MessagingController {
 //        message.setSender(new MessageDTO.UserDTO(userController.getLoggedInUser().getId(),
 //                userController.getLoggedInUser().getUsername()));
         // TODO get userid of receiving player
-        message.getReceiver().setId(2L);
+        //message.getReceiver().setId(2L);
 
-        message.setSender(new MessageDTO.UserDTO("TODO",1L));
+        message.setSender(new MessageDTO.UserDTO("TODO",mapController.getUserID()));
         message.setSent(new Date());
         message.setMapUrl(MAP_URL);
-        messages.put(message.getReceiver().getId(), message);
+       //messages.put(message.getReceiver().getId(), message);
 
         restTemplate.put("http://localhost:8080/messaging/send", message);
         System.out.println("Send message:" + message);
