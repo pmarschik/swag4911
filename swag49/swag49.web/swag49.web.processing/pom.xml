@@ -1,79 +1,36 @@
-<?xml version="1.0"?>
-<project
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>swag49</groupId>
-    <artifactId>swag49.processing</artifactId>
-    <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>swag49.processing</name>
     <parent>
         <groupId>swag49</groupId>
-        <artifactId>swag49</artifactId>
+        <artifactId>swag49.web</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>..</relativePath>
     </parent>
+    <groupId>swag49</groupId>
+    <artifactId>swag49.web.processing</artifactId>
+    <packaging>war</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>swag49.web.processing</name>
+
     <dependencies>
         <dependency>
             <groupId>swag49</groupId>
-            <artifactId>swag49.model.map</artifactId>
+            <artifactId>swag49.processing</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>swag49</groupId>
-            <artifactId>swag49.logic</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>1.8.5</version>
-        </dependency>
-
-        <!-- Spring Dependencies -->
-
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
+            <artifactId>spring-oxm</artifactId>
             <version>${spring.version}</version>
-            <exclusions>
-                <!-- Exclude Commons Logging in favor of SLF4j -->
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
-            <type>jar</type>
-            <scope>test</scope>
         </dependency>
     </dependencies>
-    <modules>
-    </modules>
+
     <build>
-        <finalName>swag49.model</finalName>
+        <finalName>swag49.web.processing</finalName>
         <plugins>
+
             <!-- Facilitates downloading source and javadoc in Eclipse -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

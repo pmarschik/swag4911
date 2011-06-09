@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+       default-autowire="byName">
+    <import resource="db.xml"/>
+
+    <context:component-scan base-package="swag49"/>
+
+    <bean id="propertyPlaceHolder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:swag49.processing.properties"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="placeholderPrefix" value="$processing{"/>
+        <property name="placeholderSuffix" value="}"/>
+    </bean>
+
+    <bean name="mostBasesJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="swag49.statistics.StatisticCalculatorJobBean"/>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="calculatorId" value="mostBasesCalculator"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean name="mostResourcesJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="swag49.statistics.StatisticCalculatorJobBean"/>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="calculatorId" value="mostResourcesCalculator"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean name="mostTroopsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="swag49.statistics.StatisticCalculatorJobBean"/>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="calculatorId" value="mostTroopsCalculator"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean name="periodicResourceUpdateJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="swag49.gamelogic.PeriodicResourceUpdateJobBean"/>
+    </bean>
+
+    <bean id="mostBasesTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="mostBasesJob"/>
+        <property name="startDelay" value="1000"/>
+        <!-- repeat every 60 seconds -->
+        <property name="repeatInterval" value="60000"/>
+    </bean>
+
+    <bean id="mostResourcesTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="mostResourcesJob"/>
+        <property name="startDelay" value="2000"/>
+        <!-- repeat every 60 seconds -->
+        <property name="repeatInterval" value="60000"/>
+    </bean>
+
+    <bean id="mostTroopsTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="mostTroopsJob"/>
+        <property name="startDelay" value="3000"/>
+        <!-- repeat every 60 seconds -->
+        <property name="repeatInterval" value="60000"/>
+    </bean>
+
+    <bean id="resourceUpdateTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="periodicResourceUpdateJob"/>
+        <property name="startDelay" value="1000"/>
+        <!-- repeat every 60 seconds -->
+        <property name="repeatInterval" value="60000"/>
+    </bean>
+
+    <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="applicationContextSchedulerContextKey">
+            <value>applicationContext</value>
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSource"/>
+        </property>
+        <property name="configLocation" value="classpath:quartz.properties"/>
+        <property name="autoStartup" value="true"/>
+        <property name="triggers">
+            <list>
+                <ref bean="mostBasesTrigger"/>
+                <ref bean="mostResourcesTrigger"/>
+                <ref bean="mostTroopsTrigger"/>
+                <ref bean="resourceUpdateTrigger"/>
+            </list>
+        </property>
+     <!--   <property name="schedulerContextAsMap">
+            <map>
+                <entry key="playerDAO" value-ref="playerDAO"/>
+            </map>
+        </property>  -->
+    </bean>
+</beans>
