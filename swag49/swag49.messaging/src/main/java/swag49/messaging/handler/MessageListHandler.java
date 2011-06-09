@@ -65,7 +65,7 @@ public class MessageListHandler {
         List<MessageDTO> allMessageDTOs = Lists.transform(allMessages, messageDTOTransformer);
         Set<MessageDTO> messageDTOs = Sets.newHashSet(allMessageDTOs);
 
-        String requestUri = messageQuery.getMapURL() + "swag-api/messaging/list";
+        String requestUri = messageQuery.getMapURL() + "/swag-api/messaging/list";
         restTemplate.put(requestUri, new MessageQueryResponse(messageQuery, messageDTOs));
     }
 }

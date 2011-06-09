@@ -10,41 +10,47 @@
 <c:if test="${view == true}">
     <h1>[SWAG] Message View</h1>
     <c:if test="${message != null}">
-        <table>
-            <tr>
-                <td>Send:</td>
-                <td>${message.sent}</td>
-            </tr>
-            <tr>
-                <td>Subject:</td>
-                <td>${message.subject}</td>
-            </tr>
-            <tr>
-                <td>Content:</td>
-                <td>${message.content}</td>
-            </tr>
-            <tr>
-                <td>Sender:</td>
-                <td>${message.sender.username}</td>
-            </tr>
-            <tr>
-                <td>Receiver:</td>
-                <td>${message.receiver.username}</td>
-            </tr>
-        </table>
+        <form:form commandName="message">
+            <table>
+                <tr>
+                    <td>Sent</td>
+                    <td><form:textarea path="sent" rows="1" cols="20" readonly="true"/></td>
+                </tr>
+                <tr>
+                    <td>Received</td>
+                    <td><form:textarea path="received" rows="1" cols="20" readonly="true"/></td>
+                </tr>
+                <tr>
+                    <td>Sender</td>
+                    <td><form:textarea path="sender.username" rows="2" cols="20" readonly="true"/></td>
+                </tr>
+                <tr>
+                    <td>Receiver</td>
+                    <td><form:textarea path="receiver.username" rows="2" cols="20" readonly="true"/></td>
+                </tr>
+                <tr>
+                    <td>Subject</td>
+                    <td><form:textarea path="subject" rows="2" cols="20" readonly="true"/></td>
+                </tr>
+                <tr>
+                    <td>Content</td>
+                    <td><form:textarea path="content" rows="5" cols="40" readonly="true"/></td>
+                </tr>
+            </table>
+        </form:form>
     </c:if>
     <c:if test="${message == null}">
         <p>Message doesn't exist!</p>
     </c:if>
     <ul>
-        <li><a href="../index.html">Messaging-Management</a></li>
-        <li><a href="../incoming.html">Incoming-Messages</a></li>
-        <li><a href="../outgoing.html">Outgoing-Messages</a></li>
+        <li><a href="../messaging/incoming.html">Incoming-Messages</a></li>
+        <li><a href="../messaging/outgoing.html">Outgoing-Messages</a></li>
     </ul>
 </c:if>
+
 <c:if test="${view == false}">
     <h1>[SWAG] Create/Send Message</h1>
-    <form:form method="post" action="send" commandName="message">
+    <form:form method="post" action="../messaging/send" commandName="message">
         <table>
             <tr>
                 <td><form:label path="receiver.username">Receiver</form:label></td>
@@ -58,7 +64,7 @@
             </tr>
             <tr>
                 <td><form:label path="content">Content</form:label></td>
-                <td><form:textarea path="content" rows="5" cols="30"/></td>
+                <td><form:textarea path="content" rows="5" cols="40"/></td>
                 <td style="color:red;0"><form:errors path="content"/></td>
             </tr>
             <tr>

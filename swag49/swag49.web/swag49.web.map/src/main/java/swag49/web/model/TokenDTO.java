@@ -13,7 +13,7 @@ public class TokenDTO {
     private UUID token;
     @XmlElement(name="user")
     private Long userId;
-    @XmlElement(name="user")
+    @XmlElement(name="userName")
     private String userName;
 
     public TokenDTO() {

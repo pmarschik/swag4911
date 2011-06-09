@@ -64,6 +64,7 @@ public class MapController {
 
     private UUID userToken;
     private Long userID;
+    private String userName;
 
     @PostConstruct
     @Transactional
@@ -106,6 +107,7 @@ public class MapController {
         if (tokenDTO != null) {
             this.userToken = tokenDTO.getToken();
             this.userID = tokenDTO.getUserId();
+            this.userName = tokenDTO.getUserName();
         }
 
         if (map != null) {
@@ -221,17 +223,15 @@ public class MapController {
         return userToken;
     }
 
-    public void setUserToken(UUID userToken) {
-        this.userToken = userToken;
-    }
-
     public Long getUserID() {
         return userID;
     }
 
-    public void setUserID(Long userID) {
-        this.userID = userID;
+    public String getUserName() {
+        return userName;
     }
+
+
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @Transactional

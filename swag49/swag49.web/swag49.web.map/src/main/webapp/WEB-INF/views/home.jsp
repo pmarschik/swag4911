@@ -20,10 +20,10 @@
         <th><img src="${resourcePath}/images/misc/crops.jpg" alt="Crops" /></th>
 	</tr>
 	<tr>
-		<td>${resources.getAmount_gold()}</td>
-        <td>${resources.getAmount_stone()}</td>
-        <td>${resources.getAmount_wood()}</td>
-        <td>${resources.getAmount_crops()}</td>
+		<td>${resources.amount_gold}</td>
+        <td>${resources.amount_stone}</td>
+        <td>${resources.amount_wood}</td>
+        <td>${resources.amount_crops}</td>
 	</tr>
     <tr>
 
