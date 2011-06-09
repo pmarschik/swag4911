@@ -174,4 +174,16 @@ create index idx_qrtz_ft_job_group on qrtz_fired_triggers(JOB_GROUP);
 create index idx_qrtz_ft_job_stateful on qrtz_fired_triggers(IS_STATEFUL);
 create index idx_qrtz_ft_job_req_recovery on qrtz_fired_triggers(REQUESTS_RECOVERY);
 
+ALTER TABLE qrtz_job_listeners OWNER TO swa;
+ALTER TABLE qrtz_trigger_listeners OWNER TO swa;
+ALTER TABLE qrtz_fired_triggers OWNER TO swa;
+ALTER TABLE QRTZ_PAUSED_TRIGGER_GRPS OWNER TO swa;
+ALTER TABLE QRTZ_SCHEDULER_STATE OWNER TO swa;
+ALTER TABLE  QRTZ_LOCKS OWNER TO swa;
+ALTER TABLE qrtz_simple_triggers OWNER TO swa;
+ALTER TABLE qrtz_cron_triggers OWNER TO swa;
+ALTER TABLE QRTZ_BLOB_TRIGGERS OWNER TO swa;
+ALTER TABLE qrtz_triggers OWNER TO swa;
+ALTER TABLE qrtz_job_details OWNER TO swa;
+ALTER TABLE qrtz_calendars OWNER TO swa;
 commit;

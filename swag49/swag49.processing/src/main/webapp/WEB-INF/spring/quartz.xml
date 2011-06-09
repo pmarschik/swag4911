@@ -42,6 +42,10 @@
         </property>
     </bean>
 
+    <bean name="periodicResourceUpdateJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="swag49.gamelogic.PeriodicResourceUpdateJobBean"/>
+    </bean>
+
     <bean id="mostBasesTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
         <property name="jobDetail" ref="mostBasesJob"/>
         <property name="startDelay" value="1000"/>
@@ -63,8 +67,17 @@
         <property name="repeatInterval" value="60000"/>
     </bean>
 
+    <bean id="resourceUpdateTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="periodicResourceUpdateJob"/>
+        <property name="startDelay" value="1000"/>
+        <!-- repeat every 60 seconds -->
+        <property name="repeatInterval" value="60000"/>
+    </bean>
+
     <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-        <property name="applicationContextSchedulerContextKey"><value>applicationContext</value></property>
+        <property name="applicationContextSchedulerContextKey">
+            <value>applicationContext</value>
+        </property>
         <property name="dataSource">
             <ref bean="dataSource"/>
         </property>
@@ -75,7 +88,13 @@
                 <ref bean="mostBasesTrigger"/>
                 <ref bean="mostResourcesTrigger"/>
                 <ref bean="mostTroopsTrigger"/>
+                <ref bean="resourceUpdateTrigger"/>
             </list>
         </property>
+     <!--   <property name="schedulerContextAsMap">
+            <map>
+                <entry key="playerDAO" value-ref="playerDAO"/>
+            </map>
+        </property>  -->
     </bean>
 </beans>

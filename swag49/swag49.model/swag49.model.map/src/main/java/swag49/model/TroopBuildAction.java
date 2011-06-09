@@ -1,9 +1,13 @@
 package swag49.model;
 
+import swag49.listener.TroopBuildActionListener;
+
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.ManyToOne;
 
 @Entity
+@EntityListeners({TroopBuildActionListener.class})
 public class TroopBuildAction extends Action {
 
     @ManyToOne(optional = false)

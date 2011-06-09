@@ -1,10 +1,14 @@
 package swag49.model;
 
+import swag49.listener.TroopUpgradeActionListener;
+
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Entity
+@EntityListeners({TroopUpgradeActionListener.class})
 public class TroopUpgradeAction extends Action {
 
     @OneToOne
