@@ -5,9 +5,11 @@ import swag49.model.ResourceValue;
 public class BuildingTypeDTO {
      private Long id;
 
+
     public BuildingTypeDTO(Long id, String name) {
         this.id = id;
         this.name = name;
+
     }
 
     private String name;
