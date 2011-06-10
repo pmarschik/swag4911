@@ -4,7 +4,7 @@ public class StatisticEntryDTO {
 
     private Integer ranking;
 
-    private Long player;
+    private String player;
 
     private Integer score;
 
@@ -16,11 +16,11 @@ public class StatisticEntryDTO {
         this.ranking = ranking;
     }
 
-    public Long getPlayer() {
+    public String getPlayer() {
         return player;
     }
 
-    public void setPlayer(Long player) {
+    public void setPlayer(String player) {
         this.player = player;
     }
 

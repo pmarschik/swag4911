@@ -8,24 +8,24 @@ import java.util.Collection;
 
 public class InternalMessageStore {
 
-    private Multimap<Long, MessageDTO> receivedMessages = HashMultimap.create();
-    private Multimap<Long, MessageDTO> messageListCache = HashMultimap.create();
+    private Multimap<String, MessageDTO> receivedMessages = HashMultimap.create();
+    private Multimap<String, MessageDTO> messageListCache = HashMultimap.create();
 
-    public Collection<MessageDTO> getMessageList(Long userId) {
+    public Collection<MessageDTO> getMessageList(String userId) {
         return messageListCache.get(userId);
     }
 
-    public Collection<MessageDTO> getNewMessagesAndRemoveFromCache(Long userId) {
+    public Collection<MessageDTO> getNewMessagesAndRemoveFromCache(String userId) {
         Collection<MessageDTO> result = receivedMessages.get(userId);
         receivedMessages.removeAll(userId);
         return result;
     }
 
-    public void addMessageList(Long userId, Iterable<MessageDTO> messages) {
+    public void addMessageList(String userId, Iterable<MessageDTO> messages) {
         messageListCache.putAll(userId, messages);
     }
 
-    public void addReceivedMessage(Long userId, MessageDTO message) {
+    public void addReceivedMessage(String userId, MessageDTO message) {
         receivedMessages.put(userId, message);
     }
 }

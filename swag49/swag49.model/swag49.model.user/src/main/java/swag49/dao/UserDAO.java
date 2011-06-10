@@ -13,7 +13,7 @@ import java.util.List;
 
 // annotate with @Repository because it is a DAO, other components should be annotated with @Component
 @Repository(value="userDAO")
-public class UserDAO implements DataAccessObject<User, Long> {
+public class UserDAO implements DataAccessObject<User, String> {
 
 	@PersistenceContext(unitName = "swag49.user")
 	private EntityManager em;
@@ -38,7 +38,7 @@ public class UserDAO implements DataAccessObject<User, Long> {
 	}
 
     @Transactional("swag49.user")
-	public User get(Long id) {
+	public User get(String id) {
 		return em.find(User.class, id);
 	}
 

@@ -18,7 +18,7 @@ public class Player {
 	private Boolean deleted;
 
 	@Column(nullable = false)
-	private Long userId;
+	private String userId;
 
 	@ManyToOne(optional = false)
 	private Map plays;
@@ -103,7 +103,7 @@ public class Player {
 		return resources;
 	}
 
-	public Long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
@@ -135,7 +135,7 @@ public class Player {
 		this.resources = resources;
 	}
 
-	public void setUserId(Long userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

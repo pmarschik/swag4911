@@ -40,7 +40,7 @@ public class TokenService {
     public synchronized boolean hasTokenForUser(User user) {
 
         for (TokenDTO token : tokens.values()) {
-            if (token.getUserId().equals(user.getId()))
+            if (token.getUserId().equals(user.getUsername()))
                 return true;
         }
 
@@ -51,7 +51,7 @@ public class TokenService {
         try {
             UUID token = UUID.randomUUID();
 
-            TokenDTO tokenDTO = new TokenDTO(token, user.getId(), user.getUsername());
+            TokenDTO tokenDTO = new TokenDTO(token, user.getUsername(), user.getUsername());
 
             tokens.put(token, tokenDTO);
 
