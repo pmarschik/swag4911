@@ -271,6 +271,11 @@ public class MapController {
 //            tileInfo.setHasTroops(true);
         }
 
+        ResourceType specialResource = tile.getSpecial();
+        if(specialResource == null)
+            specialResource = ResourceType.NONE;
+        String specialResourceString = specialResource.toString();
+        tileInfo.setSpecialResource(specialResourceString);
 
         model.addAttribute("tileInfo", tileInfo);
 

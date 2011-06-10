@@ -9,7 +9,7 @@ public class TileOverviewDTOFull {
 	private Integer y;
 
 	private String info;
-	private ResourceType specialResource;
+	private String specialResource;
 
     public Long getBaseId() {
         return baseId;
@@ -83,11 +83,11 @@ public class TileOverviewDTOFull {
 		this.info = info;
 	}
 
-	public void setSpecialResource(ResourceType special) {
+	public void setSpecialResource(String special) {
 		this.specialResource = special;
 	}
 
-	public ResourceType getSpecialResource() {
+	public String getSpecialResource() {
 		return specialResource;
 	}
 
