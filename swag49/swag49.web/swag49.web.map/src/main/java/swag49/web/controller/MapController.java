@@ -18,7 +18,10 @@ import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
 import swag49.model.*;
 import swag49.util.Log;
-import swag49.web.model.*;
+import swag49.web.model.TileOverviewDTO;
+import swag49.web.model.TileOverviewDTOFull;
+import swag49.web.model.TokenDTO;
+import swag49.web.model.TroopDTO;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
@@ -99,7 +102,7 @@ public class MapController {
 
 
     @PostConstruct
-    @Transactional
+    @Transactional("swag49.map")
     public void init() {
         swag49.model.Map example = new swag49.model.Map();
         example.setUrl(nodeContext.getMapNodeUrl());
@@ -121,7 +124,7 @@ public class MapController {
 
 
     @RequestMapping(value = "/authenticate/{token}")
-    @Transactional
+    @Transactional("swag49.map")
     public String initPlayer(@PathVariable("token") String token) {
 
         System.out.println("Got request with token: " + token);
@@ -216,7 +219,7 @@ public class MapController {
     }
 
     @RequestMapping(value = "/messaging", method = RequestMethod.GET)
-    @Transactional
+    @Transactional("swag49.map")
     public String messaging() {
         buildTest();
         return "redirect:../messaging/";
@@ -228,7 +231,7 @@ public class MapController {
     }
 
     @RequestMapping(value = "/tile", method = RequestMethod.GET)
-    @Transactional
+    @Transactional("swag49.map")
     public String getTileOverview(@RequestParam(value = "x", defaultValue = "-1") int x,
                                   @RequestParam(value = "y", defaultValue = "-1") int y,
                                   Model model) {
@@ -289,7 +292,7 @@ public class MapController {
     }
 
     @RequestMapping(value = "/buildingupgrade", method = RequestMethod.GET)
-    @Transactional
+    @Transactional("swag49.map")
     public String getUpgradeBuilding(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
                                      @RequestParam(value = "position", defaultValue = "-1") int position,
                                      Model model) {
@@ -311,7 +314,7 @@ public class MapController {
     }
 
     @RequestMapping(value = "/troopupgrade", method = RequestMethod.GET)
-    @Transactional
+    @Transactional("swag49.map")
     public String getUpgradeTroops(@RequestParam(value = "troopId", defaultValue = "-1") long troopId,
                                    Model model) {
         player = playerDAO.get(player.getId());
@@ -335,7 +338,7 @@ public class MapController {
     }
 
     @RequestMapping(value = "/troopoverview", method = RequestMethod.GET)
-    @Transactional
+    @Transactional("swag49.map")
     public String getTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
                                    Model model) {
         player = playerDAO.get(player.getId());
@@ -374,7 +377,7 @@ public class MapController {
     }
 
     @RequestMapping(value = "/build", method = RequestMethod.GET)
-    @Transactional
+    @Transactional("swag49.map")
     public String getBuildView(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
                                @RequestParam(value = "position", defaultValue = "-1") int position,
                                @RequestParam(value = "buildingTypeId", defaultValue = "-1") long buildingTypeId,
@@ -428,7 +431,7 @@ public class MapController {
 
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    @Transactional
+    @Transactional("swag49.map")
     public String getHomeview(@RequestParam(value = "xLow", defaultValue = "-1") int x_low,
                               @RequestParam(value = "yLow", defaultValue = "-1") int y_low,
                               @RequestParam(value = "xHigh", defaultValue = "-1") int x_high,
@@ -557,7 +560,7 @@ public class MapController {
 
 
     @RequestMapping(value = "/mapoverview", method = RequestMethod.GET)
-    @Transactional
+    @Transactional("swag49.map")
     public String getMapOverview(@RequestParam(value = "xLow", defaultValue = "-1") int x_low,
                                  @RequestParam(value = "yLow", defaultValue = "-1") int y_low,
                                  @RequestParam(value = "xHigh", defaultValue = "-1") int x_high,
@@ -678,7 +681,7 @@ public class MapController {
     }
 
     @RequestMapping(value = "/playerresources", method = RequestMethod.GET)
-    @Transactional
+    @Transactional("swag49.map")
     public String getPlayerResources(Model model) {
 
 

@@ -87,7 +87,7 @@ public class MapLogic {
     private Long systemUserId;
     private static final String SUBJECT_BUILDBASE = "[Base founded]";
 
-    @Transactional
+    @Transactional("swag49.map")
     public void initializePlayer(Map map, Player player) {
         map = mapDAO.get(map.getId());
         Tile homeBaseTile = findHomeBaseLocation(map);
@@ -109,7 +109,7 @@ public class MapLogic {
     }
 
 
-    @Transactional
+    @Transactional("swag49.map")
     public void upgradeTroop(Player player, Troop troop, TroopLevel troopLevel) throws NotEnoughMoneyException {
 
         //calculate cost
@@ -129,7 +129,7 @@ public class MapLogic {
         }
     }
 
-    @Transactional
+    @Transactional("swag49.map")
     public void handleAction(TroopUpgradeAction action) {
         Troop troop = action.getTroop();
 
@@ -152,8 +152,9 @@ public class MapLogic {
         }
     }
 
-    @Transactional
-    public void buildTroop(Player player, TroopType type, TroopLevel level, Tile baseTile, int amount) throws NotEnoughMoneyException {
+    @Transactional("swag49.map")
+    public void buildTroop(Player player, TroopType type, TroopLevel level, Tile baseTile, int amount)
+            throws NotEnoughMoneyException {
 
         //calculate cost
         ResourceValue cost = new ResourceValue(level.getBuildCosts());
@@ -180,7 +181,7 @@ public class MapLogic {
         }
     }
 
-    @Transactional
+    @Transactional("swag49.map")
     public void handleAction(TroopBuildAction action) {
         TroopType type = action.getTroopType();
 
@@ -209,7 +210,7 @@ public class MapLogic {
     }
 
 
-    @Transactional
+    @Transactional("swag49.map")
     public void build(Square square, BuildingType type) throws Exception {
         if (square.getBuilding() != null) {
             throw new Exception("Square not empty");
@@ -290,7 +291,7 @@ public class MapLogic {
     }
 
 
-    @Transactional
+    @Transactional("swag49.map")
     public void sendTroops(Tile target, Set<Troop> troops) throws Exception {
 
         if (troops.isEmpty())
@@ -321,7 +322,7 @@ public class MapLogic {
         action = troopActionDAO.create(action);
     }
 
-    @Transactional
+    @Transactional("swag49.map")
     private long multipleStartPlacesTravelTime(Collection<Troop> troops,
                                                Tile destination) {
 
@@ -355,7 +356,7 @@ public class MapLogic {
      * @param troops      troops
      * @return long
      */
-    @Transactional
+    @Transactional("swag49.map")
     private long calculateTravelTime(Tile start, Tile destination,
                                      Collection<Troop> troops) {
 
@@ -374,7 +375,7 @@ public class MapLogic {
         return (distance * DISTANCEFACTOR) / minSpeed;
     }
 
-    @Transactional
+    @Transactional("swag49.map")
     private Tile findHomeBaseLocation(Map map) {
         //try random
         Random rnd = new Random(0);
@@ -404,7 +405,7 @@ public class MapLogic {
     }
 
 
-    @Transactional
+    @Transactional("swag49.map")
     public Base createBase(Tile tile, Player owner) {
         Base base = new Base(tile);
 
@@ -437,7 +438,7 @@ public class MapLogic {
     }
 
 
-    @Transactional
+    @Transactional("swag49.map")
     public void handleAction(BuildAction action) {
         Building building = action.getConcerns();
 
@@ -469,7 +470,7 @@ public class MapLogic {
     }
 
 
-    @Transactional
+    @Transactional("swag49.map")
     public void handleAction(TroopAction action) {
         Tile tile = action.getTarget();
 
@@ -577,7 +578,7 @@ public class MapLogic {
         }
     }
 
-    @Transactional
+    @Transactional("swag49.map")
     private void sendHome(Set<Troop> attackers, Tile destination) {
         TroopAction homeAction = new TroopAction();
         homeAction.setConcerns(attackers);
@@ -588,7 +589,7 @@ public class MapLogic {
         homeAction = troopActionDAO.create(homeAction);
     }
 
-    @Transactional
+    @Transactional("swag49.map")
     private boolean calculateFight(Player attackers_owner, Player defenders_owner,
                                    Set<Troop> attackers, Set<Troop> defenders, Tile tile) {
 

@@ -125,12 +125,13 @@ public class UserController {
     public String login(Map<String, Object> map) {
         if(loggedInUser != null)
             return "redirect:./";
-        
+
         map.put("user", new UserLoginDTO());
         return "login";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @Transactional("swag49.user")
     public String loginUser(@Valid @ModelAttribute("user")
                             UserLoginDTO userLoginDTO, BindingResult bingBindingResult, Map<String, Object> map) {
 

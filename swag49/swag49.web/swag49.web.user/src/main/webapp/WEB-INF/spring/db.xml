@@ -39,8 +39,8 @@
         <property name="entityManagerFactory" ref="userEntityManagerFactory"/>
         <qualifier value="swag49.user"/>
     </bean>
-
-    <tx:annotation-driven transaction-manager="userTransactionManager"/>
+™
+    <tx:annotation-driven/>
 
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 

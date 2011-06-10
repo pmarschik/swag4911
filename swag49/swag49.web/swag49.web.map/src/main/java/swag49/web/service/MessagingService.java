@@ -30,7 +30,7 @@ public class MessagingService {
 
     @RequestMapping(value = "/messaging/user/{userId}", method = RequestMethod.GET)
     @ResponseBody
-    @Transactional
+    @Transactional("swag49.map")
     public PlayerDTO getUser(@PathVariable("userId") String userId) {
         Player playerExample = new Player();
         //noinspection NullableProblems

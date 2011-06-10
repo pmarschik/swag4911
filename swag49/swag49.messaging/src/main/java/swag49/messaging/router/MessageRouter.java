@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.MessageChannel;
 import org.springframework.integration.annotation.Router;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import swag49.messaging.model.Message;
 import swag49.messaging.model.PlayerDTO;
@@ -26,7 +25,6 @@ public class MessageRouter {
     private RestTemplate restTemplate;
 
     @Router
-    @Transactional
     public MessageChannel route(Message message) {
         String requestUri = message.getMapUrl() + "/swag-api/messaging/user/{userId}";
 

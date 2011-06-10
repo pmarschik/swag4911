@@ -14,6 +14,7 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -70,11 +71,12 @@ public abstract class AbstractDataAccessObject<T, PK> implements DataAccessObjec
     private <T> List<T> findByExample(T example, Class<T> clazz)
             throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, SecurityException,
             NoSuchMethodException {
-        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        EntityManager em = getEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<T> cq = cb.createQuery(clazz);
         Root<T> r = cq.from(clazz);
         Predicate p = cb.conjunction();
-        Metamodel mm = getEntityManager().getMetamodel();
+        Metamodel mm = em.getMetamodel();
         EntityType<T> et = mm.entity(clazz);
         Set<Attribute<? super T, ?>> attrs = et.getAttributes();
         for (Attribute<? super T, ?> a : attrs) {
@@ -82,11 +84,16 @@ public abstract class AbstractDataAccessObject<T, PK> implements DataAccessObjec
             String javaName = a.getJavaMember().getName();
             String getter = "get" + javaName.substring(0, 1).toUpperCase() + javaName.substring(1);
             Method m = clazz.getMethod(getter, (Class<?>[]) null);
-            if (m.invoke(example, (Object[]) null) != null)
-                p = cb.and(p, cb.equal(r.get(name), m.invoke(example, (Object[]) null)));
+
+            if (m.invoke(example, (Object[]) null) != null) {
+                boolean isCollection = Collection.class.isAssignableFrom(m.getReturnType());
+
+                if (!isCollection)
+                    p = cb.and(p, cb.equal(r.get(name), m.invoke(example, (Object[]) null)));
+            }
         }
         cq.select(r).where(p);
-        TypedQuery<T> query = getEntityManager().createQuery(cq);
+        TypedQuery<T> query = em.createQuery(cq);
         return query.getResultList();
     }
 }

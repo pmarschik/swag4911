@@ -35,7 +35,7 @@ public class DataHelper {
 
 
     @PostConstruct
-    @Transactional
+    @Transactional("swag49.map")
     public void init() {
         try {
 

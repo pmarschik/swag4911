@@ -32,7 +32,7 @@ public class MapHelper {
 
 
     @PostConstruct
-    @Transactional
+    @Transactional("swag49.map")
     public void init() {
         try {
             //create map

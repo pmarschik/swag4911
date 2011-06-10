@@ -45,15 +45,24 @@ public class EmailMessageHandler {
     @Autowired
     private VelocityEngine velocityEngine;
 
+    @Transactional("swag49.user")
+    private User getUser(String id) {
+        return userDAO.get(id);
+    }
+
+    @Transactional("swag49.map")
+    private Message updateReceiveDate(Message message) {
+        message.setReceiveDate(new Date());
+        return messageDAO.create(message);
+    }
+
     @ServiceActivator
-    @Transactional
     public void handleMessage(Message message) {
         logger.info("Sending email with content {}", message.getContent());
-        message.setReceiveDate(new Date());
-        message = messageDAO.create(message);
+        message = updateReceiveDate(message);
 
-        User receiverUser = userDAO.get(message.getReceiverUserId());
-        User senderUser = userDAO.get(message.getSenderUserId());
+        User receiverUser = getUser(message.getReceiverUserId());
+        User senderUser = getUser(message.getSenderUserId());
 
         PlayerMessageMimeMessagePreparator messagePreparator =
                 new PlayerMessageMimeMessagePreparator(velocityEngine, message, receiverUser, senderUser, fromAddress);

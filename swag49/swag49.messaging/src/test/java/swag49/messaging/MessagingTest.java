@@ -39,7 +39,7 @@ public class MessagingTest {
     private User sender;
     private User receiver;
 
-    @Transactional
+    @Transactional("swag49.user")
     private User makeUser(String userName) {
         User user = userDAO.get(userName);
 

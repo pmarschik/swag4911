@@ -40,7 +40,7 @@
         <qualifier value="swag49.map"/>
     </bean>
 
-    <tx:annotation-driven transaction-manager="mapTransactionManager"/>
+    <tx:annotation-driven/>
 
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
