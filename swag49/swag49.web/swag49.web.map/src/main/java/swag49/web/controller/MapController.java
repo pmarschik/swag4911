@@ -10,10 +10,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
 import swag49.model.*;
@@ -99,7 +96,8 @@ public class MapController {
     private UUID userToken;
     private String userID;
     private String userName;
-
+    private static final String NOTENOUGHRESOURCES = "notenoughresources";
+    private static final String ERROR = "error";
 
     @PostConstruct
     @Transactional("swag49.map")
@@ -122,14 +120,12 @@ public class MapController {
     private swag49.model.Map map;
     private Player player;
 
-
-    @RequestMapping(value = "/authenticate/{token}")
+    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     @Transactional("swag49.map")
-    public String initPlayer(@PathVariable("token") String token) {
-
+    public String initPlayer(@ModelAttribute("tokenDTO") TokenDTO token) {
         System.out.println("Got request with token: " + token);
 
-        UUID userToken = UUID.fromString(token);
+        UUID userToken = token.getToken();
 
         // verify token
         Map<String, UUID> vars = new HashMap<String, UUID>();
@@ -169,7 +165,26 @@ public class MapController {
                 player.setUpkeep(new ResourceValue());
                 player = playerDAO.create(player);
 
-                mapLogic.initializePlayer(map, player);
+                Base base = mapLogic.initializePlayer(map, player);
+
+                //create a start unit
+
+                TroopType type = new TroopType();
+                type.setName("Swordsman");
+                type = troopTypeDAO.queryByExample(type).get(0);
+
+
+                TroopLevel.Id levelId = new TroopLevel.Id(1, type.getId());
+                TroopLevel level = troopLevelDAO.get(levelId);
+
+                Tile tile = base.getLocatedOn();
+                Troop startUnit = new Troop(type, level, tile, player);
+
+                startUnit = troopDAO.create(startUnit);
+
+                tile.getTroops().add(startUnit);
+                tileDAO.update(tile);
+
 
                 logger.info("Player " + player.getId() + " initialized");
             } else {
@@ -178,7 +193,7 @@ public class MapController {
                 return "HELP";
             }
         }
-        return "redirect:../";
+        return "redirect:./";
     }
 
     @Transactional("swag49.map")
@@ -230,6 +245,17 @@ public class MapController {
         return "redirect:../statistics/";
     }
 
+    @RequestMapping(value = "/sendtroops", method = RequestMethod.GET)
+    @Transactional
+    public String getSendTroopsOverview(@RequestParam(value = "x", defaultValue = "-1") int x,
+                                  @RequestParam(value = "y", defaultValue = "-1") int y,
+                                  Model model)
+    {
+        return "sendtroops";
+    }
+
+
+
     @RequestMapping(value = "/tile", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String getTileOverview(@RequestParam(value = "x", defaultValue = "-1") int x,
@@ -257,6 +283,8 @@ public class MapController {
             } else {
                 tileInfo.setEnemyTerritory(true);
             }
+
+            tileInfo.setBaseId(base.getId());
         } else {
 //              tileInfo.setHasBase(false);
             tileInfo.setEnemyTerritory(false);
@@ -272,6 +300,11 @@ public class MapController {
 //            tileInfo.setHasTroops(true);
         }
 
+        ResourceType specialResource = tile.getSpecial();
+        if(specialResource == null)
+            specialResource = ResourceType.NONE;
+        String specialResourceString = specialResource.toString();
+        tileInfo.setSpecialResource(specialResourceString);
 
         model.addAttribute("tileInfo", tileInfo);
 
@@ -291,6 +324,7 @@ public class MapController {
         return userName;
     }
 
+    //TEST
     @RequestMapping(value = "/buildingupgrade", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String getUpgradeBuilding(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
@@ -302,9 +336,9 @@ public class MapController {
             try {
                 mapLogic.upgradeBuilding(building);
             } catch (NotEnoughMoneyException e) {
-                return "notenoughmoney";
+                return NOTENOUGHRESOURCES;
             } catch (Exception e) {
-                return "error";
+                return ERROR;
             }
 
             return "troopoverview";
@@ -328,13 +362,68 @@ public class MapController {
             try {
                 mapLogic.upgradeTroop(player, troop, nextLevel);
             } catch (NotEnoughMoneyException e) {
-                return "notenoughmoney";
+                return NOTENOUGHRESOURCES;
             }
 
             return "troopoverview";
         } else {
-            return "error";
+            return ERROR;
         }
+    }
+
+    @RequestMapping(value = "/traintroops", method = RequestMethod.GET)
+    @Transactional
+    public String getTrainTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
+                                        Model model) {
+
+        Base base = baseDAO.get(baseId);
+        if (base == null || !base.getOwner().getId().equals(player.getId())) {
+            return ERROR;
+        }
+
+        player = playerDAO.get(player.getId());
+        map = mapDAO.get(map.getId());
+
+        return "TODO";
+    }
+
+
+    @RequestMapping(value = "/train", method = RequestMethod.GET)
+    @Transactional
+    public String getTrainTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
+                                        @RequestParam(value = "troopTypeId", defaultValue = "-1") long troopTypeId,
+                                        Model model) {
+
+        Base base = baseDAO.get(baseId);
+        if (base == null || !base.getOwner().getId().equals(player.getId())) {
+            return ERROR;
+        }
+
+        TroopType type = new TroopType();
+        type.setId(troopTypeId);
+        List<TroopType> typeList = troopTypeDAO.queryByExample(type);
+        if (typeList == null || typeList.size() != 1) {
+            return ERROR;
+        } else {
+            type = typeList.get(0);
+        }
+        player = playerDAO.get(player.getId());
+        map = mapDAO.get(map.getId());
+
+        TroopLevel.Id id = new TroopLevel.Id(1, type.getId());
+        TroopLevel level = troopLevelDAO.get(id);
+
+        if (player.getResources().geq(level.getBuildCosts())) {
+            return NOTENOUGHRESOURCES;
+        }
+
+        try {
+            mapLogic.buildTroop(player, type, level, base.getLocatedOn(), 1);
+        } catch (NotEnoughMoneyException e) {
+            return ERROR;
+        }
+
+        return "TODO";
     }
 
     @RequestMapping(value = "/troopoverview", method = RequestMethod.GET)
@@ -344,6 +433,10 @@ public class MapController {
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
         Base base = baseDAO.get(baseId);
+
+        if (base == null || !base.getOwner().getId().equals(player.getId())) {
+            return ERROR;
+        }
 
 
         ArrayList<TroopDTO> troops = new ArrayList<TroopDTO>();
@@ -360,7 +453,7 @@ public class MapController {
 
             TroopLevel nextLevel = troopLevelDAO.get(id);
 
-            if (nextLevel == null)
+            if (nextLevel == null || troop.getActive() != Boolean.TRUE)
                 dto.setCanUpgrade(false);
             else {
                 dto.setCanUpgrade(true);
@@ -373,7 +466,7 @@ public class MapController {
         model.addAttribute("troops", troops);
         model.addAttribute("baseId", baseId);
 
-        return "troopoverview.html";
+        return "troopoverview";
     }
 
     @RequestMapping(value = "/build", method = RequestMethod.GET)
@@ -395,7 +488,7 @@ public class MapController {
             try {
                 mapLogic.build(square, buildingType);
             } catch (Exception e) {
-                return "error";
+                return ERROR;
             }
 
             return "buildSuccess";

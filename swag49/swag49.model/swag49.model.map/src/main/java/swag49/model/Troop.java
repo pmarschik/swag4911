@@ -24,6 +24,16 @@ public class Troop {
     @ManyToOne(optional = false)
     private Player owner;
 
+    private Boolean active;
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
     public Troop() {
     }
 
@@ -33,6 +43,7 @@ public class Troop {
         this.position = position;
         this.owner = owner;
         this.isOfLevel = level;
+        this.active = Boolean.TRUE;
     }
 
     public Player getOwner() {

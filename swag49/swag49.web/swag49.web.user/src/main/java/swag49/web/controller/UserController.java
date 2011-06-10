@@ -17,6 +17,7 @@ import swag49.model.User;
 import swag49.util.Log;
 import swag49.web.TokenService;
 import swag49.web.model.MapLocationDTO;
+import swag49.web.model.TokenDTO;
 import swag49.web.model.UserDTO;
 import swag49.web.model.UserLoginDTO;
 
@@ -34,7 +35,7 @@ public class UserController {
     @Log
     private static Logger logger;
 
-    private static String mapController = "/swag/map/authenticate/";
+    private static String mapController = "/swag/map/authenticate";
 
     @Autowired
     @Qualifier("userDAO")
@@ -63,14 +64,17 @@ public class UserController {
             return "register";
 
         User user = new User();
-        user.setUsername(userDTO.getUsername());
         Collection<User> users = userDAO.queryByExample(user);
 
         // check if username already exists
-        if (users != null && users.size() > 0) {
-            map.put("registerError", "User with username: " +
-                    userDTO.getUsername() + " is already registered!");
-            return "register";
+        if (users != null) {
+            for (User u : users) {
+                if (u.getUsername().equals(userDTO.getUsername())) {
+                    map.put("registerError", "User with username: " +
+                            userDTO.getUsername() + " is already registered!");
+                    return "register";
+                }
+            }
         }
 
         // register user
@@ -123,7 +127,7 @@ public class UserController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Map<String, Object> map) {
-        if(loggedInUser != null)
+        if (loggedInUser != null)
             return "redirect:./";
 
         map.put("user", new UserLoginDTO());
@@ -139,13 +143,16 @@ public class UserController {
             return "login";
 
         User template = new User();
-        template.setUsername(userLoginDTO.getUsername());
-        Collection<User> users = userDAO.queryByExample(template);
+        List<User> users = userDAO.queryByExample(template);
         User user = null;
 
-        if (users != null && users.size() > 0) {
-            Iterator<User> iterator = users.iterator();
-            user = iterator.next();
+        if (users != null) {
+            for(User u : users) {
+                if(u.getUsername().equals(userLoginDTO.getUsername())){
+                    user = u;
+                    break;
+                }
+            }
         }
 
         if (user == null) {
@@ -228,6 +235,8 @@ public class UserController {
         List<MapLocationDTO> availableMaps = getMapLocations(user);
         map.put("availableMapLocations", availableMaps);
         map.put("myMapLocations", getUserMapLocations(user));
+        map.put("tokenDTO", new TokenDTO(userToken, null, null));
+        map.put("mapController", mapController);
 
         return "maps";
     }
@@ -251,15 +260,6 @@ public class UserController {
         userDAO.update(user);
 
         return "redirect:../maps";
-    }
-
-
-    @RequestMapping(value = "/play/{id}")
-    public String playMap(@PathVariable("id") Long mapLocationID) {
-
-        MapLocation mapLocation = getMapLocation(mapLocationID);
-
-        return "redirect:" + mapLocation.getUrl() + mapController + userToken.toString();
     }
 
     @Transactional("swag49.user")

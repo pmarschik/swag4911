@@ -38,20 +38,27 @@
 </h2>
 <c:if test="${!empty myMapLocations}">
     <table class="data">
+    <tr>
+        <th>Id</th>
+        <th>URL</th>
+        <th>Map-Name</th>
+        <th>&nbsp;</th>
+    </tr>
+    <c:forEach items="${myMapLocations}" var="mapLocation">
         <tr>
-            <th>Id</th>
-            <th>URL</th>
-            <th>Map-Name</th>
-            <th>&nbsp;</th>
+        <form:form method="post" action="${mapLocation.url}${mapController}"
+                   commandName="tokenDTO">
+            <td>${mapLocation.id}</td>
+            <td>${mapLocation.url}</td>
+            <td>${mapLocation.mapName}</td>
+            <td><form:hidden path="token"/></td>
+            <td>
+                <input type="submit" value="Play"/>
+            </td>
+            </table>
+        </form:form>
         </tr>
-        <c:forEach items="${myMapLocations}" var="mapLocation">
-            <tr>
-                <td>${mapLocation.id}</td>
-                <td>${mapLocation.url}</td>
-                <td>${mapLocation.mapName}</td>
-                <td><a href="play/${mapLocation.id}">play</a></td>
-            </tr>
-        </c:forEach>
+    </c:forEach>
     </table>
 </c:if>
 

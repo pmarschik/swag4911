@@ -88,7 +88,7 @@ public class MapLogic {
     private static final String SUBJECT_BUILDBASE = "[Base founded]";
 
     @Transactional("swag49.map")
-    public void initializePlayer(Map map, Player player) {
+    public Base initializePlayer(Map map, Player player) {
         map = mapDAO.get(map.getId());
         Tile homeBaseTile = findHomeBaseLocation(map);
 
@@ -105,6 +105,8 @@ public class MapLogic {
                 new ResourceValue(START_AMOUNT_WOOD, START_AMOUNT_CROPS, START_AMOUNT_GOLD, START_AMOUNT_STONE));
 
         player = playerDAO.update(player);
+
+        return homeBase;
 
     }
 
@@ -429,8 +431,6 @@ public class MapLogic {
 
         tile.setBase(base);
         tileDAO.update(tile);
-        System.out.println(owner.getResources());
-        System.out.println(resourceProduction.getAmount_gold());
         owner.getResources().add(resourceProduction);
         playerDAO.update(owner);
 
