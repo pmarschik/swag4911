@@ -17,6 +17,7 @@ import swag49.model.User;
 import swag49.util.Log;
 import swag49.web.TokenService;
 import swag49.web.model.MapLocationDTO;
+import swag49.web.model.TokenDTO;
 import swag49.web.model.UserDTO;
 import swag49.web.model.UserLoginDTO;
 
@@ -34,7 +35,7 @@ public class UserController {
     @Log
     private static Logger logger;
 
-    private static String mapController = "/swag/map/authenticate/";
+    private static String mapController = "/swag/map/authenticate";
 
     @Autowired
     @Qualifier("userDAO")
@@ -227,6 +228,8 @@ public class UserController {
         List<MapLocationDTO> availableMaps = getMapLocations(user);
         map.put("availableMapLocations", availableMaps);
         map.put("myMapLocations", getUserMapLocations(user));
+        map.put("tokenDTO", new TokenDTO(userToken, null, null));
+        map.put("mapController", mapController);
 
         return "maps";
     }
@@ -250,15 +253,6 @@ public class UserController {
         userDAO.update(user);
 
         return "redirect:../maps";
-    }
-
-
-    @RequestMapping(value = "/play/{id}")
-    public String playMap(@PathVariable("id") Long mapLocationID) {
-
-        MapLocation mapLocation = getMapLocation(mapLocationID);
-
-        return "redirect:" + mapLocation.getUrl() + mapController + userToken.toString();
     }
 
     @Transactional("swag49.user")

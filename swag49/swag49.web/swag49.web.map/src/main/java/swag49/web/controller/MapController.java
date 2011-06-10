@@ -9,10 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
 import swag49.model.*;
@@ -106,14 +103,13 @@ public class MapController {
     private swag49.model.Map map;
     private Player player;
 
-
-    @RequestMapping(value = "/authenticate/{token}")
+    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     @Transactional
-    public String initPlayer(@PathVariable("token") String token) {
+    public String initPlayer(@ModelAttribute("tokenDTO") TokenDTO token) {
 
         System.out.println("Got request with token: " + token);
 
-        UUID userToken = UUID.fromString(token);
+        UUID userToken = token.getToken();
 
         // verify token
         Map<String, UUID> vars = new HashMap<String, UUID>();
@@ -162,7 +158,7 @@ public class MapController {
                 return "HELP";
             }
         }
-        return "redirect:../";
+        return "redirect:./";
     }
 
     @Transactional
