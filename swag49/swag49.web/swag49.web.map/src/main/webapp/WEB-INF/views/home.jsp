@@ -234,7 +234,7 @@
     </tr>
 
     <tr>
-        <td class="arrowDownCell" colspan="3">
+        <td class="arrowUpCell" colspan="3">
             <a class="contentLink" href="./mapoverview.html?xLow=${xLow}&yLow=${yLow + 1}&xHigh=${xHigh}&yHigh=${yHigh + 1}"><img class="arrowPic"
                     src="${resourcePath}<spring:theme code='theme.image.misc.down'/>" alt="Down" title="Down"/>
             </a>
