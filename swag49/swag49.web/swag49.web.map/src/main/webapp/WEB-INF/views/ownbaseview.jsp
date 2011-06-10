@@ -3,6 +3,9 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
 <spring:url value="/resources" var="resourcePath"/>
+
+<h2>Troops:</h2>
+<a class="contentLink" href="troopoverview.html?baseId=${square.id.baseId}"><img src="${resourcePath}<spring:theme code='theme.image.misc.troops'/>" alt="Troops" ></a>
 <h2>Squares:</h2>
 <table>
     <c:forEach items="${tileInfo.squares}" var="square">

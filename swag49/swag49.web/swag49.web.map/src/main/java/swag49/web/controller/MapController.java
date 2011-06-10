@@ -2,7 +2,7 @@ package swag49.web.controller;
 
 import com.google.common.collect.Sets;
 import gamelogic.MapLogic;
-import org.omg.CORBA.Request;
+import gamelogic.exceptions.NotEnoughMoneyException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
-import swag49.dao.BaseDAO;
 import swag49.dao.DataAccessObject;
-import swag49.dao.SquareDAO;
 import swag49.model.*;
 import swag49.util.Log;
 import swag49.web.model.*;
@@ -75,6 +73,16 @@ public class MapController {
     @Autowired
     @Qualifier("troopLevelDAO")
     private DataAccessObject<TroopLevel, TroopLevel.Id> troopLevelDAO;
+
+    @Autowired
+    @Qualifier("troopDAO")
+    private DataAccessObject<Troop, Long> troopDAO;
+
+
+    @Autowired
+    @Qualifier("buildingDAO")
+    private DataAccessObject<Building, Square.Id> buildingDAO;
+
 
     @Autowired
     private RestTemplate restTemplate;
@@ -210,7 +218,7 @@ public class MapController {
     @RequestMapping(value = "/messaging", method = RequestMethod.GET)
     @Transactional
     public String messaging() {
-                buildTest();
+        buildTest();
         return "redirect:../messaging/";
     }
 
@@ -280,6 +288,91 @@ public class MapController {
         return userName;
     }
 
+    @RequestMapping(value = "/buildingupgrade", method = RequestMethod.GET)
+    @Transactional
+    public String getUpgradeBuilding(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
+                                     @RequestParam(value = "position", defaultValue = "-1") int position,
+                                     Model model) {
+        player = playerDAO.get(player.getId());
+        Building building = buildingDAO.get(new Square.Id(baseId, position));
+        if (building != null) {
+            try {
+                mapLogic.upgradeBuilding(building);
+            } catch (NotEnoughMoneyException e) {
+                return "notenoughmoney";
+            } catch (Exception e) {
+                return "error";
+            }
+
+            return "troopoverview";
+        } else {
+            return "error";
+        }
+    }
+
+    @RequestMapping(value = "/troopupgrade", method = RequestMethod.GET)
+    @Transactional
+    public String getUpgradeTroops(@RequestParam(value = "troopId", defaultValue = "-1") long troopId,
+                                   Model model) {
+        player = playerDAO.get(player.getId());
+        Troop troop = troopDAO.get(Long.valueOf(troopId));
+        if (troop != null) {
+            //get next Level
+            TroopLevel.Id id = new TroopLevel.Id(troop.getIsOfLevel().getLevel(), troop.getType().getId());
+
+            TroopLevel nextLevel = troopLevelDAO.get(id);
+
+            try {
+                mapLogic.upgradeTroop(player, troop, nextLevel);
+            } catch (NotEnoughMoneyException e) {
+                return "notenoughmoney";
+            }
+
+            return "troopoverview";
+        } else {
+            return "error";
+        }
+    }
+
+    @RequestMapping(value = "/troopoverview", method = RequestMethod.GET)
+    @Transactional
+    public String getTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
+                                   Model model) {
+        player = playerDAO.get(player.getId());
+        map = mapDAO.get(map.getId());
+        Base base = baseDAO.get(baseId);
+
+
+        ArrayList<TroopDTO> troops = new ArrayList<TroopDTO>();
+
+        for (Troop troop : base.getLocatedOn().getTroops()) {
+            TroopDTO dto = new TroopDTO(troop);
+
+            //set upgrade
+            //get current TroopTypeLevel
+            TroopLevel currentLevel = troop.getIsOfLevel();
+
+            //get next Level
+            TroopLevel.Id id = new TroopLevel.Id(currentLevel.getLevel(), currentLevel.getId().getTroopTypeId());
+
+            TroopLevel nextLevel = troopLevelDAO.get(id);
+
+            if (nextLevel == null)
+                dto.setCanUpgrade(false);
+            else {
+                dto.setCanUpgrade(true);
+                dto.setUpgradeCost(new ResourceValueDTO(nextLevel.getBuildCosts()));
+            }
+
+            troops.add(dto);
+        }
+
+        model.addAttribute("troops", troops);
+        model.addAttribute("baseId", baseId);
+
+        return "troopoverview.html";
+    }
+
     @RequestMapping(value = "/build", method = RequestMethod.GET)
     @Transactional
     public String getBuildView(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
@@ -291,11 +384,10 @@ public class MapController {
         map = mapDAO.get(map.getId());
         List<BuildingType> buildings = buildingTypeDAO.queryByExample(new BuildingType());
 
-        if(buildingTypeId != -1 && position != -1 && baseId != -1)
-        {
-             Base base = baseDAO.get(baseId);
-             Square square = squareDAO.get(new Square.Id(base.getId(), position));
-             BuildingType buildingType = buildingTypeDAO.get(buildingTypeId);
+        if (buildingTypeId != -1 && position != -1 && baseId != -1) {
+            Base base = baseDAO.get(baseId);
+            Square square = squareDAO.get(new Square.Id(base.getId(), position));
+            BuildingType buildingType = buildingTypeDAO.get(buildingTypeId);
 
             try {
                 mapLogic.build(square, buildingType);
@@ -318,8 +410,7 @@ public class MapController {
 
             ResourceValue costs = new ResourceValue();
             for (BuildingLevel level : levels) {
-                if(level.getLevel() == 1)
-                {
+                if (level.getLevel() == 1) {
                     costs = level.getBuildCosts();
                 }
             }
