@@ -15,7 +15,7 @@
 		<td>Special Resource</td><td>${tileInfo.specialResource}</td>
 	</tr>
 </table>
-<c:if test="${tileInfo.isHasTroops()}">
+<c:if test="${tileInfo.hasTroops}">
 	<table width="100%" border="0">
 		<tr colspan="4">Troops</tr>
 		<tr></tr>
