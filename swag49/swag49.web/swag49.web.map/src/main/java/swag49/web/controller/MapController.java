@@ -236,7 +236,7 @@ public class MapController {
     @RequestMapping(value = "/messaging", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String messaging() {
-        buildTest();
+        //buildTest();
         return "redirect:../messaging/";
     }
 

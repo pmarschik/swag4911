@@ -8,9 +8,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.annotation.Transformer;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import swag49.dao.DataAccessObject;
 import swag49.messaging.model.Message;
 import swag49.messaging.model.MessageDTO;
@@ -29,7 +26,6 @@ public class MessageTransformerImpl implements MessageTransformer {
     @Qualifier("userDAO")
     private DataAccessObject<User, Long> userDAO;
 
-
     @Transactional("swag49.user")
     private String getUserId(MessageDTO.UserDTO userDTO) {
         userDTO = Preconditions.checkNotNull(userDTO);
@@ -42,6 +38,7 @@ public class MessageTransformerImpl implements MessageTransformer {
 
         User user = new User();
         user.setUsername(userDTO.getUsername());
+        user.setMapLocations(null);
 
         List<User> users = userDAO.queryByExample(user);
 
@@ -51,11 +48,9 @@ public class MessageTransformerImpl implements MessageTransformer {
         return users.get(0).getUsername();
     }
 
-    @RequestMapping(value = "/send", method = {RequestMethod.POST, RequestMethod.PUT})
-    @Override
     @Transformer
-    @Transactional("swag49.user")
-    public Message apply(@RequestBody MessageDTO input) {
+    @Override
+    public Message apply(MessageDTO input) {
         Message output = new Message();
 
         output.setId(input.getId());
