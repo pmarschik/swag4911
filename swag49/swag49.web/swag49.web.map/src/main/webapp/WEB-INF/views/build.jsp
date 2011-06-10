@@ -27,7 +27,7 @@
 	</tr>
 </table>
             	</td>
-            	<td><a href="build.html?buildingTypeId=${building.id}&baseId=${baseId}&position=${position}"><img src="${resourcePath}<spring:theme code='theme.image.buildings.build'/>" alt="Build" ></a> </td>
+            	<td><a class="contentLink" href="build.html?buildingTypeId=${building.id}&baseId=${baseId}&position=${position}"><img src="${resourcePath}<spring:theme code='theme.image.buildings.build'/>" alt="Build" ></a> </td>
             </tr>
         </c:forEach>
     </table>
