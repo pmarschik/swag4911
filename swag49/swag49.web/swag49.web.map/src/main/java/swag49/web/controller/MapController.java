@@ -165,7 +165,7 @@ public class MapController {
         return "redirect:../";
     }
 
-    @Transactional
+    @Transactional("swag49.map")
     public String buildTest() {
         try {
             logger.info("Start build Test");
@@ -191,7 +191,6 @@ public class MapController {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-
         return "home";
     }
 
@@ -204,13 +203,14 @@ public class MapController {
     }
 
     @RequestMapping(value = "/messaging", method = RequestMethod.GET)
+    @Transactional
     public String messaging() {
+                buildTest();
         return "redirect:../messaging/";
     }
 
     @RequestMapping(value = "/statistics", method = RequestMethod.GET)
     public String statistics() {
-        buildTest();
         return "redirect:../statistics/";
     }
 

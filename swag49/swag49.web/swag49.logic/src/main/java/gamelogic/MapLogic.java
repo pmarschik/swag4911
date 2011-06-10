@@ -225,6 +225,8 @@ public class MapLogic {
 
             Building constructionYard = new Building(square);
 
+            square.setBuilding(constructionYard);
+
             constructionYard.setType(type);
 
             // get zero-level
@@ -234,6 +236,8 @@ public class MapLogic {
             constructionYard.setIsOfLevel(level);
 
             constructionYard = buildingDAO.create(constructionYard);
+
+            squareDAO.update(square);
 
             logger.info("CREATE BUILD ACTION");
             // create BuildAction
