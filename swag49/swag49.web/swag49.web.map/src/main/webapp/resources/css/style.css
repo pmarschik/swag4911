@@ -70,3 +70,19 @@ img.tilePic
 	border-width:1px;
 	border-color:black;
 }
+
+.arrowUpCell
+{
+   text-align:center;
+}
+
+.arrowDownCell
+{
+   text-align:center;
+}
+
+.arrowPic
+{
+    width:25px;
+    height:50px;
+}
