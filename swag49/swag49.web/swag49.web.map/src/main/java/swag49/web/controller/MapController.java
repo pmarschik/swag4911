@@ -243,6 +243,17 @@ public class MapController {
         return "redirect:../statistics/";
     }
 
+    @RequestMapping(value = "/sendtroops", method = RequestMethod.GET)
+    @Transactional
+    public String getSendTroopsOverview(@RequestParam(value = "x", defaultValue = "-1") int x,
+                                  @RequestParam(value = "y", defaultValue = "-1") int y,
+                                  Model model)
+    {
+        return "sendtroops";
+    }
+
+
+
     @RequestMapping(value = "/tile", method = RequestMethod.GET)
     @Transactional
     public String getTileOverview(@RequestParam(value = "x", defaultValue = "-1") int x,

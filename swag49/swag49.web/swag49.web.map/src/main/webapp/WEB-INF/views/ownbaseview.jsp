@@ -9,7 +9,7 @@
         src="${resourcePath}<spring:theme code='theme.image.misc.troops'/>" alt="Troops"></a>
 
 <a class="contentLink" href="traintroops.html?baseId=${tileInfo.baseId}"><img
-        src="${resourcePath}<spring:theme code='theme.image.misc.train_troops'/>" alt="TrainTroops"></a>
+        src="${resourcePath}<spring:theme code='theme.image.buildings.build'/>" alt="TrainTroops"></a>
 
 <h2>Squares:</h2>
 <table>
