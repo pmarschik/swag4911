@@ -1,14 +1,22 @@
 package swag49.web;
 
+import org.slf4j.Logger;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import swag49.dao.DataAccessObject;
 import swag49.model.Map;
 import swag49.model.ResourceType;
 import swag49.model.Tile;
+import swag49.util.Log;
 
 import javax.annotation.PostConstruct;
 import java.util.HashSet;
@@ -19,8 +27,11 @@ import java.util.Set;
  * @author michael
  */
 @Component
-@Scope(value = "singleton")
-public class MapHelper {
+@Scope("singleton")
+public class MapHelper implements ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
+
+    @Log
+    private Logger log;
 
     @Autowired
     @Qualifier("mapDAO")
@@ -30,10 +41,16 @@ public class MapHelper {
     @Qualifier("tileDAO")
     private DataAccessObject<Tile, Tile.Id> tileDAO;
 
+    private AbstractApplicationContext applicationContext;
 
     @PostConstruct
-    @Transactional("swag49.map")
     public void init() {
+        applicationContext.addApplicationListener(this);
+    }
+
+    @Transactional("swag49.map")
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
         try {
             //create map
             Map map = new Map();
@@ -75,7 +92,7 @@ public class MapHelper {
             }
 
         } catch (Exception e) {
-            // nothing to do
+            log.warn("error when creating map", e);
         }
 
         try {
@@ -114,7 +131,13 @@ public class MapHelper {
                 mapDAO.update(map);
             }
         } catch (Exception e) {
-            // nothing to do
+            log.warn("error when creating map", e);
         }
     }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = (AbstractApplicationContext) applicationContext;
+    }
 }
+
