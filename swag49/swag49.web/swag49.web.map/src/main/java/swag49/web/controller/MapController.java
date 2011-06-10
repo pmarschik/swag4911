@@ -288,6 +288,7 @@ public class MapController {
         return userName;
     }
 
+    //TEST
     @RequestMapping(value = "/buildingupgrade", method = RequestMethod.GET)
     @Transactional
     public String getUpgradeBuilding(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
@@ -392,7 +393,7 @@ public class MapController {
             try {
                 mapLogic.build(square, buildingType);
             } catch (Exception e) {
-                return "error";
+                return "Building NOT possible!";
             }
 
             return "buildSuccess";
