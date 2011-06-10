@@ -96,7 +96,8 @@ public class MapController {
     private UUID userToken;
     private String userID;
     private String userName;
-
+    private static final String NOTENOUGHRESOURCES = "notenoughresources";
+    private static final String ERROR = "error";
 
     @PostConstruct
     @Transactional
@@ -326,9 +327,9 @@ public class MapController {
             try {
                 mapLogic.upgradeBuilding(building);
             } catch (NotEnoughMoneyException e) {
-                return "notenoughmoney";
+                return NOTENOUGHRESOURCES;
             } catch (Exception e) {
-                return "error";
+                return ERROR;
             }
 
             return "troopoverview";
@@ -352,13 +353,68 @@ public class MapController {
             try {
                 mapLogic.upgradeTroop(player, troop, nextLevel);
             } catch (NotEnoughMoneyException e) {
-                return "notenoughmoney";
+                return NOTENOUGHRESOURCES;
             }
 
             return "troopoverview";
         } else {
-            return "error";
+            return ERROR;
         }
+    }
+
+    @RequestMapping(value = "/traintroops", method = RequestMethod.GET)
+    @Transactional
+    public String getTrainTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
+                                        Model model) {
+
+        Base base = baseDAO.get(baseId);
+        if (base == null || !base.getOwner().getId().equals(player.getId())) {
+            return ERROR;
+        }
+
+        player = playerDAO.get(player.getId());
+        map = mapDAO.get(map.getId());
+
+        return "TODO";
+    }
+
+
+    @RequestMapping(value = "/train", method = RequestMethod.GET)
+    @Transactional
+    public String getTrainTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
+                                        @RequestParam(value = "troopTypeId", defaultValue = "-1") long troopTypeId,
+                                        Model model) {
+
+        Base base = baseDAO.get(baseId);
+        if (base == null || !base.getOwner().getId().equals(player.getId())) {
+            return ERROR;
+        }
+
+        TroopType type = new TroopType();
+        type.setId(troopTypeId);
+        List<TroopType> typeList = troopTypeDAO.queryByExample(type);
+        if (typeList == null || typeList.size() != 1) {
+            return ERROR;
+        } else {
+            type = typeList.get(0);
+        }
+        player = playerDAO.get(player.getId());
+        map = mapDAO.get(map.getId());
+
+        TroopLevel.Id id = new TroopLevel.Id(1, type.getId());
+        TroopLevel level = troopLevelDAO.get(id);
+
+        if (player.getResources().geq(level.getBuildCosts())) {
+            return NOTENOUGHRESOURCES;
+        }
+
+        try {
+            mapLogic.buildTroop(player, type, level, base.getLocatedOn(), 1);
+        } catch (NotEnoughMoneyException e) {
+            return ERROR;
+        }
+
+        return "TODO";
     }
 
     @RequestMapping(value = "/troopoverview", method = RequestMethod.GET)
@@ -368,6 +424,10 @@ public class MapController {
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
         Base base = baseDAO.get(baseId);
+
+        if (base == null || !base.getOwner().getId().equals(player.getId())) {
+            return ERROR;
+        }
 
 
         ArrayList<TroopDTO> troops = new ArrayList<TroopDTO>();
@@ -384,7 +444,7 @@ public class MapController {
 
             TroopLevel nextLevel = troopLevelDAO.get(id);
 
-            if (nextLevel == null)
+            if (nextLevel == null || troop.getActive() != Boolean.TRUE)
                 dto.setCanUpgrade(false);
             else {
                 dto.setCanUpgrade(true);
@@ -419,7 +479,7 @@ public class MapController {
             try {
                 mapLogic.build(square, buildingType);
             } catch (Exception e) {
-                return "Building NOT possible!";
+                return ERROR;
             }
 
             return "buildSuccess";
