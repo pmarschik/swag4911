@@ -5,10 +5,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import swag49.dao.BuildingTypeDAO;
 import swag49.dao.DataAccessObject;
-import swag49.model.Map;
-import swag49.model.ResourceType;
-import swag49.model.Tile;
+import swag49.model.*;
 
 import javax.annotation.PostConstruct;
 import java.util.HashSet;

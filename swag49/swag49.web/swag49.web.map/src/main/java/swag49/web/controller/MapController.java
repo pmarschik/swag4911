@@ -54,6 +54,23 @@ public class MapController {
     private DataAccessObject<Tile, Tile.Id> tileDAO;
 
     @Autowired
+    @Qualifier("buildingTypeDAO")
+    private DataAccessObject<BuildingType, Long> buildingTypeDAO;
+
+
+    @Autowired
+    @Qualifier("buildingLevelDAO")
+    private DataAccessObject<BuildingLevel, BuildingLevel.Id> buildingLevelDAO;
+
+    @Autowired
+    @Qualifier("troopTypeDAO")
+    private DataAccessObject<TroopType, Long> troopTypeDAO;
+
+    @Autowired
+    @Qualifier("troopLevelDAO")
+    private DataAccessObject<TroopLevel, TroopLevel.Id> troopLevelDAO;
+
+    @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
@@ -64,6 +81,7 @@ public class MapController {
 
     private UUID userToken;
     private Long userID;
+    private String userName;
 
     @PostConstruct
     @Transactional
@@ -106,6 +124,7 @@ public class MapController {
         if (tokenDTO != null) {
             this.userToken = tokenDTO.getToken();
             this.userID = tokenDTO.getUserId();
+            this.userName = tokenDTO.getUserName();
         }
 
         if (map != null) {
@@ -144,6 +163,35 @@ public class MapController {
         return "redirect:../";
     }
 
+    @Transactional
+    public String buildTest() {
+        try {
+            logger.info("Start build Test");
+            player = playerDAO.get(player.getId());
+            Base base = player.getOwns().iterator().next();
+
+            BuildingType goldMineType = new BuildingType();
+            goldMineType.setName("Goldmine");
+
+
+            goldMineType = buildingTypeDAO.queryByExample(goldMineType).get(0);
+            Square emptySquare = null;
+            for (Square square : base.getConsistsOf()) {
+                if (square.getBuilding() == null) {
+                    emptySquare = square;
+                    break;
+                }
+            }
+                  logger.info("End build Test");
+
+            mapLogic.build(emptySquare, goldMineType);
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+
+        return "home";
+    }
 
     @RequestMapping(value = "/")
     public String handle(Map<String, Object> map) {
@@ -158,12 +206,19 @@ public class MapController {
         return "redirect:../messaging/";
     }
 
+    @RequestMapping(value = "/statistics", method = RequestMethod.GET)
+    public String statistics() {
+        System.out.println();
+                buildTest();
+
+        return "redirect:../statistics/";
+    }
+
     @RequestMapping(value = "/tile", method = RequestMethod.GET)
     @Transactional
     public String getTileOverview(@RequestParam(value = "x", defaultValue = "-1") int x,
-                                 @RequestParam(value = "y", defaultValue = "-1") int y,
-                                 Model model)
-    {
+                                  @RequestParam(value = "y", defaultValue = "-1") int y,
+                                  Model model) {
         //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
@@ -176,33 +231,26 @@ public class MapController {
         tileInfo.setBase(tile.getBase());
         tileInfo.setTroops(Sets.newHashSet(tile.getTroops()));
 
-        if(tile.getBase() != null)
-        {
+        if (tile.getBase() != null) {
 //            tileInfo.setHasBase(true);
 
             Base base = tile.getBase();
-            if(base.getOwner().getUserId() == player.getUserId())
-               tileInfo.setEnemyTerritory(false);
+            if (base.getOwner().getUserId() == player.getUserId())
+                tileInfo.setEnemyTerritory(false);
             else
-               tileInfo.setEnemyTerritory(true);
-        }
-
-        else
-        {
+                tileInfo.setEnemyTerritory(true);
+        } else {
 //              tileInfo.setHasBase(false);
-              tileInfo.setEnemyTerritory(false);
+            tileInfo.setEnemyTerritory(false);
         }
 
 
-        if(tile.getTroops() != null)
-        {
+        if (tile.getTroops() != null) {
 //            if(!tile.getTroops().isEmpty())
 //                tileInfo.setHasTroops(true);
 //            else
 //                tileInfo.setHasTroops(false);
-        }
-        else
-        {
+        } else {
 //            tileInfo.setHasTroops(true);
         }
 
@@ -210,30 +258,27 @@ public class MapController {
         model.addAttribute("tileInfo", tileInfo);
 
         return "tile";
-     }
+    }
 
     public UUID getUserToken() {
         return userToken;
-    }
-
-    public void setUserToken(UUID userToken) {
-        this.userToken = userToken;
     }
 
     public Long getUserID() {
         return userID;
     }
 
-    public void setUserID(Long userID) {
-        this.userID = userID;
+    public String getUserName() {
+        return userName;
     }
+
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @Transactional
     public String getHomeview(@RequestParam(value = "xLow", defaultValue = "-1") int x_low,
-                                 @RequestParam(value = "yLow", defaultValue = "-1") int y_low,
-                                 @RequestParam(value = "xHigh", defaultValue = "-1") int x_high,
-                                 @RequestParam(value = "yHigh", defaultValue = "-1") int y_high, Model model) {
+                              @RequestParam(value = "yLow", defaultValue = "-1") int y_low,
+                              @RequestParam(value = "xHigh", defaultValue = "-1") int x_high,
+                              @RequestParam(value = "yHigh", defaultValue = "-1") int y_high, Model model) {
 
 
         //TODO: besser machen
@@ -344,12 +389,14 @@ public class MapController {
             }
             displayedTiles.add(currentRow);
         }
-        ResourceValue resourceValue = player.getResources();
 
-        model.addAttribute("resources", resourceValue);
+        model.addAttribute("amount_gold", player.getResources().getAmount_gold());
+        model.addAttribute("amount_wood", player.getResources().getAmount_wood());
+        model.addAttribute("amount_stone", player.getResources().getAmount_stone());
+        model.addAttribute("amount_crops", player.getResources().getAmount_crops());
 
         model.addAttribute("tiles", displayedTiles);
-        model.addAttribute("resources", resourceValue);
+        // model.addAttribute("resources", resourceValue);
 
         return "home";
     }
@@ -478,8 +525,7 @@ public class MapController {
 
     @RequestMapping(value = "/playerresources", method = RequestMethod.GET)
     @Transactional
-    public String getPlayerResources(Model model)
-    {
+    public String getPlayerResources(Model model) {
 
 
         //TODO: besser machen
@@ -491,7 +537,7 @@ public class MapController {
         model.addAttribute("resources", resourceValue);
 
         return "playerresources";
-     }
+    }
 
     private boolean checkForEnemyTerritory(Tile tile) {
         if (tile.getBase() != null && tile.getBase().getOwner() != player)

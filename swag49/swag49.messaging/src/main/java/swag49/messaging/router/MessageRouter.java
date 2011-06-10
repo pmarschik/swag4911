@@ -28,7 +28,7 @@ public class MessageRouter {
     @Router
     @Transactional
     public MessageChannel route(Message message) {
-        String requestUri = message.getMapUrl() + "swag-api/messaging/user/{userId}";
+        String requestUri = message.getMapUrl() + "/swag-api/messaging/user/{userId}";
 
         PlayerDTO receiverPlayer = restTemplate.getForObject(requestUri, PlayerDTO.class, message.getReceiverUserId());
 

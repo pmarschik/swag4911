@@ -123,6 +123,9 @@ public class UserController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Map<String, Object> map) {
+        if(loggedInUser != null)
+            return "redirect:./";
+        
         map.put("user", new UserLoginDTO());
         return "login";
     }

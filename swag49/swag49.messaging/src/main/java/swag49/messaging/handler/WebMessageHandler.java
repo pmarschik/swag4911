@@ -55,7 +55,7 @@ public class WebMessageHandler {
                         senderUsername, message.getReceiverUserId(), receiverUsername, message.getSendDate(),
                         message.getReceiveDate(), message.getMapUrl());
 
-        String requestUri = message.getMapUrl() + "swag-api/messaging/receive";
+        String requestUri = message.getMapUrl() + "/swag-api/messaging/receive";
         restTemplate.put(requestUri, messageDTO);
     }
 }

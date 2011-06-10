@@ -43,7 +43,7 @@ public class MessagingController {
 
     @RequestMapping(value = "/")
     public String handle(Map<String, Object> map) {
-        map.put("user", mapController.getUserID());
+        map.put("user", mapController.getUserName());
 
         return "messaging";
     }
@@ -68,6 +68,7 @@ public class MessagingController {
         if (mapController.getUserID() == null)
             return "redirect:./";
 
+        map.put("user", mapController.getUserName());
         map.put("incomingMessages", getIncomingMessages());
 
         return "incoming";
@@ -78,6 +79,7 @@ public class MessagingController {
         if (mapController.getUserID() == null)
             return "redirect:./";
 
+        map.put("user", mapController.getUserName());
         map.put("outgoingMessages", getOutgoingMessages());
         map.put("view", true);
 
@@ -127,25 +129,26 @@ public class MessagingController {
     }
 
     public List<MessageDTO> getIncomingMessages() {
-        List<MessageDTO> messages = Lists.newArrayList();
+        messages.clear();
 
         for(MessageDTO message : messageStore.getMessageList(mapController.getUserID())) {
-            if(message.getReceiver().getId().equals(mapController.getUserID()))
-                messages.add(message);
+            if(message.getReceiver().getId().equals(mapController.getUserID())) {
+                messages.put(message.getId(), message);
+            }
         }
 
-        return messages;
+        return Lists.newArrayList(messages.values());
     }
 
     public List<MessageDTO> getOutgoingMessages() {
-        List<MessageDTO> messages = Lists.newArrayList();
+        messages.clear();
 
         for(MessageDTO message : messageStore.getMessageList(mapController.getUserID())) {
             if(message.getSender().getId().equals(mapController.getUserID()))
-                messages.add(message);
+                messages.put(message.getId(), message);
         }
 
-        return messages;
+        return Lists.newArrayList(messages.values());
     }
 
     public void sendMessage(MessageDTO message) {

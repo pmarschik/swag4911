@@ -56,7 +56,7 @@ public class MostResourcesCalculatorTest {
         StatisticEntry[] entries = statistic.getEntries().toArray(new StatisticEntry[statistic.getEntries().size()]);
 
         assertThat(entries[0].getRanking(), is(1));
-        assertThat(entries[0].getPlayer().getId(), is(3L));
+        assertThat(entries[0].getPlayer().getId(), is(1L));
         assertThat(entries[0].getScore(), is(61788));
 
         assertThat(entries[1].getRanking(), is(2));
@@ -64,15 +64,15 @@ public class MostResourcesCalculatorTest {
         assertThat(entries[1].getScore(), is(51936));
 
         assertThat(entries[2].getRanking(), is(3));
-        assertThat(entries[2].getPlayer().getId(), is(1L));
+        assertThat(entries[2].getPlayer().getId(), is(3L));
         assertThat(entries[2].getScore(), is(18465));
 
         assertThat(entries[3].getRanking(), is(4));
-        assertThat(entries[3].getPlayer().getId(), is(5L));
+        assertThat(entries[3].getPlayer().getId(), is(4L));
         assertThat(entries[3].getScore(), is(1008));
 
         assertThat(entries[4].getRanking(), is(5));
-        assertThat(entries[4].getPlayer().getId(), is(4L));
+        assertThat(entries[4].getPlayer().getId(), is(5L));
         assertThat(entries[4].getScore(), is(469));
     }
 

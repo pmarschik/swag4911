@@ -93,10 +93,10 @@ public class ResourceValue {
     }
 
     public void add(ResourceValue upkeepCosts) {
-        this.amount_crops -= upkeepCosts.amount_crops;
-        this.amount_stone -= upkeepCosts.amount_stone;
-        this.amount_wood -= upkeepCosts.amount_wood;
-        this.amount_gold -= upkeepCosts.amount_gold;
+        this.amount_crops += upkeepCosts.amount_crops;
+        this.amount_stone += upkeepCosts.amount_stone;
+        this.amount_wood += upkeepCosts.amount_wood;
+        this.amount_gold += upkeepCosts.amount_gold;
     }
 
     public boolean isZero() {

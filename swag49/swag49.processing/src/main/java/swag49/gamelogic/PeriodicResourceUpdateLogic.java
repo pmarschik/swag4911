@@ -1,27 +1,47 @@
 package swag49.gamelogic;
 
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.SchedulerContext;
+import org.quartz.SchedulerException;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import swag49.dao.DataAccessObject;
 import swag49.model.Player;
 import swag49.model.ResourceValue;
+import swag49.statistics.StatisticCalculator;
+import swag49.util.Log;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Collection;
 
-public class PeriodicResourceUpdateLogic {
+@Component("periodicResourceUpdateLogic")
+public class PeriodicResourceUpdateLogic  {
 
     @Autowired
-    @Qualifier("buildingLevelDao")
-    private DataAccessObject<Player, Long> playerDao;
+    @Qualifier("playerDAO")
+    private DataAccessObject<Player, Long> playerDAO;
 
-    // TODO: "periodisch" machen
+    @Log
+    private Logger logger;
+
+    @PersistenceContext
+    private EntityManager em;
+
+
     // http://static.springsource.org/spring/docs/current/spring-framework-reference/html/scheduling.html
 
-    @Scheduled(fixedRate=5000)
+    @Transactional("swag49.map")
     public void updateResources() {
+        logger.info("Start updating resources");
         //TODO null oder empty Player??
-        Collection<Player> players = playerDao.queryByExample(null);
+        Collection<Player> players = playerDAO.queryByExample(new Player());
 
         for (Player player : players) {
 
@@ -39,8 +59,12 @@ public class PeriodicResourceUpdateLogic {
             resources.setAmount_stone(Math.max(0, resources.getAmount_stone()));
             resources.setAmount_wood(Math.max(0, resources.getAmount_wood()));
 
-            playerDao.update(player);
+            playerDAO.update(player);
         }
+
+         logger.info("Finished updating resources");
     }
+
+
 
 }

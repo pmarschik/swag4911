@@ -35,8 +35,8 @@ public abstract class StatisticCalculatorBase implements StatisticCalculator {
     @Qualifier("statisticEntryDAO")
     private DataAccessObject<StatisticEntry, StatisticEntry.Id> statisticEntryDAO;
 
-    @Value("$processing{statistic.limit}")
-    private Integer limit;
+//    @Value("$processing{statistic.limit}")
+    private Integer limit = 5;
 
     @Override
     @Transactional("swag49.map")

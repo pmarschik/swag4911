@@ -112,7 +112,7 @@
 	IDE & IntelliJ\\
 	\hline
 	\cellcolor[gray]{0.9}
-	VCS & Git\\
+	Version Control System & Git\\
 	\hline
 	\end{tabularx}
 	\caption{Tools}
@@ -123,7 +123,7 @@
 
 \subsection{(Entity) Class Diagram}
 
-The class diagram (see link!) describes the basic domain model. The facts were assumed:
+The class diagram (see Figure \ref{fig:class}) describes the basic domain model. The facts were assumed:
 
 \begin{itemize}
 \item The maps are created by the system and not the users.
@@ -136,9 +136,11 @@ The User embeds adddress information and stores the difference to UTC to ensure 
 
 \subsection{Component Diagram}
 
-The component diagram (see link!) illustrates the interaction between the components. The web  interface is the only component located in the presentation layer. The Map Controller is the core component and offers interfaces for browsing, troop management, building management and resource management. Itself depends on Persistence and the Notification Controller. The User Management Component offers interfaces for registration/deletion of accounts and session management. The Statistics component offers functionality about the ranking of players and so on. Finally the Storage component is used to store and retrieve data from the database. The Cache component offers the same interface as the Storage component, since it should be transparent for the client wether or not caching is enabled.
+The component diagram (see Figure \ref{fig:component}) illustrates the interaction between the components. The web  interface is the only component located in the presentation layer. The Map Controller is the core component and offers interfaces for browsing, troop management, building management and resource management. Itself depends on Persistence and the Notification Controller. The User Management Component offers interfaces for registration/deletion of accounts and session management. The Statistics component offers functionality about the ranking of players and so on. Finally the Storage component is used to store and retrieve data from the database. The Cache component offers the same interface as the Storage component, since it should be transparent for the client wether or not caching is enabled.
 
 \subsection{Deployment Diagram}
+
+Text \dots (see Figure \ref{fig:deployment}) \dots Text \dots
 
 \subsubsection{Uptime Calculation}
 
@@ -533,7 +535,29 @@ That means if that we reach an availability of $99,99\%$ if we have at least 5 n
 
 \begin{itemize}
 \item Load-Balancer?
+\item https?
 \end{itemize}
+
+\section{Prototype Installation Guidelines}
+
+\subsection{Requirements}
+
+\begin{itemize}
+\item Tomcat 6 or 7 running on \texttt{localhost:8080/}
+\item PostgreSQL 8.4 running on \texttt{localhost:5432/}
+	\begin{itemize}
+	\item Database: \texttt{swa}
+	\item accessible by user: \texttt{swa}
+	\item password for user: \texttt{swa11}
+	\end{itemize}
+\item Ant or Maven
+\end{itemize}
+
+\subsection{Compiling and Deploying}
+
+\subsection{Entry Point}
+
+The entry point to play \textbf{SWAG} is \href{http:localhost:8080/user/swag/user/}{http:localhost:8080/user/swag/user/}. There you can register an user, login and choose a map to play on.
 
 \newpage
 

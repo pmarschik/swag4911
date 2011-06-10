@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 version="2.0">
+    <package>swag49.model</package>
+    <entity class="BuildAction">
+        <entity-listeners>
+            <entity-listener class="swag49.listener.BuildActionListener" />
+        </entity-listeners>
+    </entity>
+    <entity class="TroopAction">
+        <entity-listeners>
+            <entity-listener class="swag49.listener.TroopActionListener" />
+        </entity-listeners>
+    </entity>
+    <entity class="TroopBuildAction">
+        <entity-listeners>
+            <entity-listener class="swag49.listener.TroopBuildActionListener" />
+        </entity-listeners>
+    </entity>
+    <entity class="TroopUpgradeAction">
+        <entity-listeners>
+            <entity-listener class="swag49.listener.TroopUpgradeActionListener" />
+        </entity-listeners>
+    </entity>
+</entity-mappings>

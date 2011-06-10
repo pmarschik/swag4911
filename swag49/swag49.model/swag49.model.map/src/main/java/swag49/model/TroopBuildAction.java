@@ -22,8 +22,7 @@ public class TroopBuildAction extends Action {
         this.troopLevel = troopLevel;
     }
 
-    public TroopBuildAction()
-    {
+    public TroopBuildAction() {
 
     }
 
