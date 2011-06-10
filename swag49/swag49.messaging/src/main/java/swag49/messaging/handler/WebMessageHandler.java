@@ -26,13 +26,13 @@ public class WebMessageHandler {
 
     @Autowired
     @Qualifier("userDAO")
-    private DataAccessObject<User, Long> userDAO;
+    private DataAccessObject<User, String> userDAO;
 
     @Autowired
     private RestTemplate restTemplate;
 
     @Transactional("swag49.user")
-    public String getUsername(Long userId) {
+    public String getUsername(String userId) {
         return userDAO.get(userId).getUsername();
     }
 

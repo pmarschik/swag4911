@@ -35,12 +35,12 @@ public class MessageMaker {
         return this;
     }
 
-    public MessageMaker from(Long senderUserId) {
+    public MessageMaker from(String senderUserId) {
         message.setSenderUserId(senderUserId);
         return this;
     }
 
-    public MessageMaker to(Long receiverUserId) {
+    public MessageMaker to(String receiverUserId) {
         message.setReceiverUserId(receiverUserId);
         return this;
     }

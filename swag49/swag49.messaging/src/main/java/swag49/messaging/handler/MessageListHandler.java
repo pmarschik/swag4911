@@ -37,7 +37,7 @@ public class MessageListHandler {
     private RestTemplate restTemplate;
 
     @Transactional("swag49.messaging")
-    private List<Message> getAllMessagesByUser(Long userId, String mapUrl) {
+    private List<Message> getAllMessagesByUser(String userId, String mapUrl) {
         Message messageExample = new Message();
         messageExample.setReceiverUserId(userId);
         messageExample.setMapUrl(mapUrl);
