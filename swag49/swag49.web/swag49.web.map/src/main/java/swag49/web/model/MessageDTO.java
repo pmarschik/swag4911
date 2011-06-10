@@ -15,11 +15,11 @@ public class MessageDTO {
         @Nullable
         private String username;
         @XmlAttribute(name = "id")
-        private Long id;
+        private String id;
 
         public UserDTO() {}
 
-        public UserDTO(@Nullable String username, Long id) {
+        public UserDTO(@Nullable String username, String id) {
             this.username = username;
             this.id = id;
         }
@@ -29,9 +29,9 @@ public class MessageDTO {
 
         public void setUsername(@Nullable String username) { this.username = username; }
 
-        public Long getId() { return id; }
+        public String getId() { return id; }
 
-        public void setId(Long id) { this.id = id; }
+        public void setId(String id) { this.id = id; }
 
         @Override
         public int hashCode() {
@@ -75,8 +75,8 @@ public class MessageDTO {
 
     public MessageDTO() { }
 
-    public MessageDTO(@Nullable Long id, String subject, String content, Long senderId, @Nullable String senderUsername,
-                      Long receiverId, @Nullable String receiverUsername, Date sent, @Nullable Date received,
+    public MessageDTO(@Nullable Long id, String subject, String content, String senderId, @Nullable String senderUsername,
+                      String receiverId, @Nullable String receiverUsername, Date sent, @Nullable Date received,
                       String mapUrl) {
         this.id = id;
         this.subject = subject;

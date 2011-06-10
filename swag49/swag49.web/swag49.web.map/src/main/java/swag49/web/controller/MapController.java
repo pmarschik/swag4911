@@ -80,7 +80,7 @@ public class MapController {
     private MapLogic mapLogic;
 
     private UUID userToken;
-    private Long userID;
+    private String userID;
     private String userName;
 
     @PostConstruct
@@ -264,7 +264,7 @@ public class MapController {
         return userToken;
     }
 
-    public Long getUserID() {
+    public String getUserID() {
         return userID;
     }
 

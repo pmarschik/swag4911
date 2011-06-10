@@ -24,8 +24,8 @@ public class MessageDaoTest {
     public void create_shouldCreate() throws Exception {
         Message message = new Message();
         message.setContent("test");
-        message.setReceiverUserId(1L);
-        message.setSenderUserId(2L);
+        message.setReceiverUserId("max");
+        message.setSenderUserId("hans");
         message.setSubject("test");
         message.setMapUrl("http://rofl.com");
         message.setSendDate(new Date());
@@ -37,8 +37,8 @@ public class MessageDaoTest {
     public void delete_shouldDelete() throws Exception {
         Message message = new Message();
         message.setContent("test");
-        message.setReceiverUserId(1L);
-        message.setSenderUserId(2L);
+        message.setReceiverUserId("max");
+        message.setSenderUserId("hans");
         message.setSubject("test");
         message.setMapUrl("http://rofl.com");
         message.setSendDate(new Date());
@@ -52,8 +52,8 @@ public class MessageDaoTest {
     public void update_shouldUpdate() throws Exception {
         Message message = new Message();
         message.setContent("test");
-        message.setReceiverUserId(1L);
-        message.setSenderUserId(2L);
+        message.setReceiverUserId("max");
+        message.setSenderUserId("hans");
         message.setSubject("test");
         message.setMapUrl("http://rofl.com");
         message.setSendDate(new Date());

@@ -52,14 +52,14 @@ public class StatisticEntryDAOTest {
         player1 = new Player();
         player1.setDeleted(false);
         player1.setOnline(true);
-        player1.setUserId(1L);
+        player1.setUserId("max");
         player1.setPlays(map);
         em.persist(player1);
 
         player2 = new Player();
         player2.setDeleted(false);
         player2.setOnline(true);
-        player2.setUserId(2L);
+        player2.setUserId("john");
         player2.setPlays(map);
         em.persist(player1);
 

@@ -12,7 +12,6 @@ import javax.validation.constraints.Size;
  */
 public class UserDTO {
 
-    private Long id;
     @NotNull
     @Size(min = 1, max = 50)
     private String username;
@@ -35,7 +34,6 @@ public class UserDTO {
     }
 
     public UserDTO(User user) {
-        this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.firstName = user.getFirstName();
@@ -54,7 +52,6 @@ public class UserDTO {
     public User createUserEntity() {
         User user = new User();
 
-        user.setId(this.id);
         user.setUsername(this.username);
         user.setPassword(this.password);
         user.setFirstName(this.firstName);
@@ -89,14 +86,6 @@ public class UserDTO {
 
         user.setAddress(address);
         return user;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -182,7 +171,6 @@ public class UserDTO {
     @Override
     public String toString() {
         return "UserDTO{" +
-                "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +

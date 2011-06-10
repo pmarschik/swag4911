@@ -8,14 +8,14 @@ public class PlayerDTO {
     @XmlAttribute(name = "id")
     private long id;
     @XmlElement(name = "userid")
-    private long userId;
+    private String userId;
     @XmlElement(name = "online")
     private boolean isOnline;
 
     public PlayerDTO() {
     }
 
-    public PlayerDTO(Long id, Long userId, boolean online) {
+    public PlayerDTO(Long id, String userId, boolean online) {
         this.id = id;
         this.userId = userId;
         isOnline = online;
@@ -29,11 +29,11 @@ public class PlayerDTO {
         this.id = id;
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

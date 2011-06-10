@@ -48,7 +48,7 @@ public class SquareDAOTest {
 		Player player = new Player();
 		player.setDeleted(false);
 		player.setOnline(true);
-		player.setUserId(1L);
+		player.setUserId("max");
 		player.setPlays(map);
 
 		player = playerDAO.create(player);
@@ -79,7 +79,7 @@ public class SquareDAOTest {
 		Player player = new Player();
 		player.setDeleted(false);
 		player.setOnline(true);
-		player.setUserId(1L);
+		player.setUserId("max");
 		player.setPlays(map);
 
 		player = playerDAO.create(player);
@@ -114,7 +114,7 @@ public class SquareDAOTest {
 		Player player = new Player();
 		player.setDeleted(false);
 		player.setOnline(true);
-		player.setUserId(1L);
+		player.setUserId("max");
 		player.setPlays(map);
 
 		player = playerDAO.create(player);

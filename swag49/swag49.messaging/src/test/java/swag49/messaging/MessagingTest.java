@@ -24,7 +24,7 @@ import static org.junit.Assert.assertThat;
 public class MessagingTest {
     @Autowired
     @Qualifier("userDAO")
-    private DataAccessObject<User, Long> userDAO;
+    private DataAccessObject<User, String> userDAO;
 
     @Autowired
     private MessageSender messageSender;
@@ -40,8 +40,8 @@ public class MessagingTest {
     private User receiver;
 
     @Transactional
-    private User makeUser(String userName, Long playerId) {
-        User user = userDAO.get(playerId);
+    private User makeUser(String userName) {
+        User user = userDAO.get(userName);
 
         if (user == null) {
             user = new User();
@@ -60,8 +60,8 @@ public class MessagingTest {
 
     @Before
     public void setUp() {
-        sender = makeUser("message_user1", 1L);
-        receiver = makeUser("message_user2", 2L);
+        sender = makeUser("message_user1");
+        receiver = makeUser("message_user2");
     }
 
     @Test
@@ -71,8 +71,8 @@ public class MessagingTest {
         final Date SEND_DATE = new Date();
 
         Message message = messageMaker.newMessage()
-                .from(sender.getId())
-                .to(receiver.getId())
+                .from(sender.getUsername())
+                .to(receiver.getUsername())
                 .on("http://foobar.com/map1")
                 .at(SEND_DATE)
                 .withSubjectAndContent(SUBJECT, CONTENT)

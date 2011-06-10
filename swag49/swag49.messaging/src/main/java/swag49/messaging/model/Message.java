@@ -24,10 +24,10 @@ public class Message {
 	private String content;
 
     @Column(nullable = false)
-    private Long senderUserId;
+    private String senderUserId;
 
     @Column(nullable = false)
-    private Long receiverUserId;
+    private String receiverUserId;
 
     @Column(nullable = false)
     private String mapUrl;
@@ -72,19 +72,19 @@ public class Message {
         this.content = content;
     }
 
-    public Long getSenderUserId() {
+    public String getSenderUserId() {
         return senderUserId;
     }
 
-    public void setSenderUserId(Long senderUserId) {
+    public void setSenderUserId(String senderUserId) {
         this.senderUserId = senderUserId;
     }
 
-    public Long getReceiverUserId() {
+    public String getReceiverUserId() {
         return receiverUserId;
     }
 
-    public void setReceiverUserId(Long receiverUserId) {
+    public void setReceiverUserId(String receiverUserId) {
         this.receiverUserId = receiverUserId;
     }
 
