@@ -300,7 +300,7 @@ public class MapController {
             try {
                 mapLogic.build(square, buildingType);
             } catch (Exception e) {
-                return "Building NOT possible!";
+                return "error";
             }
 
             return "buildSuccess";

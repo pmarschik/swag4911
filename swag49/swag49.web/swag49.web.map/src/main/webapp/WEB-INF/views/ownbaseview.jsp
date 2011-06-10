@@ -8,29 +8,51 @@
     <c:forEach items="${tileInfo.squares}" var="square">
         <tr>
         <c:choose>
-	        <c:when test="${square.building != null && square.building.level == 0}">
+	        <c:when test="${square.building != null && square.building.isOfLevel.id.level == 0}">
 	        	        <!-- Building under construction -->
-            	<td><img src="<spring:theme code='theme.image.buildings.underconstruction'/>" alt="Comming soon: ${square.building.name}" title="Comming soon: ${square.building.name}"/> </td>
-	        	<td>${square.building.name} under construction</td>
+	        	<td>${square.building.type.name} under construction</td>
 	        </c:when>
 	        
-	        <c:when test="${square.building != null && square.building.level > 0}">
+	        <c:when test="${square.building != null && square.building.isOfLevel.id.level > 0}">
 	        <!-- existing Building -->
-	            <td><img src="<spring:theme code='theme.image.buildings.${square.building.name}'/>" alt="${square.building.name}" title="${square.building.name}"/> </td>
-	        	<td>${square.building.name} , Level ${square.building.level}</td>
+	        	<td>${square.building.type.name} , Level ${square.building.isOfLevel.id.level}</td>
 	        	<td>            		
-	        		<jsp:include page="displaycosts.jsp">
-            			<jsp:param name="resourceValue" value="${square.building.income}" />
-            		</jsp:include>
+<table width="60" border="0">
+	<tr>
+		<td> <img src="${resourcePath}<spring:theme code='theme.image.misc.wood'/>" alt="Wood:" title="Wood" height="30"> </td>
+		<td>${square.building.income.amount_wood}</td>
+
+		<td><img src="${resourcePath}<spring:theme code='theme.image.misc.stone'/>" alt="Stone:" title="Stone" height="30"></td>
+		<td>${square.building.income.amount_stone}</td>
+
+		<td><img src="${resourcePath}<spring:theme code='theme.image.misc.crops'/>" alt="Crops::" title="Crops" height="30"></td>
+		<td>${square.building.income.amount_crops}</td>
+
+		<td><img src="${resourcePath}<spring:theme code='theme.image.misc.gold'/>" alt="Gold:" title="Gold" height="30"></td>
+		<td>${square.building.income.amount_gold}</td>
+	</tr>
+</table>
             	</td>
 	        	<td>            		
-	        		<jsp:include page="displaycosts.jsp">
-            			<jsp:param name="resourceValue" value="${square.building.upkeep}" />
-            		</jsp:include>
+<table width="60" border="0">
+	<tr>
+		<td> <img src="${resourcePath}<spring:theme code='theme.image.misc.wood'/>" alt="Wood:" title="Wood" height="30"> </td>
+		<td>${square.building.upkeep.amount_wood}</td>
+
+		<td><img src="${resourcePath}<spring:theme code='theme.image.misc.stone'/>" alt="Stone:" title="Stone" height="30"></td>
+		<td>${square.building.upkeep.amount_stone}</td>
+
+		<td><img src="${resourcePath}<spring:theme code='theme.image.misc.crops'/>" alt="Crops::" title="Crops" height="30"></td>
+		<td>${square.building.upkeep.amount_crops}</td>
+
+		<td><img src="${resourcePath}<spring:theme code='theme.image.misc.gold'/>" alt="Gold:" title="Gold" height="30"></td>
+		<td>${square.building.upkeep.amount_gold}</td>
+	</tr>
+</table>
             	</td>
             	<td>            		
 	        		<c:if test="${square.building.canUpgrade}">
-	        			<a href = "TODO" ><img src="<spring:theme code='theme.image.buildings.upgrade'/>" alt="Upgrade" > </a>
+	        			<a href = "buildingupgrade.html" ><img src="<spring:theme code='theme.image.misc.upgrade'/>" alt="Upgrade" > </a>
 	        		</c:if>
             	</td>
 	        </c:when>
