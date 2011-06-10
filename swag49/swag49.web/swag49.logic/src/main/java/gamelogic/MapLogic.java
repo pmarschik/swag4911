@@ -1,5 +1,6 @@
 package gamelogic;
 
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,6 +13,7 @@ import swag49.util.Log;
 
 import java.util.*;
 
+@SuppressWarnings({"UnusedAssignment", "UnusedDeclaration"})
 public class MapLogic {
 
     @Autowired
@@ -98,7 +100,8 @@ public class MapLogic {
 
         player.setIncome(homeBase.getResourceProduction());
         player.setUpkeep(new ResourceValue());
-        player.setResources(new ResourceValue(START_AMOUNT_WOOD, START_AMOUNT_CROPS, START_AMOUNT_GOLD, START_AMOUNT_STONE));
+        player.setResources(
+                new ResourceValue(START_AMOUNT_WOOD, START_AMOUNT_CROPS, START_AMOUNT_GOLD, START_AMOUNT_STONE));
 
         player = playerDAO.update(player);
 
@@ -185,7 +188,7 @@ public class MapLogic {
 
         //check if a base on that tile exists and if that base is still under the control of that player
         Base base = tile.getBase();
-        if (base != null && base.getOwner().getId() == action.getPlayer().getId()) {
+        if (base != null && base.getOwner().getId().equals(action.getPlayer().getId())) {
 
 
             for (int i = 0; i < action.getAmount(); i++) {
@@ -253,7 +256,7 @@ public class MapLogic {
         TroopAction action = new TroopAction();
 
         action.setConcerns(troops);
-        action.setDuration(Long.valueOf(timeNeeded));
+        action.setDuration(timeNeeded);
         action.setPlayer(troops.iterator().next().getOwner());
         action.setStartDate(new Date());
         action.setIsAbortable(true);
@@ -298,10 +301,10 @@ public class MapLogic {
      * Calculates the time needed for a group of troops to go from a start to
      * destination tile
      *
-     * @param start
-     * @param destination
-     * @param troops
-     * @return
+     * @param start       start
+     * @param destination destination
+     * @param troops      troops
+     * @return long
      */
     @Transactional
     private long calculateTravelTime(Tile start, Tile destination,
@@ -319,9 +322,7 @@ public class MapLogic {
                 - destination.getId().getX())
                 + Math.abs(start.getId().getY() - destination.getId().getY());
 
-        long timeNeeded = (distance * DISTANCEFACTOR) / minSpeed;
-
-        return timeNeeded;
+        return (distance * DISTANCEFACTOR) / minSpeed;
     }
 
     @Transactional
@@ -329,7 +330,7 @@ public class MapLogic {
         //try random
         Random rnd = new Random(0);
 
-        ArrayList<Tile> tiles = new ArrayList(map.getConsistsOf());
+        ArrayList<Tile> tiles = Lists.newArrayList(map.getConsistsOf());
         int tileNo = tiles.size();
         for (int i = 0; i < RANDOMTRIES; i++) {
             int j = rnd.nextInt(tileNo);
@@ -436,27 +437,29 @@ public class MapLogic {
 
         boolean enemyTerritory = false;
 
-        if (tile.getBase() != null && tile.getBase().getOwner() != action.getPlayer()) {
-            enemyTerritory = false;
-        }
+        if (tile.getBase() != null && !tile.getBase().getOwner().equals(action.getPlayer()))
+            enemyTerritory = true;
 
         // check if other troops are on that tile
         Set<Troop> defenders = tile.getTroops();
 
-        if (!defenders.isEmpty() && defenders.iterator().next().getOwner() != action.getPlayer())
+        if (!defenders.isEmpty() && !defenders.iterator().next().getOwner().equals(action.getPlayer()))
             enemyTerritory = false;
-
 
         if (!enemyTerritory) {
             tile.getTroops().addAll(action.getConcerns());
             if (canBuildBase && action.getShouldFoundBase()) {
                 if (tile.getBase() != null) {
                     //write errormsg
-                    sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE, "Your plans to build a base at (" + tile.getId().getX() + "," + tile.getId().getY() + ") couldn't be fulfilled - there is already a base on that tile.");
+                    sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
+                            "Your plans to build a base at (" + tile.getId().getX() + "," + tile.getId().getY() +
+                                    ") couldn't be fulfilled - there is already a base on that tile.");
                 } else {
                     Base base = createBase(tile, action.getPlayer());
                     //write msg to player
-                    sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE, "You have successfully found a new base at tile (" + tile.getId().getX() + "," + tile.getId().getY() + ").");
+                    sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
+                            "You have successfully found a new base at tile (" + tile.getId().getX() + "," +
+                                    tile.getId().getY() + ").");
                 }
             }
         } else {
@@ -473,8 +476,14 @@ public class MapLogic {
 
                     action.getPlayer().getResources().add(booty);
                     //write ms to both players
-                    sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_FIGHTRESULT, "You robed the base of player " + tile.getBase().getOwner().getId() + " at tile (" + tile.getId().getX() + "," + tile.getId().getY() + "). \n Your troops have stolen something and are now on their way home.");
-                    sendMessage(tile.getBase().getOwner(), tile.getBase().getOwner(), SUBJECT_FIGHTRESULT, "Your base at tile (\" + tile.getId().getX() + \",\" + tile.getId().getY() + \") has been attacked by  " + action.getPlayer() + " . \n  Unfortunately, the attacking troops robed your base and stole some resources from you.");
+                    sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_FIGHTRESULT,
+                            "You robed the base of player " + tile.getBase().getOwner().getId() + " at tile (" +
+                                    tile.getId().getX() + "," + tile.getId().getY() +
+                                    "). \n Your troops have stolen something and are now on their way home.");
+                    sendMessage(tile.getBase().getOwner(), tile.getBase().getOwner(), SUBJECT_FIGHTRESULT,
+                            "Your base at tile (\" + tile.getId().getX() + \",\" + tile.getId().getY() + \") has been attacked by  " +
+                                    action.getPlayer() +
+                                    " . \n  Unfortunately, the attacking troops robed your base and stole some resources from you.");
 
                 }
             } else {
@@ -501,7 +510,9 @@ public class MapLogic {
                     } else if (canBuildBase) {
                         Base base = createBase(tile, action.getPlayer());
                         //write msg to player
-                        sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE, "You have successfully found a new base at tile (" + tile.getId().getX() + "," + tile.getId().getY() + ").");
+                        sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
+                                "You have successfully found a new base at tile (" + tile.getId().getX() + "," +
+                                        tile.getId().getY() + ").");
 
                     } else {
                         //stay
@@ -564,8 +575,14 @@ public class MapLogic {
         if (attackers.size() > 0 && defenders.isEmpty()) {
             // attacker win
             // write MSG to both player about the result of the fight
-            sendMessage(attackers_owner, attackers_owner, SUBJECT_FIGHTRESULT, "Your army attacked the forces of player " + defenders_owner.getId() + " at tile (" + tile.getId().getX() + "," + tile.getId().getY() + "). \nYour troops fought courageously  and in the end, they killed all defending troops.");
-            sendMessage(defenders_owner, defenders_owner, SUBJECT_FIGHTRESULT, "Your army has been attacked by the forces of player " + attackers_owner.getId() + " at tile (" + tile.getId().getX() + "," + tile.getId().getY() + "). \n  Unfortunately, the defending troops where too strong and all your troops have been destroyed.");
+            sendMessage(attackers_owner, attackers_owner, SUBJECT_FIGHTRESULT,
+                    "Your army attacked the forces of player " + defenders_owner.getId() + " at tile (" +
+                            tile.getId().getX() + "," + tile.getId().getY() +
+                            "). \nYour troops fought courageously  and in the end, they killed all defending troops.");
+            sendMessage(defenders_owner, defenders_owner, SUBJECT_FIGHTRESULT,
+                    "Your army has been attacked by the forces of player " + attackers_owner.getId() + " at tile (" +
+                            tile.getId().getX() + "," + tile.getId().getY() +
+                            "). \n  Unfortunately, the defending troops where too strong and all your troops have been destroyed.");
 
 
             // attacking troops stay on the tile
@@ -575,8 +592,14 @@ public class MapLogic {
         } else if (defenders.size() > 0 && attackers.isEmpty()) {
             // defenders win
             // write MSG to both player about the result of the fight
-            sendMessage(attackers_owner, attackers_owner, SUBJECT_FIGHTRESULT, "Your army attacked the forces of player " + defenders_owner.getId() + " at tile (" + tile.getId().getX() + "," + tile.getId().getY() + "). \n Unfortunately, the defending troops where too strong and all your troops have been destroyed.");
-            sendMessage(defenders_owner, defenders_owner, SUBJECT_FIGHTRESULT, "Your army has been attacked by the forces of player " + attackers_owner.getId() + " at tile (" + tile.getId().getX() + "," + tile.getId().getY() + "). \n Your troops fought courageously  and in the end, they killed all attacking troops. ");
+            sendMessage(attackers_owner, attackers_owner, SUBJECT_FIGHTRESULT,
+                    "Your army attacked the forces of player " + defenders_owner.getId() + " at tile (" +
+                            tile.getId().getX() + "," + tile.getId().getY() +
+                            "). \n Unfortunately, the defending troops where too strong and all your troops have been destroyed.");
+            sendMessage(defenders_owner, defenders_owner, SUBJECT_FIGHTRESULT,
+                    "Your army has been attacked by the forces of player " + attackers_owner.getId() + " at tile (" +
+                            tile.getId().getX() + "," + tile.getId().getY() +
+                            "). \n Your troops fought courageously  and in the end, they killed all attacking troops. ");
 
 
             return false;
@@ -586,16 +609,27 @@ public class MapLogic {
                 // war - what is it good for?
 
                 // write MSG to both player that they lost their army
-                sendMessage(attackers_owner, attackers_owner, SUBJECT_FIGHTRESULT, "Your army attacked the forces of player " + defenders_owner.getId() + " at tile (" + tile.getId().getX() + "," + tile.getId().getY() + "). \n Your troops and the enemy troops have been defeated!");
-                sendMessage(defenders_owner, defenders_owner, SUBJECT_FIGHTRESULT, "Your army has been attacked by the forces of player " + attackers_owner.getId() + " at tile (" + tile.getId().getX() + "," + tile.getId().getY() + "). \n Your troops and the enemy troops have been defeated!");
+                sendMessage(attackers_owner, attackers_owner, SUBJECT_FIGHTRESULT,
+                        "Your army attacked the forces of player " + defenders_owner.getId() + " at tile (" +
+                                tile.getId().getX() + "," + tile.getId().getY() +
+                                "). \n Your troops and the enemy troops have been defeated!");
+                sendMessage(defenders_owner, defenders_owner, SUBJECT_FIGHTRESULT,
+                        "Your army has been attacked by the forces of player " + attackers_owner.getId() +
+                                " at tile (" + tile.getId().getX() + "," + tile.getId().getY() +
+                                "). \n Your troops and the enemy troops have been defeated!");
 
                 return false;
             } else {
                 // non-mexican standoff
 
                 // write MSG to both player about the result of the fight
-                sendMessage(attackers_owner, attackers_owner, SUBJECT_FIGHTRESULT, "Your army attacked the forces of player " + defenders_owner.getId() + " at tile (" + tile.getId().getX() + "," + tile.getId().getY() + "). At the end, some of the fighting troops survived, each unable to kill any other troops. So your troops have been decided to come home...");
-                sendMessage(defenders_owner, defenders_owner, SUBJECT_FIGHTRESULT, "Your army has been attacked by the forces of player " + attackers_owner.getId() + " at tile (" + tile.getId().getX() + "," + tile.getId().getY() + ").");
+                sendMessage(attackers_owner, attackers_owner, SUBJECT_FIGHTRESULT,
+                        "Your army attacked the forces of player " + defenders_owner.getId() + " at tile (" +
+                                tile.getId().getX() + "," + tile.getId().getY() +
+                                "). At the end, some of the fighting troops survived, each unable to kill any other troops. So your troops have been decided to come home...");
+                sendMessage(defenders_owner, defenders_owner, SUBJECT_FIGHTRESULT,
+                        "Your army has been attacked by the forces of player " + attackers_owner.getId() +
+                                " at tile (" + tile.getId().getX() + "," + tile.getId().getY() + ").");
 
                 return false;
             }
