@@ -2,6 +2,7 @@ package swag49.web.controller;
 
 import com.google.common.collect.Sets;
 import gamelogic.MapLogic;
+import org.omg.CORBA.Request;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,21 +15,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
+import swag49.dao.BaseDAO;
 import swag49.dao.DataAccessObject;
+import swag49.dao.SquareDAO;
 import swag49.model.*;
 import swag49.util.Log;
-import swag49.web.model.ResourceValueDTO;
-import swag49.web.model.TileOverviewDTO;
-import swag49.web.model.TileOverviewDTOFull;
-import swag49.web.model.TokenDTO;
+import swag49.web.model.*;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.Map;
 
-/**
- * @author michael
- */
 @Controller
 @Scope(value = "session")
 @RequestMapping(value = "/map")
@@ -62,6 +59,14 @@ public class MapController {
     @Autowired
     @Qualifier("buildingLevelDAO")
     private DataAccessObject<BuildingLevel, BuildingLevel.Id> buildingLevelDAO;
+
+    @Autowired
+    @Qualifier("squareDAO")
+    private DataAccessObject<Square, Square.Id> squareDAO;
+
+    @Autowired
+    @Qualifier("baseDAO")
+    private DataAccessObject<Base, Long> baseDAO;
 
     @Autowired
     @Qualifier("troopTypeDAO")
@@ -235,10 +240,12 @@ public class MapController {
 //            tileInfo.setHasBase(true);
 
             Base base = tile.getBase();
-            if (base.getOwner().getUserId() == player.getUserId())
+            if (base.getOwner().getUserId() == player.getUserId()) {
                 tileInfo.setEnemyTerritory(false);
-            else
+                tileInfo.setSquares(Sets.newHashSet(base.getConsistsOf()));
+            } else {
                 tileInfo.setEnemyTerritory(true);
+            }
         } else {
 //              tileInfo.setHasBase(false);
             tileInfo.setEnemyTerritory(false);
@@ -260,6 +267,7 @@ public class MapController {
         return "tile";
     }
 
+
     public UUID getUserToken() {
         return userToken;
     }
@@ -270,6 +278,61 @@ public class MapController {
 
     public String getUserName() {
         return userName;
+    }
+
+    @RequestMapping(value = "/build", method = RequestMethod.GET)
+    @Transactional
+    public String getBuildView(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
+                               @RequestParam(value = "position", defaultValue = "-1") int position,
+                               @RequestParam(value = "buildingTypeId", defaultValue = "-1") long buildingTypeId,
+                               Model model) {
+        //TODO: besser machen
+        player = playerDAO.get(player.getId());
+        map = mapDAO.get(map.getId());
+        List<BuildingType> buildings = buildingTypeDAO.queryByExample(new BuildingType());
+
+        if(buildingTypeId != -1 && position != -1 && baseId != -1)
+        {
+             Base base = baseDAO.get(baseId);
+             Square square = squareDAO.get(new Square.Id(base.getId(), position));
+             BuildingType buildingType = buildingTypeDAO.get(buildingTypeId);
+
+            try {
+                mapLogic.build(square, buildingType);
+            } catch (Exception e) {
+                return "Building NOT possible!";
+            }
+
+            return "buildSuccess";
+        }
+
+//        ResourceValue resources = player.getResources();
+
+        ArrayList<BuildingTypeDTO> availableBuildings = new ArrayList<BuildingTypeDTO>();
+
+        for (BuildingType building : buildings) {
+            BuildingTypeDTO buildingType = new BuildingTypeDTO(building.getId(), building.getName());
+
+
+            Set<BuildingLevel> levels = building.getLevels();
+
+            ResourceValue costs = new ResourceValue();
+            for (BuildingLevel level : levels) {
+                if(level.getLevel() == 1)
+                {
+                    costs = level.getBuildCosts();
+                }
+            }
+
+            buildingType.setCosts(costs);
+            availableBuildings.add(buildingType);
+        }
+
+        model.addAttribute("buildings", availableBuildings);
+        model.addAttribute("baseId", baseId);
+        model.addAttribute("position", position);
+
+        return "build";
     }
 
 
