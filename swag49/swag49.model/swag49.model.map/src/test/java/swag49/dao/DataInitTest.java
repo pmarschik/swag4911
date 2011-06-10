@@ -45,7 +45,7 @@ public class DataInitTest  {
 		Player player = new Player();
 		player.setDeleted(false);
 		player.setOnline(true);
-		player.setUserId(1L);
+		player.setUserId("max");
 		player.setPlays(map);
 
 		player = playerDAO.create(player);
@@ -53,7 +53,7 @@ public class DataInitTest  {
 		player = new Player();
 		player.setDeleted(false);
 		player.setOnline(true);
-		player.setUserId(2L);
+		player.setUserId("hans");
 		player.setPlays(map);
 
 		player = playerDAO.create(player);
@@ -61,7 +61,7 @@ public class DataInitTest  {
 		player = new Player();
 		player.setDeleted(false);
 		player.setOnline(true);
-		player.setUserId(3L);
+		player.setUserId("lisa");
 		player.setPlays(map);
 
 		player = playerDAO.create(player);
@@ -69,7 +69,7 @@ public class DataInitTest  {
 		player = new Player();
 		player.setDeleted(false);
 		player.setOnline(true);
-		player.setUserId(4L);
+		player.setUserId("john");
 		player.setPlays(map);
 
 		player = playerDAO.create(player);
@@ -77,7 +77,7 @@ public class DataInitTest  {
 		player = new Player();
 		player.setDeleted(false);
 		player.setOnline(true);
-		player.setUserId(5L);
+		player.setUserId("carl");
 		player.setPlays(map);
 
 		player = playerDAO.create(player);
@@ -86,14 +86,17 @@ public class DataInitTest  {
 
     	TroopType troopType = new TroopType();
     	troopType.setName("Troop Type 1");
+        troopType.setCanFoundBase(false);
     	troopType = troopTypeDAO.create(troopType);
 
     	troopType = new TroopType();
     	troopType.setName("Troop Type 2");
+        troopType.setCanFoundBase(false);
     	troopType = troopTypeDAO.create(troopType);
 
     	troopType = new TroopType();
     	troopType.setName("Troop Type 3");
+        troopType.setCanFoundBase(true);
     	troopType = troopTypeDAO.create(troopType);
 
     	// 5 x 5 Tiles

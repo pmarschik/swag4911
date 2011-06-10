@@ -31,7 +31,7 @@ public class MessagingService {
     @RequestMapping(value = "/messaging/user/{userId}", method = RequestMethod.GET)
     @ResponseBody
     @Transactional
-    public PlayerDTO getUser(@PathVariable("userId") long userId) {
+    public PlayerDTO getUser(@PathVariable("userId") String userId) {
         Player playerExample = new Player();
         //noinspection NullableProblems
         playerExample.setResources(null);

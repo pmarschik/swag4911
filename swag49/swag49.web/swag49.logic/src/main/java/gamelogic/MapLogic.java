@@ -1,6 +1,7 @@
 package gamelogic;
 
 import com.google.common.collect.Lists;
+import gamelogic.exceptions.NotEnoughMoneyException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -214,18 +215,30 @@ public class MapLogic {
         if (square.getBuilding() != null) {
             throw new Exception("Square not empty");
         } else {
+            Player player = square.getBase().getOwner();
+            //get first level
+            BuildingLevel.Id id = new BuildingLevel.Id(1, type.getId());
+            BuildingLevel levelOne = buildingLevelDAO.get(id);
+
+            //check if the player has enough resources
+
+            if (!player.getResources().geq(levelOne.getBuildCosts())) {
+                throw new NotEnoughMoneyException();
+            }
+
             Building constructionYard = new Building(square);
 
             constructionYard.setType(type);
 
             // get zero-level
-            BuildingLevel.Id id = new BuildingLevel.Id(0, type.getId());
+            id.setLevel(0);
             BuildingLevel level = buildingLevelDAO.get(id);
 
             constructionYard.setIsOfLevel(level);
 
             constructionYard = buildingDAO.create(constructionYard);
 
+            logger.info("CREATE BUILD ACTION");
             // create BuildAction
             BuildAction action = new BuildAction();
             action.setConcerns(constructionYard);

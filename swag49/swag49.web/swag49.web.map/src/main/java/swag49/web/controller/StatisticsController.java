@@ -43,7 +43,7 @@ public class StatisticsController {
             for (StatisticEntry entry : statistic.getEntries()) {
                 StatisticEntryDTO entryDTO = new StatisticEntryDTO();
                 entryDTO.setRanking(entry.getRanking());
-                entryDTO.setPlayer(entry.getPlayer().getId());
+                entryDTO.setPlayer(entry.getPlayer().getUserId());
                 entryDTO.setScore(entry.getScore());
                 dto.getEntries().add(entryDTO);
             }

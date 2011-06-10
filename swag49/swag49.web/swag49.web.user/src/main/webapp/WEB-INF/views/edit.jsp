@@ -14,7 +14,7 @@
     <table>
         <tr>
             <td><form:label path="username">UserName</form:label></td>
-            <td><form:input path="username"/></td>
+            <td><form:input path="username" readonly="true"/></td>
             <td><FONT color="red"><form:errors path="username" /></FONT></td>
         </tr>
         <tr>

@@ -15,11 +15,11 @@ public class MessageQueryDTO {
     private String mapURL;
 
     @XmlElement(name = "user")
-    private long userId;
+    private String userId;
 
     public MessageQueryDTO() {}
 
-    public MessageQueryDTO(String mapURL, long userId) {
+    public MessageQueryDTO(String mapURL, String userId) {
         this.mapURL = mapURL;
         this.userId = userId;
     }
@@ -32,11 +32,11 @@ public class MessageQueryDTO {
         this.mapURL = mapURL;
     }
 
-    public long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

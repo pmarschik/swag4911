@@ -70,7 +70,7 @@
 	Cache & EhCache\\
 	\hline
 	\end{tabularx}
-	\caption{Server technologie}
+	\caption{Server technology}
 	\label{server_tech}
 \end{table}
 
@@ -547,11 +547,15 @@ That means if that we reach an availability of $99,99\%$ if we have at least 5 n
 \item PostgreSQL 8.4 running on \texttt{localhost:5432/}
 	\begin{itemize}
 	\item Database: \texttt{swa}
-	\item accessible by user: \texttt{swa}
-	\item password for user: \texttt{swa11}
+		\begin{itemize}
+		\item accessible by user: \texttt{swa}
+		\item password for user: \texttt{swa11}
+		\end{itemize}
 	\end{itemize}
 \item Ant or Maven
 \end{itemize}
+
+Run quartz script!!
 
 \subsection{Compiling and Deploying}
 
@@ -580,8 +584,8 @@ The entry point to play \textbf{SWAG} is \href{http:localhost:8080/user/swag/use
 \end{figure}
 
 \begin{figure}[h]
-\hspace{-2.3cm}
-\includegraphics[scale=0.45]{diagrams/SWAG_Deployment_Diagram.pdf}
+\hspace{-2cm}
+\includegraphics[scale=0.55]{diagrams/SWAG_Deployment_Diagram.pdf}
 \caption{SWAG - Deployment Diagram}
 \label{fig:deployment}
 \end{figure}
