@@ -166,7 +166,26 @@ public class MapController {
                 player.setUpkeep(new ResourceValue());
                 player = playerDAO.create(player);
 
-                mapLogic.initializePlayer(map, player);
+                Base base = mapLogic.initializePlayer(map, player);
+
+                //create a start unit
+
+                TroopType type = new TroopType();
+                type.setName("Swordsman");
+                type = troopTypeDAO.queryByExample(type).get(0);
+
+
+                TroopLevel.Id levelId = new TroopLevel.Id(1, type.getId());
+                TroopLevel level = troopLevelDAO.get(levelId);
+
+                Tile tile = base.getLocatedOn();
+                Troop startUnit = new Troop(type, level, tile, player);
+
+                startUnit = troopDAO.create(startUnit);
+
+                tile.getTroops().add(startUnit);
+                tileDAO.update(tile);
+
 
                 logger.info("Player " + player.getId() + " initialized");
             } else {
