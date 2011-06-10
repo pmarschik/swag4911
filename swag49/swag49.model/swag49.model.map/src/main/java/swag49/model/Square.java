@@ -11,6 +11,15 @@ public class Square {
 
         private static final long serialVersionUID = 1L;
         private Long baseId;
+
+        public Long getBaseId() {
+            return baseId;
+        }
+
+        public Integer getPosition() {
+            return position;
+        }
+
         private Integer position;
 
         public Id() {

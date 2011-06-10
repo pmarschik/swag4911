@@ -86,7 +86,7 @@ public class MapLogic {
     private static final String SUBJECT_BUILDBASE = "[Base founded]";
 
     @Transactional
-    public void initializePlayer(Map map, Player player) {
+    public Base initializePlayer(Map map, Player player) {
         map = mapDAO.get(map.getId());
         Tile homeBaseTile = findHomeBaseLocation(map);
 
@@ -103,20 +103,19 @@ public class MapLogic {
 
         player = playerDAO.update(player);
 
+        return homeBase;
+
     }
 
 
     @Transactional
-    public void upgradeTroop(Player player, Troop troop, TroopLevel troopLevel) {
+    public void upgradeTroop(Player player, Troop troop, TroopLevel troopLevel) throws NotEnoughMoneyException {
 
         //calculate cost
         ResourceValue cost = new ResourceValue(troopLevel.getBuildCosts());
 
         //check if user can afford the troops
-        if (player.getResources().getAmount_crops() >= cost.getAmount_crops() &&
-                player.getResources().getAmount_gold() >= cost.getAmount_gold() &&
-                player.getResources().getAmount_wood() >= cost.getAmount_wood() &&
-                player.getResources().getAmount_stone() >= cost.getAmount_stone()) {
+        if (player.getResources().geq(cost)) {
 
             player.getResources().remove(cost);
             Long duration = troopLevel.getUpgradeDuration();
@@ -124,6 +123,8 @@ public class MapLogic {
             playerDAO.update(player);
 
             TroopUpgradeAction action = new TroopUpgradeAction(player, troop, troopLevel, duration);
+        } else {
+            throw new NotEnoughMoneyException();
         }
     }
 
@@ -151,7 +152,7 @@ public class MapLogic {
     }
 
     @Transactional
-    public void buildTroop(Player player, TroopType type, TroopLevel level, Tile baseTile, int amount) {
+    public void buildTroop(Player player, TroopType type, TroopLevel level, Tile baseTile, int amount) throws NotEnoughMoneyException {
 
         //calculate cost
         ResourceValue cost = new ResourceValue(level.getBuildCosts());
@@ -174,7 +175,7 @@ public class MapLogic {
 
             TroopBuildAction action = new TroopBuildAction(player, baseTile, type, level, amount, duration);
         } else {
-            //TODO wrte msg? throw Exception?
+            throw new NotEnoughMoneyException();
         }
     }
 
@@ -225,6 +226,8 @@ public class MapLogic {
 
             Building constructionYard = new Building(square);
 
+            square.setBuilding(constructionYard);
+
             constructionYard.setType(type);
 
             // get zero-level
@@ -234,6 +237,8 @@ public class MapLogic {
             constructionYard.setIsOfLevel(level);
 
             constructionYard = buildingDAO.create(constructionYard);
+
+            squareDAO.update(square);
 
             logger.info("CREATE BUILD ACTION");
             // create BuildAction
@@ -248,6 +253,39 @@ public class MapLogic {
 
             action = buildActionDao.create(action);
         }
+    }
+
+
+    public void upgradeBuilding(Building building) throws Exception {
+
+        Player player = building.getSquare().getBase().getOwner();
+
+        //get next level
+        BuildingLevel.Id id = new BuildingLevel.Id(building.getIsOfLevel().getLevel() + 1, building.getType().getId());
+        BuildingLevel levelOne = buildingLevelDAO.get(id);
+
+        if (levelOne == null) {
+            throw new Exception("no next level found");
+        }
+
+        //check if the player has enough resources
+
+        if (!player.getResources().geq(levelOne.getBuildCosts())) {
+            throw new NotEnoughMoneyException();
+        }
+
+
+        // create BuildAction
+        BuildAction action = new BuildAction();
+        action.setConcerns(building);
+        action.setTarget(building.getSquare().getBase().getLocatedOn());
+        action.setDuration(levelOne.getUpgradeDuration());
+        action.setStartDate(new Date());
+        action.setPlayer(building.getSquare().getBase().getOwner());
+        action.setIsAbortable(true);
+
+
+        action = buildActionDao.create(action);
     }
 
 
@@ -391,8 +429,6 @@ public class MapLogic {
 
         tile.setBase(base);
         tileDAO.update(tile);
-        System.out.println(owner.getResources());
-        System.out.println(resourceProduction.getAmount_gold());
         owner.getResources().add(resourceProduction);
         playerDAO.update(owner);
 

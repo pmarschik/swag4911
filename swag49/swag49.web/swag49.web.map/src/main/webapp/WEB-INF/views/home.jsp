@@ -2,16 +2,19 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="false" %>
+<spring:url value="/resources" var="resourcePath"/>
 <html>
 <head>
 	<title>Map View</title>
     <LINK href="../../resources/css/style.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script> -->
+    <script type="text/javascript" src="${resourcePath}/js/jquery-1.5.1.min.js"></script>
+    <script type="text/javascript" src="${resourcePath}/js/jquery-ui-1.8.13.custom.min.js"></script>
 </head>
 <body>
 	<div id="header">
         <div id="playerResources">
-           <spring:url value="/resources" var="resourcePath"/>
+
 	<table id="resourceTable">
 	<tr>
 		<th><img src="${resourcePath}/images/misc/gold.jpg" alt="Gold" /></th>
@@ -55,7 +58,7 @@
     <tr>
         <td>
             <a class="contentLink" href="./mapoverview.html?xLow=${xLow - 1}&yLow=${yLow}&xHigh=${xHigh - 1}&yHigh=${yHigh}">
-                <img class="arrowPic" src="${resourcePath}<spring:theme code='theme.image.misc.left'/>"
+                <img class="arrowPic"src="${resourcePath}<spring:theme code='theme.image.misc.left'/>"
                      alt="Left" title="Left"/>
             </a>
         </td>
@@ -119,7 +122,7 @@
                                                          title="${tile.info}"/>
                                                 </c:when>
                                                 <c:otherwise>
-                                                     <img    src="${resourcePath}<spring:theme code='theme.image.tile.gold.empty'/>"
+                                                     <img    src="${resourcePath}<spring:theme code='theme.image.misc.gold'/>"
                                                          alt="${tile.info}"
                                                          title="${tile.info}"/>
                                                 </c:otherwise>
@@ -148,7 +151,7 @@
                                                          title="${tile.info}"/>
                                                 </c:when>
                                                 <c:otherwise>
-                                                     <img    src="${resourcePath}<spring:theme code='theme.image.tile.wood.empty'/>"
+                                                     <img    src="${resourcePath}<spring:theme code='theme.image.misc.wood'/>"
                                                          alt="${tile.info}"
                                                          title="${tile.info}"/>
                                                 </c:otherwise>
@@ -177,7 +180,7 @@
                                                          title="${tile.info}"/>
                                                 </c:when>
                                                 <c:otherwise>
-                                                     <img    src="${resourcePath}<spring:theme code='theme.image.tile.stone.empty'/>"
+                                                     <img    src="${resourcePath}<spring:theme code='theme.image.misc.stone'/>"
                                                          alt="${tile.info}"
                                                          title="${tile.info}"/>
                                                 </c:otherwise>
@@ -206,7 +209,7 @@
                                                          title="${tile.info}"/>
                                                 </c:when>
                                                 <c:otherwise>
-                                                     <img    src="${resourcePath}<spring:theme code='theme.image.tile.crops.empty'/>"
+                                                     <img    src="${resourcePath}<spring:theme code='theme.image.misc.crops'/>"
                                                          alt="${tile.info}"
                                                          title="${tile.info}"/>
                                                 </c:otherwise>
@@ -234,7 +237,7 @@
     </tr>
 
     <tr>
-        <td class="arrowDownCell" colspan="3">
+        <td class="arrowUpCell" colspan="3">
             <a class="contentLink" href="./mapoverview.html?xLow=${xLow}&yLow=${yLow + 1}&xHigh=${xHigh}&yHigh=${yHigh + 1}"><img class="arrowPic"
                     src="${resourcePath}<spring:theme code='theme.image.misc.down'/>" alt="Down" title="Down"/>
             </a>

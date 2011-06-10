@@ -1,9 +1,6 @@
 package swag49.web.model;
 
-import swag49.model.Base;
-import swag49.model.ResourceType;
-import swag49.model.Tile;
-import swag49.model.Troop;
+import swag49.model.*;
 
 import java.util.Set;
 
@@ -12,12 +9,33 @@ public class TileOverviewDTOFull {
 	private Integer y;
 
 	private String info;
-	private ResourceType specialResource;
+	private String specialResource;
+
+    public Long getBaseId() {
+        return baseId;
+    }
+
+    public void setBaseId(Long baseId) {
+        this.baseId = baseId;
+    }
+
+    private Long baseId;
 
 	private boolean enemyTerritory;
 
     private Set<Troop> troops;
     private Base base;
+
+    private Set<Square> squares;
+
+    public Set<Square> getSquares() {
+        return squares;
+    }
+
+    public void setSquares(Set<Square> squares) {
+        this.squares = squares;
+    }
+
 
     public boolean isHasTroops() {
         if(getTroops() != null)
@@ -65,11 +83,11 @@ public class TileOverviewDTOFull {
 		this.info = info;
 	}
 
-	public void setSpecialResource(ResourceType special) {
+	public void setSpecialResource(String special) {
 		this.specialResource = special;
 	}
 
-	public ResourceType getSpecialResource() {
+	public String getSpecialResource() {
 		return specialResource;
 	}
 

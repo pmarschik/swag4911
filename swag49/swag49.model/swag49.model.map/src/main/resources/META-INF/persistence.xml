@@ -23,6 +23,8 @@
         <class>swag49.model.TroopAction</class>
         <class>swag49.model.TroopType</class>
         <class>swag49.model.TroopLevel</class>
+        <class>swag49.model.TroopBuildAction</class>
+        <class>swag49.model.TroopUpgradeAction</class>
 
         <properties>
             <property name="hibernate.hbm2ddl.auto" value="create"/>
@@ -32,6 +34,8 @@
             <property name="hibernate.cache.use_second_level_cache">true</property>
             <property name="hibernate.cache.use_query_cache">true</property>
         </properties>
+
     </persistence-unit>
+
 
 </persistence>

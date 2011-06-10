@@ -79,7 +79,7 @@
                                                          title="${tile.info}"/>
                                                 </c:when>
                                                 <c:otherwise>
-                                                     <img    src="${resourcePath}<spring:theme code='theme.image.tile.gold.empty'/>"
+                                                     <img    src="${resourcePath}<spring:theme code='theme.image.misc.gold'/>"
                                                          alt="${tile.info}"
                                                          title="${tile.info}"/>
                                                 </c:otherwise>
@@ -108,7 +108,7 @@
                                                          title="${tile.info}"/>
                                                 </c:when>
                                                 <c:otherwise>
-                                                     <img    src="${resourcePath}<spring:theme code='theme.image.tile.wood.empty'/>"
+                                                     <img    src="${resourcePath}<spring:theme code='theme.image.misc.wood'/>"
                                                          alt="${tile.info}"
                                                          title="${tile.info}"/>
                                                 </c:otherwise>
@@ -137,7 +137,7 @@
                                                          title="${tile.info}"/>
                                                 </c:when>
                                                 <c:otherwise>
-                                                     <img    src="${resourcePath}<spring:theme code='theme.image.tile.stone.empty'/>"
+                                                     <img    src="${resourcePath}<spring:theme code='theme.image.misc.stone'/>"
                                                          alt="${tile.info}"
                                                          title="${tile.info}"/>
                                                 </c:otherwise>
@@ -166,7 +166,7 @@
                                                          title="${tile.info}"/>
                                                 </c:when>
                                                 <c:otherwise>
-                                                     <img    src="${resourcePath}<spring:theme code='theme.image.tile.crops.empty'/>"
+                                                     <img    src="${resourcePath}<spring:theme code='theme.image.misc.crops'/>"
                                                          alt="${tile.info}"
                                                          title="${tile.info}"/>
                                                 </c:otherwise>
