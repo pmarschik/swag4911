@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 import swag49.web.InternalMessageStore;
 import swag49.web.model.MessageDTO;
+import swag49.web.model.MessageQueryDTO;
+import swag49.web.model.MessageQueryResponse;
 
 import javax.validation.Valid;
 import java.util.Date;
@@ -130,9 +132,13 @@ public class MessagingController {
 
     public List<MessageDTO> getIncomingMessages() {
         messages.clear();
+        MessageQueryDTO messageQueryDTO = new MessageQueryDTO(nodeContext.getMapNodeUrl(), mapController.getUserID());
+        MessageQueryResponse messageQueryResponse =
+                restTemplate.postForObject("http://localhost:8080/messaging/get", messageQueryDTO,
+                        MessageQueryResponse.class);
 
-        for(MessageDTO message : messageStore.getMessageList(mapController.getUserID())) {
-            if(message.getReceiver().getId().equals(mapController.getUserID())) {
+        for (MessageDTO message : messageQueryResponse.getMessages()) {
+            if (message.getReceiver().getId().equals(mapController.getUserID())) {
                 messages.put(message.getId(), message);
             }
         }
@@ -142,9 +148,13 @@ public class MessagingController {
 
     public List<MessageDTO> getOutgoingMessages() {
         messages.clear();
+        MessageQueryDTO messageQueryDTO = new MessageQueryDTO(nodeContext.getMapNodeUrl(), mapController.getUserID());
+        MessageQueryResponse messageQueryResponse =
+                restTemplate.postForObject("http://localhost:8080/messaging/get", messageQueryDTO,
+                        MessageQueryResponse.class);
 
-        for(MessageDTO message : messageStore.getMessageList(mapController.getUserID())) {
-            if(message.getSender().getId().equals(mapController.getUserID()))
+        for (MessageDTO message : messageQueryResponse.getMessages()) {
+            if (message.getSender().getId().equals(mapController.getUserID()))
                 messages.put(message.getId(), message);
         }
 

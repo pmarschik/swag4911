@@ -6,8 +6,11 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.annotation.Transformer;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import swag49.dao.DataAccessObject;
 import swag49.messaging.model.Message;
 import swag49.messaging.model.MessageDTO;
@@ -17,7 +20,7 @@ import swag49.util.Log;
 
 import java.util.List;
 
-@Component("messageTransformer")
+@Controller("messageTransformer")
 public class MessageTransformerImpl implements MessageTransformer {
     @Log
     private Logger log;
@@ -25,6 +28,7 @@ public class MessageTransformerImpl implements MessageTransformer {
     @Autowired
     @Qualifier("userDAO")
     private DataAccessObject<User, Long> userDAO;
+
 
     @Transactional("swag49.user")
     private Long getUserId(MessageDTO.UserDTO userDTO) {
@@ -47,10 +51,11 @@ public class MessageTransformerImpl implements MessageTransformer {
         return users.get(0).getId();
     }
 
+    @RequestMapping(value = "/send", method = {RequestMethod.POST, RequestMethod.PUT})
     @Override
     @Transformer
-
-    public Message apply(MessageDTO input) {
+    @Transactional("swag49.user")
+    public Message apply(@RequestBody MessageDTO input) {
         Message output = new Message();
 
         output.setId(input.getId());

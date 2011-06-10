@@ -38,19 +38,29 @@
     </servlet>
 
     <servlet>
-        <servlet-name>listMessagesChannelAdapter</servlet-name>
-        <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+        <servlet-name>appServlet</servlet-name>
+        <!--<servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>-->
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring/messaging.xml</param-value>
+		</init-param>
 		<load-on-startup>1</load-on-startup>
     </servlet>
 
-	<servlet-mapping>
-		<servlet-name>playerMessageChannelAdapter</servlet-name>
-		<url-pattern>/send</url-pattern>
-	</servlet-mapping>
-
     <servlet-mapping>
-		<servlet-name>listMessagesChannelAdapter</servlet-name>
-		<url-pattern>/get</url-pattern>
-	</servlet-mapping>
+        <servlet-name>appServlet</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+	<!--<servlet-mapping>-->
+		<!--<servlet-name>playerMessageChannelAdapter</servlet-name>-->
+		<!--<url-pattern>/send</url-pattern>-->
+	<!--</servlet-mapping>-->
+
+    <!--<servlet-mapping>-->
+		<!--<servlet-name>listMessagesChannelAdapter</servlet-name>-->
+		<!--<url-pattern>/get</url-pattern>-->
+	<!--</servlet-mapping>-->
 
 </web-app>

@@ -14,6 +14,8 @@
 
     <import resource="helpers.xml"/>
 
+    <bean id="handlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
+
     <http:inbound-channel-adapter id="playerMessageChannelAdapter" channel="playerMessageXmlChannel"
                                   request-payload-type="swag49.messaging.model.MessageDTO"
                                   supported-methods="PUT, POST" name="/send" message-converters="messageConverter"/>
@@ -51,12 +53,17 @@
     <!-- - - - -->
     <!-- - - - -->
 
-    <http:inbound-channel-adapter id="listMessagesChannelAdapter" channel="listMessagesXmlChannel"
-                                  request-payload-type="swag49.messaging.model.MessageQueryDTO"
-                                  supported-methods="PUT, POST" name="/get" message-converters="messageConverter"/>
+    <http:inbound-gateway request-channel="listMessagesXmlChannel" reply-channel="listMessagesReplyChannel"
+                          name="/get" message-converters="messageConverter"
+                          request-payload-type="swag49.messaging.model.MessageQueryDTO" supported-methods="PUT, POST"/>
 
     <si:channel id="listMessagesXmlChannel" datatype="swag49.messaging.model.MessageQueryDTO"/>
 
-    <si:service-activator id="listMessagesActivator" input-channel="listMessagesXmlChannel" ref="messageListHandler"/>
+    <!--<si:transformer id="listMessagesTransformer" input-channel="listMessagesXmlChannel"-->
+    <!--output-channel="listMessagesReplyChannel" ref="messageListHandler"/>-->
+    <si:service-activator id="listMessagesActivator" input-channel="listMessagesXmlChannel"
+                          output-channel="listMessagesReplyChannel" ref="messageListHandler"/>
+
+    <si:channel id="listMessagesReplyChannel"/>
 
 </beans>
