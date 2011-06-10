@@ -27,7 +27,7 @@ public class Building {
 		this.square = square;
 		this.id = new Square.Id(square.getBase().getId(), square.getPosition());
 
-		square.setBuilding(this);
+	//	square.setBuilding(this);
 	}
 
 	public Square.Id getId() {
