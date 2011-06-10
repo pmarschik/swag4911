@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
 import swag49.model.*;
 import swag49.util.Log;
+import swag49.web.model.ResourceValueDTO;
 import swag49.web.model.TileOverviewDTO;
 import swag49.web.model.TileOverviewDTOFull;
 import swag49.web.model.TokenDTO;
@@ -82,6 +83,7 @@ public class MapController {
     private UUID userToken;
     private Long userID;
     private String userName;
+
 
     @PostConstruct
     @Transactional
@@ -182,7 +184,7 @@ public class MapController {
                     break;
                 }
             }
-                  logger.info("End build Test");
+            logger.info("End build Test");
 
             mapLogic.build(emptySquare, goldMineType);
         } catch (Exception e) {
@@ -208,9 +210,7 @@ public class MapController {
 
     @RequestMapping(value = "/statistics", method = RequestMethod.GET)
     public String statistics() {
-        System.out.println();
-                buildTest();
-
+        buildTest();
         return "redirect:../statistics/";
     }
 
@@ -390,13 +390,13 @@ public class MapController {
             displayedTiles.add(currentRow);
         }
 
-        model.addAttribute("amount_gold", player.getResources().getAmount_gold());
-        model.addAttribute("amount_wood", player.getResources().getAmount_wood());
-        model.addAttribute("amount_stone", player.getResources().getAmount_stone());
-        model.addAttribute("amount_crops", player.getResources().getAmount_crops());
-
+        //  model.addAttribute("amount_gold", player.getResources().getAmount_gold());
+        //  model.addAttribute("amount_wood", player.getResources().getAmount_wood());
+        //  model.addAttribute("amount_stone", player.getResources().getAmount_stone());
+        //  model.addAttribute("amount_crops", player.getResources().getAmount_crops());
+        ResourceValueDTO resourceValue = new ResourceValueDTO(player.getResources());
         model.addAttribute("tiles", displayedTiles);
-        // model.addAttribute("resources", resourceValue);
+        model.addAttribute("resources", resourceValue);
 
         return "home";
     }
