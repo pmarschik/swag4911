@@ -12,14 +12,14 @@ public class TroopDTO {
     private Integer speed;
     private Boolean canUpgrade;
     private ResourceValueDTO upgradeCost;
-    private Long troopId;
+    private Long id;
 
-    public Long getTroopId() {
-        return troopId;
+    public Long getId() {
+        return id;
     }
 
-    public void setTroopId(Long troopId) {
-        this.troopId = troopId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Boolean getCanUpgrade() {
@@ -45,7 +45,7 @@ public class TroopDTO {
         this.setDefense(troop.getIsOfLevel().getDefense());
         this.setSpeed(troop.getIsOfLevel().getSpeed());
         this.setCargo_capacity(troop.getIsOfLevel().getCargo_capacity());
-        this.troopId = troop.getId();
+        this.id = troop.getId();
     }
 
     public Integer getCargo_capacity() {
