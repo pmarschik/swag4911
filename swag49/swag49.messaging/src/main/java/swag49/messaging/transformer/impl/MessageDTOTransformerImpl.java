@@ -16,7 +16,7 @@ import swag49.model.User;
 public class MessageDTOTransformerImpl implements MessageDTOTransformer {
     @Autowired
     @Qualifier("userDAO")
-    private DataAccessObject<User, Long> userDAO;
+    private DataAccessObject<User, String> userDAO;
 
     @Override
     @Transformer

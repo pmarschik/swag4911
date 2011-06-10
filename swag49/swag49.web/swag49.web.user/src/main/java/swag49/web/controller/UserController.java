@@ -38,7 +38,7 @@ public class UserController {
 
     @Autowired
     @Qualifier("userDAO")
-    private DataAccessObject<User, Long> userDAO;
+    private DataAccessObject<User, String> userDAO;
 
     @Autowired
     @Qualifier("mapLoactionDAO")
@@ -106,7 +106,7 @@ public class UserController {
 
     @RequestMapping(value = "/delete/{id}")
     @Transactional("swag49.user")
-    public String deleteUser(@PathVariable("id") Long userID) {
+    public String deleteUser(@PathVariable("id") String userID) {
         User user = userDAO.get(userID);
         if (user != null) {
             userDAO.delete(user);
@@ -191,7 +191,7 @@ public class UserController {
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
     public String edit(Map<String, Object> map) {
         if (this.loggedInUser != null) {
-            UserDTO user = new UserDTO(userDAO.get(loggedInUser.getId()));
+            UserDTO user = new UserDTO(userDAO.get(loggedInUser.getUsername()));
             System.out.println("Try to update user: " + user);
             map.put("user", user);
             return "edit";
@@ -210,7 +210,7 @@ public class UserController {
         userDTO.setUtcOffset(0);
         System.out.println("Updated user:" + userDTO);
 
-        User user = userDAO.get(loggedInUser.getId());
+        User user = userDAO.get(loggedInUser.getUsername());
         this.loggedInUser = new UserDTO(userDTO.updateUser(user));
 
         return "redirect:./";
@@ -222,7 +222,7 @@ public class UserController {
         if (loggedInUser == null)
             return "redirect:./";
 
-        User user = userDAO.get(loggedInUser.getId());
+        User user = userDAO.get(loggedInUser.getUsername());
 
         List<MapLocationDTO> availableMaps = getMapLocations(user);
         map.put("availableMapLocations", availableMaps);
@@ -245,7 +245,7 @@ public class UserController {
     @Transactional("swag49.user")
     public String joinMap(@PathVariable("id") Long mapLocationID) {
 
-        User user = userDAO.get(loggedInUser.getId());
+        User user = userDAO.get(loggedInUser.getUsername());
         user.getMapLocations().add(getMapLocation(mapLocationID));
         userDAO.update(user);
 

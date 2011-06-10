@@ -27,7 +27,7 @@ public class MessageTransformerImpl implements MessageTransformer {
     private DataAccessObject<User, Long> userDAO;
 
     @Transactional("swag49.user")
-    private Long getUserId(MessageDTO.UserDTO userDTO) {
+    private String getUserId(MessageDTO.UserDTO userDTO) {
         userDTO = Preconditions.checkNotNull(userDTO);
 
         if (userDTO.getId() != null)
@@ -44,7 +44,7 @@ public class MessageTransformerImpl implements MessageTransformer {
         Preconditions.checkArgument(users != null && users.size() == 1, "no user with name %s found",
                 userDTO.getUsername());
 
-        return users.get(0).getId();
+        return users.get(0).getUsername();
     }
 
     @Override
