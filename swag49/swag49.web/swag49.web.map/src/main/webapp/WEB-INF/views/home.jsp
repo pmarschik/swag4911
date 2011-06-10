@@ -20,10 +20,10 @@
         <th><img src="${resourcePath}/images/misc/crops.jpg" alt="Crops" /></th>
 	</tr>
 	<tr>
-		<td>${amount_gold}</td>
-        <td>${amount_stone}</td>
-        <td>${amount_wood}</td>
-        <td>${amount_crops}</td>
+		<td>${resources.amount_gold}</td>
+        <td>${resources.amount_stone}</td>
+        <td>${resources.amount_wood}</td>
+        <td>${resources.amount_crops}</td>
 	</tr>
     <tr>
 
@@ -45,9 +45,9 @@
 		<div id="content"><spring:url value="/resources" var="resourcePath"/>
 <table>
     <tr>
-        <td colspan="3">
+        <td class="arrowUpCell" colspan="3">
             <a class="contentLink" href="./mapoverview.html?xLow=${xLow}&yLow=${yLow - 1}&xHigh=${xHigh}&yHigh=${yHigh - 1}">
-                <img src="${resourcePath}<spring:theme code='theme.image.misc.up'/>" alt="Up" title="UP"/>
+                <img class="arrowPic" src="${resourcePath}<spring:theme code='theme.image.misc.up'/>" alt="Up" title="UP"/>
             </a>
         </td>
     </tr>
@@ -55,7 +55,7 @@
     <tr>
         <td>
             <a class="contentLink" href="./mapoverview.html?xLow=${xLow - 1}&yLow=${yLow}&xHigh=${xHigh - 1}&yHigh=${yHigh}">
-                <img src="${resourcePath}<spring:theme code='theme.image.misc.left'/>"
+                <img class="arrowPic" src="${resourcePath}<spring:theme code='theme.image.misc.left'/>"
                      alt="Left" title="Left"/>
             </a>
         </td>
@@ -227,16 +227,16 @@
         </td>
         <td>
             <a class="contentLink" href="./mapoverview.html?xLow=${xLow+1}&yLow=${yLow}&xHigh=${xHigh+1}&yHigh=${yHigh}">
-                 <img src="${resourcePath}<spring:theme code='theme.image.misc.right'/>"
+                 <img class="arrowPic" src="${resourcePath}<spring:theme code='theme.image.misc.right'/>"
                      alt="Right" title="Right"/>
             </a>
         </td>
     </tr>
 
     <tr>
-        <td colspan="3">
-            <a class="contentLink" href="./mapoverview.html?xLow=${xLow}&yLow=${yLow + 1}&xHigh=${xHigh}&yHigh=${yHigh + 1}"><img
-                    src="<spring:theme code='theme.image.misc.down'/>" alt="Down" title="Down"/>
+        <td class="arrowDownCell" colspan="3">
+            <a class="contentLink" href="./mapoverview.html?xLow=${xLow}&yLow=${yLow + 1}&xHigh=${xHigh}&yHigh=${yHigh + 1}"><img class="arrowPic"
+                    src="${resourcePath}<spring:theme code='theme.image.misc.down'/>" alt="Down" title="Down"/>
             </a>
         </td>
     </tr>

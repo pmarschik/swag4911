@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <h2>Squares:</h2>
 <table>
@@ -41,7 +42,7 @@
     </c:forEach>
 </table>
 
-<c:if test="${availableTroops != null && availableTroops.size()>0 }">
+<c:if test="${availableTroops != null && fn:length(availableTroops)>0 }">
 	<h2>Train Troops:</h2>
 	<table>
     	<c:forEach items="${availableTroops}" var="troopType">
