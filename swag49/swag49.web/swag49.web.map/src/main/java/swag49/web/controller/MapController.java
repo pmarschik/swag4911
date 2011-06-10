@@ -254,6 +254,8 @@ public class MapController {
             } else {
                 tileInfo.setEnemyTerritory(true);
             }
+
+            tileInfo.setBaseId(base.getId());
         } else {
 //              tileInfo.setHasBase(false);
             tileInfo.setEnemyTerritory(false);
@@ -371,7 +373,7 @@ public class MapController {
         model.addAttribute("troops", troops);
         model.addAttribute("baseId", baseId);
 
-        return "troopoverview.html";
+        return "troopoverview";
     }
 
     @RequestMapping(value = "/build", method = RequestMethod.GET)

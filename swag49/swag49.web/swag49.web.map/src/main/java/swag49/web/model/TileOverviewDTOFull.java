@@ -11,6 +11,16 @@ public class TileOverviewDTOFull {
 	private String info;
 	private ResourceType specialResource;
 
+    public Long getBaseId() {
+        return baseId;
+    }
+
+    public void setBaseId(Long baseId) {
+        this.baseId = baseId;
+    }
+
+    private Long baseId;
+
 	private boolean enemyTerritory;
 
     private Set<Troop> troops;
