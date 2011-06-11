@@ -1,7 +1,4 @@
-package swag49.web.model;
-
-import swag49.model.Address;
-import swag49.model.User;
+package swag49.transfer.model;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -24,7 +21,7 @@ public class UserDTO {
     private String lastName;
     @Pattern(regexp = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[_A-Za-z0-9-]+)")
     private String email;
-    private Integer utcOffset;
+    private int utcOffset;
     private String state;
     private String city;
     private String postalCode;
@@ -33,59 +30,18 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(User user) {
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.email = user.getEmail();
-        this.utcOffset = user.getUtcOffset();
-        Address address = user.getAddress();
-        if (address != null) {
-            this.state = address.getState();
-            this.city = address.getCity();
-            this.postalCode = address.getPostalCode();
-            this.street = address.getStreet();
-        }
-    }
-
-    public User createUserEntity() {
-        User user = new User();
-
-        user.setUsername(this.username);
-        user.setPassword(this.password);
-        user.setFirstName(this.firstName);
-        user.setLastName(this.lastName);
-        user.setEmail(this.email);
-        user.setUtcOffset(this.utcOffset);
-
-        Address address = new Address();
-        address.setState(this.state);
-        address.setCity(this.city);
-        address.setPostalCode(this.postalCode);
-        address.setStreet(this.street);
-
-        user.setAddress(address);
-
-        return user;
-    }
-
-    public User updateUser(User user) {
-        user.setUsername(this.username);
-        user.setPassword(this.password);
-        user.setFirstName(this.firstName);
-        user.setLastName(this.lastName);
-        user.setEmail(this.email);
-        user.setUtcOffset(this.utcOffset);
-
-        Address address = new Address();
-        address.setState(this.state);
-        address.setCity(this.city);
-        address.setPostalCode(this.postalCode);
-        address.setStreet(this.street);
-
-        user.setAddress(address);
-        return user;
+    public UserDTO(String username, String password, String firstName, String lastName, String email, int utcOffset,
+                   String addressState, String addressCity, String addressPostalCode, String addressStreet) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.utcOffset = utcOffset;
+        this.state = addressState;
+        this.city = addressCity;
+        this.postalCode = addressPostalCode;
+        this.street = addressStreet;
     }
 
     public String getUsername() {
@@ -128,11 +84,11 @@ public class UserDTO {
         this.email = email;
     }
 
-    public Integer getUtcOffset() {
+    public int getUtcOffset() {
         return utcOffset;
     }
 
-    public void setUtcOffset(Integer utcOffset) {
+    public void setUtcOffset(int utcOffset) {
         this.utcOffset = utcOffset;
     }
 

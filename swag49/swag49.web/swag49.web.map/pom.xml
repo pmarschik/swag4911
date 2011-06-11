@@ -22,6 +22,11 @@
         </dependency>
         <dependency>
             <groupId>swag49</groupId>
+            <artifactId>swag49.model.transfer</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>swag49</groupId>
             <artifactId>swag49.processing</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

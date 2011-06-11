@@ -12,14 +12,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import swag49.dao.DataAccessObject;
+import swag49.model.Address;
 import swag49.model.MapLocation;
 import swag49.model.User;
+import swag49.transfer.model.MapLocationDTO;
+import swag49.transfer.model.TokenDTO;
+import swag49.transfer.model.UserDTO;
+import swag49.transfer.model.UserLoginDTO;
 import swag49.util.Log;
 import swag49.web.TokenService;
-import swag49.web.model.MapLocationDTO;
-import swag49.web.model.TokenDTO;
-import swag49.web.model.UserDTO;
-import swag49.web.model.UserLoginDTO;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -82,9 +83,34 @@ public class UserController {
 
         // TODO set correct utc offset
         userDTO.setUtcOffset(0);
-        userDAO.create(userDTO.createUserEntity());
+        userDAO.create(createUserFromDTO(userDTO));
 
         return "redirect:./";
+    }
+
+    private User createUserFromDTO(UserDTO userDTO) {
+        User user = new User();
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(userDTO.getPassword());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setUtcOffset(userDTO.getUtcOffset());
+
+        Address address = new Address();
+        address.setState(userDTO.getState());
+        address.setCity(userDTO.getCity());
+        address.setPostalCode(userDTO.getPostalCode());
+        address.setStreet(userDTO.getStreet());
+        user.setAddress(address);
+
+        return user;
+    }
+
+    private UserDTO createDTOFromUser(User user) {
+        return new UserDTO(user.getUsername(), user.getPassword(), user.getFirstName(), user.getLastName(),
+                user.getEmail(), user.getUtcOffset(), user.getAddress().getState(), user.getAddress().getCity(),
+                user.getAddress().getPostalCode(), user.getAddress().getStreet());
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
@@ -147,8 +173,8 @@ public class UserController {
         User user = null;
 
         if (users != null) {
-            for(User u : users) {
-                if(u.getUsername().equals(userLoginDTO.getUsername())){
+            for (User u : users) {
+                if (u.getUsername().equals(userLoginDTO.getUsername())) {
                     user = u;
                     break;
                 }
@@ -165,10 +191,10 @@ public class UserController {
             return "login";
         }
 
-        UserDTO loggedInUser = new UserDTO(user);
+        UserDTO loggedInUser = createDTOFromUser(user);
 
         // check if user is already logged in in another session
-        if (tokenService.hasTokenForUser(loggedInUser.createUserEntity())) {
+        if (tokenService.hasTokenForUser(user)) {
             map.put("loginError", "User is already logged in in another session!");
             return "login";
         }
@@ -178,8 +204,7 @@ public class UserController {
         this.loggedInUser = loggedInUser;
 
         // set UserToken
-        UUID token = tokenService.generateToken(loggedInUser.createUserEntity());
-        this.userToken = token;
+        this.userToken = tokenService.generateToken(user);
 
         return "redirect:./";
     }
@@ -199,7 +224,7 @@ public class UserController {
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
     public String edit(Map<String, Object> map) {
         if (this.loggedInUser != null) {
-            UserDTO user = new UserDTO(userDAO.get(loggedInUser.getUsername()));
+            UserDTO user = createDTOFromUser(userDAO.get(loggedInUser.getUsername()));
             System.out.println("Try to update user: " + user);
             map.put("user", user);
             return "edit";
@@ -219,7 +244,23 @@ public class UserController {
         System.out.println("Updated user:" + userDTO);
 
         User user = userDAO.get(loggedInUser.getUsername());
-        this.loggedInUser = new UserDTO(userDTO.updateUser(user));
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(userDTO.getPassword());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setUtcOffset(userDTO.getUtcOffset());
+
+        Address address = new Address();
+        address.setState(userDTO.getState());
+        address.setCity(userDTO.getCity());
+        address.setPostalCode(userDTO.getPostalCode());
+        address.setStreet(userDTO.getStreet());
+        user.setAddress(address);
+
+        user = userDAO.update(user);
+
+        this.loggedInUser = createDTOFromUser(user);
 
         return "redirect:./";
     }
@@ -246,7 +287,7 @@ public class UserController {
         List<MapLocationDTO> mapLocations = new ArrayList<MapLocationDTO>();
 
         for (MapLocation mapLocation : user.getMapLocations())
-            mapLocations.add(new MapLocationDTO(mapLocation));
+            mapLocations.add(new MapLocationDTO(mapLocation.getId(), mapLocation.getUrl(), mapLocation.getMapName()));
 
         return mapLocations;
     }
@@ -275,11 +316,10 @@ public class UserController {
         Collection<MapLocation> availableMaps = mapLocationDAO.queryByExample(new MapLocation());
 
         if (availableMaps != null) {
-            Iterator<MapLocation> iterator = availableMaps.iterator();
-            while (iterator.hasNext()) {
-                MapLocation mapLocation = iterator.next();
+            for (MapLocation mapLocation : availableMaps) {
                 if (!user.getMapLocations().contains(mapLocation))
-                    mapLocations.add(new MapLocationDTO(mapLocation));
+                    mapLocations.add(
+                            new MapLocationDTO(mapLocation.getId(), mapLocation.getUrl(), mapLocation.getMapName()));
             }
         }
 

@@ -10,13 +10,13 @@
     <bean id="xmlMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="classesToBeBound">
             <array>
-                <value>swag49.web.model.TokenDTO</value>
-                <value>swag49.web.model.MessageDTO</value>
-                <value>swag49.web.model.MessageQueryResponse</value>
-                <value>swag49.web.model.MessageQueryDTO</value>
-                <value>swag49.web.model.PlayerDTO</value>
-                <value>swag49.web.model.StatisticDTO</value>
-                <value>swag49.web.model.StatisticEntryDTO</value>
+                <value>swag49.transfer.model.TokenDTO</value>
+                <value>swag49.transfer.model.MessageDTO</value>
+                <value>swag49.transfer.model.MessageQueryResponse</value>
+                <value>swag49.transfer.model.MessageQueryDTO</value>
+                <value>swag49.transfer.model.PlayerDTO</value>
+                <value>swag49.transfer.model.StatisticDTO</value>
+                <value>swag49.transfer.model.StatisticEntryDTO</value>
             </array>
         </property>
     </bean>

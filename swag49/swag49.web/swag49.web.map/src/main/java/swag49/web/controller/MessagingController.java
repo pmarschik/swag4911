@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
+import swag49.transfer.model.MessageDTO;
+import swag49.transfer.model.MessageQueryDTO;
+import swag49.transfer.model.MessageQueryResponse;
 import swag49.web.InternalMessageStore;
-import swag49.web.model.MessageDTO;
-import swag49.web.model.MessageQueryDTO;
-import swag49.web.model.MessageQueryResponse;
 
+import javax.security.auth.Subject;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
@@ -113,19 +114,43 @@ public class MessagingController {
         return "message";
     }
 
+//    @RequestMapping(value = "/send", method = RequestMethod.POST)
+//    public String handleSend(@Valid @ModelAttribute("message")
+//                             MessageDTO message, BindingResult bingBindingResult,
+//                             Map<String, Object> map) {
+//
+//        System.out.println("Received request to send message: " + message);
+//
+//        if (bingBindingResult.hasErrors()) {
+//            map.put("view", false);
+//            return "message";
+//        }
+//
+//        sendMessage(message);
+//
+//        return "redirect:./";
+//    }
+
+//    @RequestMapping(value = "/send", method = RequestMethod.POST)
+//    public String handleSend(String dataString) {
+//
+//        System.out.println("Received request to send message: " + dataString);
+//
+//
+//
+//        return "redirect:./";
+//    }
+
     @RequestMapping(value = "/send", method = RequestMethod.POST)
-    public String handleSend(@Valid @ModelAttribute("message")
-                             MessageDTO message, BindingResult bingBindingResult,
-                             Map<String, Object> map) {
+    public String handleSend(String username, String subject, String content) {
+         MessageDTO newMessage = new MessageDTO();
+         MessageDTO.UserDTO user= new MessageDTO.UserDTO(null, username);
 
-        System.out.println("Received request to send message: " + message);
+        newMessage.setReceiver(user);
+        newMessage.setContent(content);
+        newMessage.setSubject(subject);
 
-        if (bingBindingResult.hasErrors()) {
-            map.put("view", false);
-            return "message";
-        }
-
-        sendMessage(message);
+        sendMessage(newMessage);
 
         return "redirect:./";
     }

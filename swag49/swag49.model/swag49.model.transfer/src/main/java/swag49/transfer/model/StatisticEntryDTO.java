@@ -1,18 +1,18 @@
-package swag49.web.model;
+package swag49.transfer.model;
 
 public class StatisticEntryDTO {
 
-    private Integer ranking;
+    private int ranking;
 
     private String player;
 
-    private Integer score;
+    private int score;
 
-    public Integer getRanking() {
+    public int getRanking() {
         return ranking;
     }
 
-    public void setRanking(Integer ranking) {
+    public void setRanking(int ranking) {
         this.ranking = ranking;
     }
 
@@ -28,7 +28,7 @@ public class StatisticEntryDTO {
         return score;
     }
 
-    public void setScore(Integer score) {
+    public void setScore(int score) {
         this.score = score;
     }
 }
