@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
 import swag49.model.*;
@@ -171,6 +172,8 @@ public class MapController {
 
             if (playerValues != null && playerValues.size() == 1) {
                 player = playerValues.iterator().next();
+                player.setOnline(true);
+                player = playerDAO.update(player);
                 logger.info("Player " + player.getId() + " found");
             } else if (playerValues != null && playerValues.size() == 0) {
                 // create new player & create start conditions ( map, resources, units, etc)
@@ -260,15 +263,7 @@ public class MapController {
 
         return "home";
     }
-
-    @RequestMapping(value = "/")
-    public String handle(Map<String, Object> map) {
-
-        map.put("userID", this.userID);
-
-        return "home";
-    }
-
+    
     @RequestMapping(value = "/messaging", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String messaging() {
@@ -724,8 +719,15 @@ public class MapController {
     public String getHomeview(@RequestParam(value = "xLow", defaultValue = "-1") int x_low,
                               @RequestParam(value = "yLow", defaultValue = "-1") int y_low,
                               @RequestParam(value = "xHigh", defaultValue = "-1") int x_high,
-                              @RequestParam(value = "yHigh", defaultValue = "-1") int y_high, Model model) {
+                              @RequestParam(value = "yHigh", defaultValue = "-1") int y_high, Model model,
+                              Map<String, Object> tempMap) {
 
+        tempMap.put("userID", this.userID);
+
+        if(userID == null) {
+            tempMap.put("userNode", nodeContext.getUserNodeUrl() + "/swag/user/");
+            return "home";
+        }
 
         //TODO: besser machen
         player = playerDAO.get(player.getId());
@@ -985,6 +987,20 @@ public class MapController {
     private boolean checkForEnemyTerritory(Tile tile) {
         return tile.getBase() != null && tile.getBase().getOwner() != player ||
                 !tile.getTroops().isEmpty() && tile.getTroops().iterator().next().getOwner() != player;
+    }
+
+    @RequestMapping(value = "/logoutPlayer", method = RequestMethod.GET)
+    @Transactional("swag49.map")
+    public String logoutPlayer(SessionStatus status) {
+        // close session for player
+        status.setComplete();
+        Player player = playerDAO.get(this.player.getId());
+        player.setOnline(false);
+        playerDAO.update(player);
+
+        this.userID = null;
+        
+        return "redirect:"+ nodeContext.getUserNodeUrl() + "/swag/user/";
     }
 
 

@@ -36,7 +36,9 @@ public class UserController {
     @Log
     private static Logger logger;
 
-    private static String mapController = "/swag/map/authenticate";
+    private static String mapController = "/swag/map/";
+    private static String mapControllerAuthentication = mapController + "authenticate";
+    private static String mapControllerLogout = mapController + "logoutPlayer";
 
     @Autowired
     @Qualifier("userDAO")
@@ -146,8 +148,18 @@ public class UserController {
     }
 
     @RequestMapping(value = "/")
+    @Transactional("swag49.user")
     public String handle(Map<String, Object> map) {
         map.put("loggedInUser", loggedInUser);
+        if(loggedInUser != null) {
+            User user = userDAO.get(loggedInUser.getUsername());
+            List<MapLocationDTO> locations = getUserMapLocations(user);
+            List<String> mapLocations = new ArrayList<String>();
+            for(MapLocationDTO mapLocation : locations) {
+                mapLocations.add(mapLocation.getUrl() + mapControllerLogout);
+            }
+            map.put("mapLocations", mapLocations);
+        }
         return "overview";
     }
 
@@ -277,7 +289,7 @@ public class UserController {
         map.put("availableMapLocations", availableMaps);
         map.put("myMapLocations", getUserMapLocations(user));
         map.put("tokenDTO", new TokenDTO(userToken, null, null));
-        map.put("mapController", mapController);
+        map.put("mapControllerAuthentication", mapControllerAuthentication);
 
         return "maps";
     }
