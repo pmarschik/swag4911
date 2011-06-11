@@ -70,7 +70,7 @@
 
 <h2>Building Actions</h2>
 <c:choose>
-    <c:when test="${troopUpgradeActions != null && fn:length(troopUpgradeActions)>0 }">
+    <c:when test="${baseActions != null && fn:length(baseActions)>0 }">
         <table>
             <tr>
                 <td>Building</td>
@@ -85,8 +85,7 @@
                     <td>${action.destination_x},${action.destination_y} </td>
                     <td>${action.squareId}</td>
                     <td>${action.level}</td>
-                    <
-                    td>${action.endDate}</td>
+                    <td>${action.endDate}</td>
                     <c:choose>
                         <c:when test="${action.isAbortable}">
                             <td><a href="cancelbuildaction.html?id=${action.id}"><img

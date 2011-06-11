@@ -7,9 +7,15 @@ import com.google.common.collect.Sets;
 import gamelogic.MapLogic;
 import gamelogic.exceptions.NotEnoughMoneyException;
 import org.slf4j.Logger;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -35,7 +41,7 @@ import java.util.Map;
 @Controller
 @Scope(value = "session")
 @RequestMapping(value = "/map")
-public class MapController {
+public class MapController implements ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
 
     private static final String userManagement = "http://localhost:8080/user/swag";
     private static final String tokenService = "/token/";
@@ -122,9 +128,10 @@ public class MapController {
     private static final String NOTENOUGHRESOURCES = "notenoughmoney";
     private static final String ERROR = "error";
 
-    @PostConstruct
+
     @Transactional("swag49.map")
-    public void init() {
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
         swag49.model.Map example = new swag49.model.Map();
         example.setUrl(nodeContext.getMapNodeUrl());
         logger.error("Map url {}", nodeContext.getMapNodeUrl());
@@ -138,6 +145,18 @@ public class MapController {
         }
     }
 
+
+    private AbstractApplicationContext applicationContext;
+
+    @PostConstruct
+    public void init() {
+        applicationContext.addApplicationListener(this);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = (AbstractApplicationContext) applicationContext;
+    }
 
     //TODO: GET MAP AND PLAYER
     private swag49.model.Map map;
@@ -206,6 +225,22 @@ public class MapController {
                 startUnit = troopDAO.create(startUnit);
 
                 tile.getTroops().add(startUnit);
+                tileDAO.update(tile);
+
+                //create additional start units
+
+                startUnit = new Troop(type, level, tile, player);
+
+                startUnit = troopDAO.create(startUnit);
+
+                tile.getTroops().add(startUnit);
+
+                startUnit = troopDAO.create(startUnit);
+                tile.getTroops().add(startUnit);
+
+                startUnit = troopDAO.create(startUnit);
+                tile.getTroops().add(startUnit);
+
                 tileDAO.update(tile);
 
 
@@ -539,6 +574,7 @@ public class MapController {
                 dto.setIsAbortable(action.getIsAbortable());
                 dto.setStartDate(action.getStartDate());
                 dto.setEndDate(action.getEndDate());
+                dto.setId(action.getId());
 
                 troopActionDTOList.add(dto);
             }
@@ -560,7 +596,7 @@ public class MapController {
                 dto.setAbortable(action.getIsAbortable());
                 dto.setTroopName(action.getTroop().getType().getName());
                 dto.setLevel(action.getTroopLevel().getLevel());
-
+                dto.setId(action.getId());
 
                 troopUpgradeActionDTOList.add(dto);
             }
@@ -584,6 +620,7 @@ public class MapController {
                 dto.setLevel(action.getConcerns().getIsOfLevel().getLevel() + 1);
                 dto.setSquareId(action.getConcerns().getSquare().getId().getPosition());
                 dto.setEndDate(action.getEndDate());
+                dto.setId(action.getId());
 
                 buildActionDTOList.add(dto);
             }

@@ -17,6 +17,15 @@ public class TroopUpgradeActionDTO {
     private boolean isAbortable;
     private Date endDate;
     private int level;
+    private long id;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getTroopName() {
         return troopName;
