@@ -13,6 +13,7 @@
 
 <h2>Squares:</h2>
 <table>
+    <%--@elvariable id="tileInfo" type="swag49.web.model.TileOverviewDTOFull"--%>
     <c:forEach items="${tileInfo.squares}" var="square">
         <tr>
             <c:choose>
@@ -29,19 +30,19 @@
                             <tr>
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.wood'/>" alt="Wood:"
                                          title="Wood" height="30"></td>
-                                <td>${square.building.income.amount_wood}</td>
+                                <td>${square.building.isOfLevel.resourceProduction.amount_wood}</td>
 
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.stone'/>" alt="Stone:"
                                          title="Stone" height="30"></td>
-                                <td>${square.building.income.amount_stone}</td>
+                                <td>${square.building.isOfLevel.resourceProduction.amount_stone}</td>
 
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.crops'/>"
                                          alt="Crops::" title="Crops" height="30"></td>
-                                <td>${square.building.income.amount_crops}</td>
+                                <td>${square.building.isOfLevel.resourceProduction.amount_crops}</td>
 
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.gold'/>" alt="Gold:"
                                          title="Gold" height="30"></td>
-                                <td>${square.building.income.amount_gold}</td>
+                                <td>${square.building.isOfLevel.resourceProduction.amount_gold}</td>
                             </tr>
                         </table>
                     </td>
@@ -50,27 +51,27 @@
                             <tr>
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.wood'/>" alt="Wood:"
                                          title="Wood" height="30"></td>
-                                <td>${square.building.upkeep.amount_wood}</td>
+                                <td>${square.building.isOfLevel.upkeepCosts.amount_wood}</td>
 
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.stone'/>" alt="Stone:"
                                          title="Stone" height="30"></td>
-                                <td>${square.building.upkeep.amount_stone}</td>
+                                <td>${square.building.isOfLevel.upkeepCosts.amount_stone}</td>
 
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.crops'/>"
                                          alt="Crops::" title="Crops" height="30"></td>
-                                <td>${square.building.upkeep.amount_crops}</td>
+                                <td>${square.building.isOfLevel.upkeepCosts.amount_crops}</td>
 
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.gold'/>" alt="Gold:"
                                          title="Gold" height="30"></td>
-                                <td>${square.building.upkeep.amount_gold}</td>
+                                <td>${square.building.isOfLevel.upkeepCosts.amount_gold}</td>
                             </tr>
                         </table>
                     </td>
                     <td>
-                        <c:if test="${square.building.canUpgrade}">
-                            <a href="buildingupgrade.html"><img src="<spring:theme code='theme.image.misc.upgrade'/>"
-                                                                alt="Upgrade"> </a>
-                        </c:if>
+                        <%--<c:if test="${fn:length(square.building.type.levels) > square.building.isOfLevel.level}">--%>
+                            <%--<a href="buildingupgrade.html"><img src="<spring:theme code='theme.image.misc.upgrade'/>"--%>
+                                                                <%--alt="Upgrade"> </a>--%>
+                        <%--</c:if>--%>
                     </td>
                 </c:when>
 
