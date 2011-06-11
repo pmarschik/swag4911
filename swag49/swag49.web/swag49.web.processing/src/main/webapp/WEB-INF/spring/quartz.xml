@@ -91,10 +91,14 @@
                 <ref bean="resourceUpdateTrigger"/>
             </list>
         </property>
-     <!--   <property name="schedulerContextAsMap">
+        <property name="schedulerContextAsMap">
             <map>
-                <entry key="playerDAO" value-ref="playerDAO"/>
+                <entry key="mapLogic" value-ref="mapLogic"/>
+                <entry key="buildActionDao" value-ref="buildActionDAO"/>
+                <entry key="troopActionDao" value-ref="troopActionDAO"/>
+                <entry key="troopBuildActionDao" value-ref="troopBuildActionDAO"/>
+                <entry key="troopUpgradeActionDao" value-ref="troopUpgradeActionDAO"/>
             </map>
-        </property>  -->
+        </property>
     </bean>
 </beans>

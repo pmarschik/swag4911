@@ -30,18 +30,11 @@
     <bean id="validator"
           class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
-    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
-        <property name="messageConverters">
-            <list>
-                <ref bean="marshallingHttpMessageConverter"/>
-            </list>
-        </property>
-    </bean>
+
 
     <bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver">
         <property name="defaultThemeName" value="themes.default"/>
     </bean>
     <bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource"/>
-    <bean id="mapLogic" class="gamelogic.MapLogic"/>
 
 </beans>

@@ -11,7 +11,8 @@
     <!-- Scans within the base package of the application for @Components to
          configure as beans -->
     <import resource="test-db.xml"/>
-    <!--<import resource="test-quartz.xml"/>-->
+    <import resource="test-quartz.xml"/>
+    <!--<import resource="test-aop.xml" />-->
 
     <bean id="propertyPlaceHolder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location" value="classpath:swag49.processing.test.properties"/>

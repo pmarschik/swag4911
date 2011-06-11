@@ -1,10 +1,12 @@
 package swag49.listener;
 
 import org.quartz.Job;
-import swag49.jobs.TroopActionJob;
+import org.springframework.stereotype.Component;
 import swag49.jobs.TroopUpgradeActionJob;
+import swag49.model.TroopUpgradeAction;
 
-public class TroopUpgradeActionListener extends ActionListenerBase {
+@Component("troopUpgradeActionListener")
+public class TroopUpgradeActionListener extends ActionListenerBase<TroopUpgradeAction> {
 
 	@Override
 	protected Class<? extends Job> getJobClass() {

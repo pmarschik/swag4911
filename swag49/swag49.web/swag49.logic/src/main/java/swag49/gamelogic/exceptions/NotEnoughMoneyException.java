@@ -1,4 +1,4 @@
-package gamelogic.exceptions;
+package swag49.gamelogic.exceptions;
 
 /**
  * Created by IntelliJ IDEA.

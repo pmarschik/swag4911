@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/test-context.xml"})
+@Transactional("swag49.map")
 public class StatisticDAOTest {
     @PersistenceContext
     private EntityManager em;
@@ -40,7 +41,7 @@ public class StatisticDAOTest {
 
 
     @Test
-    @Transactional("swag49.map")
+
     public void create_shouldCreate() throws Exception {
         Statistic statistic = new Statistic();
         statistic.setName("Most defeats");

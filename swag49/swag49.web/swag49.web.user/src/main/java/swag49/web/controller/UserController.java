@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import swag49.dao.DataAccessObject;
 import swag49.model.Address;
 import swag49.model.MapLocation;
@@ -23,6 +25,8 @@ import swag49.util.Log;
 import swag49.web.TokenService;
 
 import javax.validation.Valid;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 
 /**
@@ -279,15 +283,31 @@ public class UserController {
 
     @RequestMapping(value = "/maps", method = RequestMethod.GET)
     @Transactional("swag49.user")
-    public String maps(Map<String, Object> map) {
+    public String maps(Map<String, Object> map) throws UnknownHostException {
         if (loggedInUser == null)
             return "redirect:./";
 
         User user = userDAO.get(loggedInUser.getUsername());
 
+        String remoteAddressString =
+                ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest()
+                        .getRemoteAddr();
+        InetAddress remoteAddress = InetAddress.getByName(remoteAddressString);
+
         List<MapLocationDTO> availableMaps = getMapLocations(user);
+        List<MapLocationDTO> userMapLocations = getUserMapLocations(user);
+
+        if (!remoteAddress.isLoopbackAddress()) {
+            String hostAddress = InetAddress.getLocalHost().getHostAddress();
+
+            for (MapLocationDTO mapLocation : userMapLocations) {
+                String newUrl = mapLocation.getUrl().replace("localhost", hostAddress);
+                mapLocation.setUrl(newUrl);
+            }
+        }
+
         map.put("availableMapLocations", availableMaps);
-        map.put("myMapLocations", getUserMapLocations(user));
+        map.put("myMapLocations", userMapLocations);
         map.put("tokenDTO", new TokenDTO(userToken, null, null));
         map.put("mapControllerAuthentication", mapControllerAuthentication);
 

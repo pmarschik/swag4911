@@ -1,10 +1,11 @@
-package gamelogic;
+package swag49.gamelogic;
 
 import com.google.common.collect.Lists;
-import gamelogic.exceptions.NotEnoughMoneyException;
+import swag49.gamelogic.exceptions.NotEnoughMoneyException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
@@ -16,6 +17,7 @@ import swag49.util.Log;
 
 import java.util.*;
 
+@Component
 @SuppressWarnings({"UnusedAssignment", "UnusedDeclaration"})
 public class MapLogic {
 
@@ -64,7 +66,7 @@ public class MapLogic {
     @Qualifier("buildActionDAO")
     private DataAccessObject<BuildAction, Long> buildActionDao;
 
-    @Autowired
+    @Autowired(required = false)
     private RestTemplate restTemplate;
 
 

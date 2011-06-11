@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 
-<table width="100%" border="0">
+<table border="0">
 	<tr ><td colspan="2">TODO: BILD</td></tr>
 	<tr></tr>
 	<tr><td  colspan="2">Coordinates:</td></tr>

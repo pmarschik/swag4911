@@ -8,11 +8,13 @@ import swag49.model.TroopBuildAction;
 
 public class TroopBuildActionJob extends ActionJobBase<TroopBuildAction> {
 
-	@Autowired
-	@Qualifier("troopBuildActionDAO")
 	private DataAccessObject<TroopBuildAction, Long> troopBuildActionDao;
 
-	@Override
+    public void setTroopBuildActionDao(DataAccessObject<TroopBuildAction, Long> troopBuildActionDao) {
+        this.troopBuildActionDao = troopBuildActionDao;
+    }
+
+    @Override
 	protected void doWork(TroopBuildAction action, JobExecutionContext context) {
 		mapLogic.handleAction(action);
 	}
