@@ -31,7 +31,7 @@ public class PostgresConnectionHandler implements JDBCConnectionHandler {
         try {
             if (con != null && !con.isClosed())
                 con.close();
-            con = DriverManager.getConnection(url);
+            con = DriverManager.getConnection(url, _username, _password);
             con.setAutoCommit(false);
         } catch (Exception e) {
             e.printStackTrace();

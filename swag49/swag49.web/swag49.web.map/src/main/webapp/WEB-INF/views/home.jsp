@@ -7,6 +7,7 @@
 <head>
     <title>Map View</title>
     <LINK href="../../resources/css/style.css" rel="stylesheet" type="text/css">
+    <LINK href="${resourcePath}/css/ui-darkness/jquery-ui-1.8.13.custom.css" rel="stylesheet" type="text/css">
     <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script> -->
     <script type="text/javascript" src="${resourcePath}/js/jquery-1.5.1.min.js"></script>
     <script type="text/javascript" src="${resourcePath}/js/jquery-ui-1.8.13.custom.min.js"></script>

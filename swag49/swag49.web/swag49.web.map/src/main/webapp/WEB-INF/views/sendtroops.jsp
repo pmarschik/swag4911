@@ -15,11 +15,7 @@
                 <c:forEach items="${troopsPerTile}" var="troop">
                     <tr>
                         <td>${troop.type.name}</td>
-                        <td>
-                            <jsp:include page="displaycosts.jsp">
-                                <jsp:param name="resourceValue" value="${troop.costs}"/>
-                            </jsp:include>
-                        </td>
+
                         <td><a href="TODO">Send</a></td>
                     </tr>
                 </c:forEach>
@@ -28,3 +24,8 @@
         </c:forEach>
     </div>
 </c:if>
+<script type="text/javascript">
+	$(function() {
+		$( "#accordion" ).accordion();
+	});
+</script>
