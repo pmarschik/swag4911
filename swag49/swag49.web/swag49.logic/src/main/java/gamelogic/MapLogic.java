@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
 import swag49.model.*;
 import swag49.model.Map;
+import swag49.transfer.model.MessageDTO;
 import swag49.util.Log;
 
 import java.util.*;
@@ -775,7 +776,7 @@ public class MapLogic {
     }
 
     private void sendMessage(Player sender, Player receiver, String subject, String content) {
-        MessageDTO message = new MessageDTO(subject, content, sender.getUserId(), null, receiver.getUserId(),
+        MessageDTO message = new MessageDTO(null, subject, content, sender.getUserId(), null, receiver.getUserId(),
                 null, new Date(), new Date(), sender.getPlays().getUrl());
 
         restTemplate.put("http://localhost:8080/messaging/send", message);

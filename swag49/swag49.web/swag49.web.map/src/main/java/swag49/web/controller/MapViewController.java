@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import swag49.dao.DataAccessObject;
 import swag49.model.*;
+import swag49.transfer.model.TileOverviewDTO;
+import swag49.transfer.model.TroopDTO;
 import swag49.util.Log;
-import swag49.web.model.TileOverviewDTO;
-import swag49.web.model.TroopDTO;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -110,9 +110,9 @@ public class MapViewController {
                 if (result != null && result.size() == 1) {
                     Tile tile = result.iterator().next();
 
-                    TileOverviewDTO dto = new TileOverviewDTO(tile);
+                    TileOverviewDTO dto = new TileOverviewDTO(tile.getId().getX(), tile.getId().getY());
 
-                    dto.setSpecialResource(tile.getSpecial());
+                    dto.setSpecialResource(swag49.transfer.model.ResourceType.values()[tile.getSpecial().ordinal()]);
 
                     // TODO: TOOLTIP Java Script???
 
@@ -192,13 +192,16 @@ public class MapViewController {
         ArrayList<TroopDTO> troopList = new ArrayList<TroopDTO>();
 
         for (Troop troop : tile.getTroops()) {
-            troopList.add(new TroopDTO(troop));
+            troopList.add(new TroopDTO(troop.getType().getName(), troop.getIsOfLevel().getLevel(),
+                    troop.getIsOfLevel().getStrength(), troop.getIsOfLevel().getDefense(),
+                    troop.getIsOfLevel().getSpeed(), troop.getIsOfLevel().getCargo_capacity(), troop.getId(),
+                    troop.getActive()));
         }
 
         model.addAttribute("troops", troopList);
 
         // tile info
-        TileOverviewDTO tileInfo = new TileOverviewDTO(tile);
+        TileOverviewDTO tileInfo = new TileOverviewDTO(tile.getId().getX(), tile.getId().getY());
 
         if (tile.getBase() != null)
             tileInfo.setHasBase(true);

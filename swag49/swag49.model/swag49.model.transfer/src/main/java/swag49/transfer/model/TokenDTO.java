@@ -1,4 +1,4 @@
-package swag49.web.model;
+package swag49.transfer.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

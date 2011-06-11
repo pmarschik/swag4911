@@ -1,32 +1,29 @@
 package swag49.web.model;
 
-import swag49.model.*;
+import swag49.model.Base;
+import swag49.model.Square;
+import swag49.transfer.model.TroopDTO;
 
 import java.util.Set;
 
 public class TileOverviewDTOFull {
-	private Integer x;
-	private Integer y;
-
+	private int x;
+	private int y;
 	private String info;
 	private String specialResource;
+    private long baseId;
+	private boolean enemyTerritory;
+    private Set<TroopDTO> troops;
+    private Base base;
+    private Set<Square> squares;
 
-    public Long getBaseId() {
+    public long getBaseId() {
         return baseId;
     }
 
-    public void setBaseId(Long baseId) {
+    public void setBaseId(long baseId) {
         this.baseId = baseId;
     }
-
-    private Long baseId;
-
-	private boolean enemyTerritory;
-
-    private Set<Troop> troops;
-    private Base base;
-
-    private Set<Square> squares;
 
     public Set<Square> getSquares() {
         return squares;
@@ -36,42 +33,32 @@ public class TileOverviewDTOFull {
         this.squares = squares;
     }
 
-
     public boolean isHasTroops() {
-        if(getTroops() != null)
-        {
-            if(!getTroops().isEmpty())
-            {
-                 return true;
-            }
-        }
-        return false;
+        return getTroops() != null && !getTroops().isEmpty();
     }
 
     public boolean isHasBase() {
-		if(getBase() != null)
-            return true;
-        return false;
+        return getBase() != null;
+    }
+
+    public TileOverviewDTOFull(int tileX, int tileY) {
+		this.x = tileX;
+		this.y = tileY;
 	}
 
-    public TileOverviewDTOFull(Tile tile) {
-		this.x = tile.getId().getX();
-		this.y = tile.getId().getY();
-	}
-
-	public Integer getX() {
+	public int getX() {
 		return x;
 	}
 
-	public void setX(Integer x) {
+	public void setX(int x) {
 		this.x = x;
 	}
 
-	public Integer getY() {
+	public int getY() {
 		return y;
 	}
 
-	public void setY(Integer y) {
+	public void setY(int y) {
 		this.y = y;
 	}
 
@@ -91,8 +78,6 @@ public class TileOverviewDTOFull {
 		return specialResource;
 	}
 
-
-
 	public boolean isEnemyTerritory() {
 		return enemyTerritory;
 	}
@@ -101,11 +86,11 @@ public class TileOverviewDTOFull {
 		this.enemyTerritory = enemyTerritory;
 	}
 
-    public Set<Troop> getTroops() {
+    public Set<TroopDTO> getTroops() {
         return troops;
     }
 
-    public void setTroops(Set<Troop> troops) {
+    public void setTroops(Set<TroopDTO> troops) {
         this.troops = troops;
     }
 

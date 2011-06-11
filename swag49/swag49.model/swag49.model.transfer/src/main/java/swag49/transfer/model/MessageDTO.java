@@ -1,4 +1,4 @@
-package swag49.web.model;
+package swag49.transfer.model;
 
 import com.google.common.base.Objects;
 
@@ -17,7 +17,8 @@ public class MessageDTO {
         @XmlAttribute(name = "id")
         private String id;
 
-        public UserDTO() {}
+        public UserDTO() {
+        }
 
         public UserDTO(@Nullable String username, String id) {
             this.username = username;
@@ -25,13 +26,31 @@ public class MessageDTO {
         }
 
         @Nullable
-        public String getUsername() { return username; }
+        public String getUsername() {
+            return username;
+        }
 
-        public void setUsername(@Nullable String username) { this.username = username; }
+        public void setUsername(@Nullable String username) {
+            this.username = username;
+        }
 
-        public String getId() { return id; }
+        public String getId() {
+            return id;
+        }
 
-        public void setId(String id) { this.id = id; }
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            UserDTO that = (UserDTO) o;
+
+            return Objects.equal(id, that.id) && Objects.equal(username, that.username);
+        }
 
         @Override
         public int hashCode() {
@@ -73,7 +92,8 @@ public class MessageDTO {
     @Nullable
     private Date received;
 
-    public MessageDTO() { }
+    public MessageDTO() {
+    }
 
     public MessageDTO(@Nullable Long id, String subject, String content, String senderId, @Nullable String senderUsername,
                       String receiverId, @Nullable String receiverUsername, Date sent, @Nullable Date received,

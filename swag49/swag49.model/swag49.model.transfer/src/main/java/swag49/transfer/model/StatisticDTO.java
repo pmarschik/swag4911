@@ -1,6 +1,5 @@
-package swag49.web.model;
+package swag49.transfer.model;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
 
 import javax.xml.bind.annotation.*;
@@ -11,18 +10,18 @@ import java.util.Set;
 public class StatisticDTO {
 
     @XmlAttribute(name = "id")
-    private Long id;
+    private long id;
 
     @XmlElement(name = "name")
     private String name;
 
     private Set<StatisticEntryDTO> entries = Sets.newLinkedHashSet();
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
