@@ -33,6 +33,14 @@
         </property>
     </bean>
 
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+        <property name="messageConverters">
+            <list>
+                <ref bean="marshallingHttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+
     <import resource="db.xml"/>
     <import resource="quartz.xml"/>
 
