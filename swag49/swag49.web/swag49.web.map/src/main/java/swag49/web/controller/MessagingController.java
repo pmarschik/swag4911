@@ -153,7 +153,7 @@ public class MessagingController {
         Collections.sort(result, new Comparator<MessageDTO>() {
             @Override
             public int compare(MessageDTO o1, MessageDTO o2) {
-                return o1.getSent().compareTo(o2.getSent());
+                return -1 * o1.getSent().compareTo(o2.getSent());
             }
         });
 

@@ -46,7 +46,7 @@
     </tr>
     <c:forEach items="${myMapLocations}" var="mapLocation">
         <tr>
-        <form:form method="post" action="${mapLocation.url}${mapController}"
+        <form:form method="post" action="${mapLocation.url}${mapControllerAuthentication}"
                    commandName="tokenDTO">
             <td>${mapLocation.id}</td>
             <td>${mapLocation.url}</td>
