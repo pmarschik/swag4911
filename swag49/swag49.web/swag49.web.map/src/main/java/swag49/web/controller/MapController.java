@@ -351,6 +351,7 @@ public class MapController {
     public String getUpgradeTroops(@RequestParam(value = "troopId", defaultValue = "-1") long troopId,
                                    Model model) {
         player = playerDAO.get(player.getId());
+
         Troop troop = troopDAO.get(Long.valueOf(troopId));
         if (troop != null) {
             //get next Level
@@ -372,6 +373,7 @@ public class MapController {
             return ERROR;
         }
     }
+
 
     @RequestMapping(value = "/traintroops", method = RequestMethod.GET)
     @Transactional("swag49.map")
