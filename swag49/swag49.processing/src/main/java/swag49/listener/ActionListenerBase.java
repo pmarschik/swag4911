@@ -1,32 +1,45 @@
 package swag49.listener;
 
 import org.quartz.*;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import swag49.model.Action;
+import swag49.model.listener.ActionPersistenceEventListener;
+import swag49.util.Log;
 
-import javax.persistence.PostPersist;
-import javax.persistence.PostRemove;
 
-public abstract class ActionListenerBase {
+public abstract class ActionListenerBase<T extends Action> implements ActionPersistenceEventListener<T> {
+
+    @Log
+    private Logger logger;
 
     @Autowired
     private Scheduler scheduler;
 
     protected abstract Class<? extends Job> getJobClass();
 
-    @PostRemove
-    public void postRemove(Action action) throws SchedulerException {
-        scheduler.deleteJob(getJobId(action), getJobGroup(action));
+    public void postRemove(T action) {
+        try {
+            scheduler.deleteJob(getJobId(action), getJobGroup(action));
+        } catch (SchedulerException e) {
+            logger.error("Error while deleting job.", e);
+        }
     }
 
-    @PostPersist
-    public void postPersist(Action action) throws SchedulerException {
+    public void postPersist(T action) {
+        logger.info("Scheduling job for action {} of type {}", action.getId(), action.getClass().getSimpleName());
+
         JobDetail jobDetail = new JobDetail(getJobId(action), getJobGroup(action), getJobClass());
         jobDetail.getJobDataMap().put("actionId", action.getId());
 
         Trigger trigger = new SimpleTrigger(getJobId(action), getJobGroup(action), action.getEndDate());
 
-        scheduler.scheduleJob(jobDetail, trigger);
+        try {
+            scheduler.scheduleJob(jobDetail, trigger);
+        } catch (SchedulerException e) {
+            logger.error("Error while scheduling job.", e);
+        }
     }
 
     private String getJobId(Action action) {
