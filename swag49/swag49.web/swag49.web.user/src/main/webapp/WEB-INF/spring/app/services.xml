@@ -9,7 +9,7 @@
     <bean id="xmlMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="classesToBeBound">
             <array>
-                <value>swag49.web.model.TokenDTO</value>
+                <value>swag49.transfer.model.TokenDTO</value>
             </array>
         </property>
     </bean>
