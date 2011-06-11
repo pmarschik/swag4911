@@ -2,18 +2,35 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
-	<!-- Appenders -->
-	<appender name="console" class="org.apache.log4j.ConsoleAppender">
-		<param name="Target" value="System.out" />
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
-		</layout>
-	</appender>
+    <!-- Appenders -->
+    <appender name="console" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p: %c - %m%n"/>
+        </layout>
+    </appender>
 
-	<!-- Application Loggers -->
-	<logger name="swag49">
-		<level value="debug" />
-	</logger>
+    <appender name="asyncAppenderJDBC" class="org.apache.log4j.jdbcplus.JDBCAppender">
+        <param name="connector" value="swag49.util.PostgresConnectionHandler"/>
+        <param name="sqlhandler" value="swag49.util.SqlHandler"/>
+        <param name="Buffer" value="1"/>
+        <param name="BufferSize" value="128"/>
+        <param name="Commit" value="true"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%m"/>
+        </layout>
+    </appender>
+
+    <!-- Application Loggers -->
+    <logger name="swag49">
+        <level value="debug"/>
+        <appender-ref ref="asyncAppenderJDBC" />
+    </logger>
+
+    <logger name="db.swag49">
+        <level value="debug"/>
+        <appender-ref ref="asyncAppenderJDBC" />
+    </logger>
 
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">

@@ -25,6 +25,7 @@ import swag49.model.helper.ResourceValueHelper;
 import swag49.transfer.model.*;
 import swag49.util.Log;
 import swag49.web.model.TileOverviewDTOFull;
+import swag49.web.model.TroopsPerTileDTO;
 
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
