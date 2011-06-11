@@ -7,15 +7,10 @@ import com.google.common.collect.Sets;
 import gamelogic.MapLogic;
 import gamelogic.exceptions.NotEnoughMoneyException;
 import org.slf4j.Logger;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -41,7 +36,7 @@ import java.util.Map;
 @Controller
 @Scope(value = "session")
 @RequestMapping(value = "/map")
-public class MapController implements ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
+public class MapController {
 
     private static final String userManagement = "http://localhost:8080/user/swag";
     private static final String tokenService = "/token/";
@@ -55,7 +50,6 @@ public class MapController implements ApplicationListener<ContextRefreshedEvent>
     @Qualifier("mapDAO")
     private DataAccessObject<swag49.model.Map, Long> mapDAO;
 
-
     @Autowired
     @Qualifier("troopActionDAO")
     private DataAccessObject<TroopAction, Long> troopActionDAO;
@@ -68,7 +62,6 @@ public class MapController implements ApplicationListener<ContextRefreshedEvent>
     @Autowired
     @Qualifier("troopUpgradeActionDAO")
     private DataAccessObject<TroopUpgradeAction, Long> troopUpgradeActionDAO;
-
 
     @Autowired
     @Qualifier("playerDAO")
@@ -112,7 +105,6 @@ public class MapController implements ApplicationListener<ContextRefreshedEvent>
     @Qualifier("buildingDAO")
     private DataAccessObject<Building, Square.Id> buildingDAO;
 
-
     @Autowired
     private RestTemplate restTemplate;
 
@@ -128,10 +120,13 @@ public class MapController implements ApplicationListener<ContextRefreshedEvent>
     private static final String NOTENOUGHRESOURCES = "notenoughmoney";
     private static final String ERROR = "error";
 
+    //TODO: GET MAP AND PLAYER
+    private swag49.model.Map map;
+    private Player player;
 
+    @PostConstruct
     @Transactional("swag49.map")
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
+    public void init() {
         swag49.model.Map example = new swag49.model.Map();
         example.setUrl(nodeContext.getMapNodeUrl());
         logger.error("Map url {}", nodeContext.getMapNodeUrl());
@@ -144,23 +139,6 @@ public class MapController implements ApplicationListener<ContextRefreshedEvent>
             logger.error("Error while finding map");
         }
     }
-
-
-    private AbstractApplicationContext applicationContext;
-
-    @PostConstruct
-    public void init() {
-        applicationContext.addApplicationListener(this);
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = (AbstractApplicationContext) applicationContext;
-    }
-
-    //TODO: GET MAP AND PLAYER
-    private swag49.model.Map map;
-    private Player player;
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     @Transactional("swag49.map")
