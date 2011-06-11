@@ -56,15 +56,6 @@ public class MapHelper implements ApplicationListener<ContextRefreshedEvent>, Ap
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         dbLog.warn("TEST DB LOG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        dbLog.warn("TEST DB LOG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        dbLog.warn("TEST DB LOG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        dbLog.warn("TEST DB LOG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        dbLog.warn("TEST DB LOG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        dbLog.warn("TEST DB LOG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        dbLog.warn("TEST DB LOG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        dbLog.warn("TEST DB LOG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        dbLog.warn("TEST DB LOG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        dbLog.warn("TEST DB LOG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
         try {
             //create map

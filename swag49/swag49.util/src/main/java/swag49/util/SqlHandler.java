@@ -6,7 +6,8 @@ import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
-import java.sql.Date;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 /**
  * Custom JDBC SQLHandler to handle statement creation for log statements
@@ -18,6 +19,7 @@ import java.sql.Date;
 public class SqlHandler implements JDBCSqlHandler {
 
     private final int MAX_LENGTH_MESSAGE = 3000;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * return database SQL statement to log logging event
@@ -48,7 +50,7 @@ public class SqlHandler implements JDBCSqlHandler {
 
         statement = "INSERT INTO LOG_LOG4J (LOGDate, Logger, Priority, "
                 + "Loc_ClassName, Loc_MethodName, Loc_FileName, Loc_LineNumber, Msg, Throwable) VALUES ( ";
-        statement = statement + "'" /* Log4j 1.2.8 */ + new Date(event.timeStamp)
+        statement = statement + "'" /* Log4j 1.2.8 */ + dateFormat.format(new Date(event.timeStamp))
                 + "', '" + event.getLoggerName()
                 + "', '" + event.getLevel().toString() + "', " + locinfoString + ", '"
                 + this.replaceProblematicChars(
