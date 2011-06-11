@@ -8,13 +8,32 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TroopsPerTileDTO {
-    public HashMap<Tile.Id, ArrayList<Troop>> getTroopsPerTile() {
-        return troopsPerTile;
+    int x;
+
+    public int getX() {
+        return x;
     }
 
-    public void setTroopsPerTile(HashMap<Tile.Id, ArrayList<Troop>> troopsPerTile) {
-        this.troopsPerTile = troopsPerTile;
+    public void setX(int x) {
+        this.x = x;
     }
 
-    private HashMap<Tile.Id, ArrayList<Troop>> troopsPerTile = Maps.newHashMap();
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    int y;
+    public ArrayList<TileDTO> getTileList() {
+        return tileList;
+    }
+
+    public void setTileList(ArrayList<TileDTO> tileList) {
+        this.tileList = tileList;
+    }
+
+    ArrayList<TileDTO> tileList = new ArrayList<TileDTO>();
 }

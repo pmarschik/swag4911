@@ -13,6 +13,11 @@
     <script type="text/javascript" src="${resourcePath}/js/jquery-ui-1.8.13.custom.min.js"></script>
 </head>
 <body>
+<c:if test="${userID == null}">
+    <h1>Welcome to SWAG</h1>
+    <p>You have to login first. <a href="${userNode}">Login</a></p>
+</c:if>
+<c:if test="${userID != null}">
 <div id="header">
     <div id="playerResources">
 
@@ -34,15 +39,20 @@
             </tr>
         </table>
     </div>
-    <%--<a id="resourceRefresh" href="playerresources.html">Refresh</a>--%>
+        <%--<a id="resourceRefresh" href="playerresources.html">Refresh</a>--%>
 </div>
 <div id="subContent">
 <div id="menu">Menu:<br/>
     <ul>
         <li><a class="contentLink" href="mapoverview.html">Map Overview</a></li>
-        <li><a id="messagingLink" class="contentLink" href="messaging.html">Messaging</a><div style="display:inline" id="unreadMessages"></div></li>
+        <li><a id="messagingLink" class="contentLink" href="messaging.html">Messaging</a>
+
+            <div style="display:inline" id="unreadMessages"></div>
+        </li>
         <li><a class="contentLink" href="actions.html">Actions</a></li>
         <li><a class="contentLink" href="../statistics/">Statistics</a></li>
+
+        <li><a href="logoutPlayer.html">Logout Player</a></li>
     </ul>
 
 </div>
@@ -283,5 +293,6 @@
                 $('#unreadMessages').load('../messaging/newMessages.html');
             }, 3000);
 </script>
+</c:if>
 </body>
 </html>
