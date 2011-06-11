@@ -37,6 +37,8 @@ public abstract class ActionListenerBase<T extends Action> implements ActionPers
 
         try {
             scheduler.scheduleJob(jobDetail, trigger);
+        } catch(ObjectAlreadyExistsException e) {
+            logger.info("Job is already existing.", e);
         } catch (SchedulerException e) {
             logger.error("Error while scheduling job.", e);
         }

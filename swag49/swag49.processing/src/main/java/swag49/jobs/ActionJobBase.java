@@ -11,10 +11,13 @@ import swag49.model.Action;
 
 public abstract class ActionJobBase<T extends Action> implements Job {
 
-    @Autowired
     protected MapLogic mapLogic;
 
-	public void execute(JobExecutionContext context)
+    public void setMapLogic(MapLogic mapLogic) {
+        this.mapLogic = mapLogic;
+    }
+
+    public void execute(JobExecutionContext context)
 			throws JobExecutionException {
 		Long actionId = context.getJobDetail().getJobDataMap().getLong(
 				"actionId");

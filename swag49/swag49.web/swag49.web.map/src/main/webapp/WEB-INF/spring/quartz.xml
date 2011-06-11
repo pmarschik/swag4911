@@ -15,86 +15,11 @@
         <property name="placeholderSuffix" value="}"/>
     </bean>
 
-    <bean name="mostBasesJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass" value="swag49.statistics.StatisticCalculatorJobBean"/>
-        <property name="jobDataAsMap">
-            <map>
-                <entry key="calculatorId" value="mostBasesCalculator"/>
-            </map>
-        </property>
-    </bean>
-
-    <bean name="mostResourcesJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass" value="swag49.statistics.StatisticCalculatorJobBean"/>
-        <property name="jobDataAsMap">
-            <map>
-                <entry key="calculatorId" value="mostResourcesCalculator"/>
-            </map>
-        </property>
-    </bean>
-
-    <bean name="mostTroopsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass" value="swag49.statistics.StatisticCalculatorJobBean"/>
-        <property name="jobDataAsMap">
-            <map>
-                <entry key="calculatorId" value="mostTroopsCalculator"/>
-            </map>
-        </property>
-    </bean>
-
-    <bean name="periodicResourceUpdateJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass" value="swag49.gamelogic.PeriodicResourceUpdateJobBean"/>
-    </bean>
-
-    <bean id="mostBasesTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-        <property name="jobDetail" ref="mostBasesJob"/>
-        <property name="startDelay" value="1000"/>
-        <!-- repeat every 60 seconds -->
-        <property name="repeatInterval" value="60000"/>
-    </bean>
-
-    <bean id="mostResourcesTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-        <property name="jobDetail" ref="mostResourcesJob"/>
-        <property name="startDelay" value="2000"/>
-        <!-- repeat every 60 seconds -->
-        <property name="repeatInterval" value="60000"/>
-    </bean>
-
-    <bean id="mostTroopsTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-        <property name="jobDetail" ref="mostTroopsJob"/>
-        <property name="startDelay" value="3000"/>
-        <!-- repeat every 60 seconds -->
-        <property name="repeatInterval" value="60000"/>
-    </bean>
-
-    <bean id="resourceUpdateTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-        <property name="jobDetail" ref="periodicResourceUpdateJob"/>
-        <property name="startDelay" value="1000"/>
-        <!-- repeat every 60 seconds -->
-        <property name="repeatInterval" value="60000"/>
-    </bean>
-
     <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-        <property name="applicationContextSchedulerContextKey">
-            <value>applicationContext</value>
-        </property>
         <property name="dataSource">
             <ref bean="dataSource"/>
         </property>
         <property name="configLocation" value="classpath:quartz.properties"/>
-        <property name="autoStartup" value="true"/>
-        <property name="triggers">
-            <list>
-                <ref bean="mostBasesTrigger"/>
-                <ref bean="mostResourcesTrigger"/>
-                <ref bean="mostTroopsTrigger"/>
-                <ref bean="resourceUpdateTrigger"/>
-            </list>
-        </property>
-     <!--   <property name="schedulerContextAsMap">
-            <map>
-                <entry key="playerDAO" value-ref="playerDAO"/>
-            </map>
-        </property>  -->
+        <property name="autoStartup" value="false"/>
     </bean>
 </beans>

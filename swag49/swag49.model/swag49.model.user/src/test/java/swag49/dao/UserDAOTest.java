@@ -15,7 +15,7 @@ import java.util.Date;
 public class UserDAOTest {
     // must use interface, qualifier is optional, use only if several beans that match interface
     @Autowired @Qualifier("userDAO")
-    private DataAccessObject<User, Long> userDAO;
+    private DataAccessObject<User, String> userDAO;
 
     @Test
     public void create_shouldCreate() throws Exception {

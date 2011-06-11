@@ -34,5 +34,6 @@
     </bean>
 
     <import resource="db.xml"/>
+    <import resource="quartz.xml"/>
 
 </beans>
