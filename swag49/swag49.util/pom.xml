@@ -40,7 +40,7 @@
                     <artifactId>jmxri</artifactId>
                 </exclusion>
             </exclusions>
-            <scope>build</scope>
+            <scope>compile</scope>
         </dependency>
 
         <!-- Spring Dependencies -->
