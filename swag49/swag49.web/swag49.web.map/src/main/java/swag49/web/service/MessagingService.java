@@ -3,7 +3,6 @@ package swag49.web.service;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +11,6 @@ import swag49.model.Player;
 import swag49.util.Log;
 import swag49.web.InternalMessageStore;
 import swag49.web.model.MessageDTO;
-import swag49.web.model.MessageQueryResponse;
 import swag49.web.model.PlayerDTO;
 
 import java.util.Collection;
@@ -32,7 +30,7 @@ public class MessagingService {
 
     @RequestMapping(value = "/messaging/user/{userId}", method = RequestMethod.GET)
     @ResponseBody
-    @Transactional
+    @Transactional("swag49.map")
     public PlayerDTO getUser(@PathVariable("userId") String userId) {
         Player playerExample = new Player();
         //noinspection NullableProblems
@@ -58,15 +56,5 @@ public class MessagingService {
 
         messageStore.addReceivedMessage(message.getReceiver().getId(), message);
     }
-
-    @RequestMapping(value = "/messaging/list", method = RequestMethod.PUT)
-    @ResponseBody
-    public void listMessages(@RequestBody MessageQueryResponse messageQueryResponse) {
-        log.info("received {} messages", messageQueryResponse.getMessages().size());
-
-        messageStore.addMessageList(messageQueryResponse.getMessageQuery().getUserId(),
-                messageQueryResponse.getMessages());
-    }
-
 
 }

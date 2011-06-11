@@ -14,7 +14,6 @@ import swag49.dao.DataAccessObject;
 import swag49.model.*;
 import swag49.util.Log;
 import swag49.web.model.TileOverviewDTO;
-import swag49.web.model.TileOverviewDTOFull;
 import swag49.web.model.TroopDTO;
 
 import javax.annotation.PostConstruct;
@@ -47,7 +46,7 @@ public class MapViewController {
     private Map map;
 
     @PostConstruct
-    @Transactional
+    @Transactional("swag49.map")
     public void init() {
         swag49.model.Map example = new swag49.model.Map();
         example.setUrl(nodeController.getMapNodeUrl());
@@ -62,7 +61,7 @@ public class MapViewController {
 
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    @Transactional
+    @Transactional("swag49.map")
     public String getMapOverview(@RequestParam(value = "xLow", defaultValue = "-1") int x_low,
                                  @RequestParam(value = "yLow", defaultValue = "-1") int y_low,
                                  @RequestParam(value = "xHigh", defaultValue = "-1") int x_high,

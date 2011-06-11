@@ -1,59 +1,25 @@
 package swag49.messaging.dao;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import swag49.dao.DataAccessObject;
+import swag49.dao.AbstractDataAccessObject;
 import swag49.messaging.model.Message;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 
-@Repository(value = "messageDAO")
-public class MessageDAO implements DataAccessObject<Message, Long> {
-
+@Repository("messageDAO")
+@Transactional("swag49.messaging")
+public class MessageDAO extends AbstractDataAccessObject<Message, Long> {
     @PersistenceContext(unitName = "swag49.messaging")
     private EntityManager em;
 
-    @Transactional("swag49.messaging")
-    public boolean contains(Message message) {
-        return em.contains(message);
+    public MessageDAO() {
+        super(Message.class);
     }
 
-    @Transactional("swag49.messaging")
-    public Message create(Message message) {
-        return em.merge(message);
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
     }
-
-    @Transactional("swag49.messaging")
-    public void delete(Message message) {
-        message = em.merge(message);
-        em.remove(message);
-    }
-
-    @Transactional("swag49.messaging")
-    public Message get(Long id) {
-        return em.find(Message.class, id);
-    }
-
-    @Transactional("swag49.messaging")
-    @SuppressWarnings("unchecked")
-    public List<Message> queryByExample(Message model) {
-        Session session = (Session) em.getDelegate();
-        Criteria criteria = session.createCriteria(Message.class);
-
-        if (model != null)
-            criteria.add(Example.create(model));
-
-        return criteria.list();
-    }
-
-    @Transactional("swag49.messaging")
-    public Message update(Message message) {
-        return em.merge(message);
-    }
-
 }

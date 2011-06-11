@@ -1,20 +1,14 @@
 package swag49.gamelogic;
 
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.SchedulerContext;
-import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import swag49.dao.DataAccessObject;
 import swag49.model.Player;
 import swag49.model.ResourceValue;
-import swag49.statistics.StatisticCalculator;
+import swag49.model.helper.ResourceValueHelper;
 import swag49.util.Log;
 
 import javax.persistence.EntityManager;
@@ -49,9 +43,9 @@ public class PeriodicResourceUpdateLogic  {
             ResourceValue resources = player.getResources();
 
             // add income
-            resources.add(player.getIncome());
+            ResourceValueHelper.add(resources,player.getIncome() );
 
-            resources.remove(player.getUpkeep());
+             ResourceValueHelper.remove(resources,player.getUpkeep() );
 
             // set minimal amount to zero
             resources.setAmount_gold(Math.max(0, resources.getAmount_gold()));

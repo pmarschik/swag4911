@@ -64,14 +64,17 @@ public class UserController {
             return "register";
 
         User user = new User();
-        user.setUsername(userDTO.getUsername());
         Collection<User> users = userDAO.queryByExample(user);
 
         // check if username already exists
-        if (users != null && users.size() > 0) {
-            map.put("registerError", "User with username: " +
-                    userDTO.getUsername() + " is already registered!");
-            return "register";
+        if (users != null) {
+            for (User u : users) {
+                if (u.getUsername().equals(userDTO.getUsername())) {
+                    map.put("registerError", "User with username: " +
+                            userDTO.getUsername() + " is already registered!");
+                    return "register";
+                }
+            }
         }
 
         // register user
@@ -124,14 +127,15 @@ public class UserController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Map<String, Object> map) {
-        if(loggedInUser != null)
+        if (loggedInUser != null)
             return "redirect:./";
-        
+
         map.put("user", new UserLoginDTO());
         return "login";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @Transactional("swag49.user")
     public String loginUser(@Valid @ModelAttribute("user")
                             UserLoginDTO userLoginDTO, BindingResult bingBindingResult, Map<String, Object> map) {
 
@@ -139,13 +143,16 @@ public class UserController {
             return "login";
 
         User template = new User();
-        template.setUsername(userLoginDTO.getUsername());
-        Collection<User> users = userDAO.queryByExample(template);
+        List<User> users = userDAO.queryByExample(template);
         User user = null;
 
-        if (users != null && users.size() > 0) {
-            Iterator<User> iterator = users.iterator();
-            user = iterator.next();
+        if (users != null) {
+            for(User u : users) {
+                if(u.getUsername().equals(userLoginDTO.getUsername())){
+                    user = u;
+                    break;
+                }
+            }
         }
 
         if (user == null) {

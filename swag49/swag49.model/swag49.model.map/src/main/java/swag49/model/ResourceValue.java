@@ -85,47 +85,5 @@ public class ResourceValue {
         this.amount_wood = amount_wood;
     }
 
-    public void remove(ResourceValue upkeepCosts) {
-        this.amount_crops -= upkeepCosts.amount_crops;
-        this.amount_stone -= upkeepCosts.amount_stone;
-        this.amount_wood -= upkeepCosts.amount_wood;
-        this.amount_gold -= upkeepCosts.amount_gold;
-    }
 
-    public void add(ResourceValue upkeepCosts) {
-        this.amount_crops += upkeepCosts.amount_crops;
-        this.amount_stone += upkeepCosts.amount_stone;
-        this.amount_wood += upkeepCosts.amount_wood;
-        this.amount_gold += upkeepCosts.amount_gold;
-    }
-
-    public boolean isZero() {
-        if (amount_crops > 0)
-            return false;
-
-        if (amount_stone > 0)
-            return false;
-
-        if (amount_wood > 0)
-            return false;
-
-        if (amount_gold > 0)
-            return false;
-
-        return true;
-    }
-
-
-    public boolean geq(ResourceValue value) {
-        if (this.amount_crops < value.getAmount_crops())
-            return false;
-        if (this.amount_gold < value.getAmount_gold())
-            return false;
-        if (this.amount_stone < value.getAmount_stone())
-            return false;
-        if (this.amount_wood < value.getAmount_wood())
-            return false;
-
-        return true;
-    }
 }

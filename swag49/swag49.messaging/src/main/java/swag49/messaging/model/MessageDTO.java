@@ -43,6 +43,16 @@ public class MessageDTO {
         }
 
         @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            UserDTO that = (UserDTO) o;
+
+            return Objects.equal(id, that.id) && Objects.equal(username, that.username);
+        }
+
+        @Override
         public int hashCode() {
             return Objects.hashCode(username, id);
         }

@@ -1,12 +1,20 @@
 package swag49.web;
 
+import org.slf4j.Logger;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import swag49.dao.DataAccessObject;
 import swag49.model.*;
+import swag49.util.Log;
 
 import javax.annotation.PostConstruct;
 
@@ -15,7 +23,10 @@ import javax.annotation.PostConstruct;
  */
 @Component
 @Scope(value = "singleton")
-public class DataHelper {
+public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
+
+    @Log
+    private Logger log;
 
     @Autowired
     @Qualifier("buildingTypeDAO")
@@ -33,12 +44,22 @@ public class DataHelper {
     @Qualifier("troopLevelDAO")
     private DataAccessObject<TroopLevel, TroopLevel.Id> troopLevelDAO;
 
+    private AbstractApplicationContext applicationContext;
 
     @PostConstruct
-    @Transactional
     public void init() {
-        try {
+        applicationContext.addApplicationListener(this);
+    }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = (AbstractApplicationContext) applicationContext;
+    }
+
+    @Transactional("swag49.map")
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        try {
             //buildings
             //GOLDMINE
             BuildingType goldMineType = new BuildingType();
@@ -430,9 +451,8 @@ public class DataHelper {
 
                 troopTypeDAO.update(samuraiType);
             }
-
         } catch (Exception e) {
-            // nothing to do
+            log.warn("failed generating map data", e);
         }
     }
 }

@@ -80,7 +80,7 @@
         <qualifier value="swag49.messaging"/>
     </bean>
 
-    <tx:annotation-driven transaction-manager="userTransactionManager"/>
+    <tx:annotation-driven/>
 
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
