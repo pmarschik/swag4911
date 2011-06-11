@@ -246,12 +246,39 @@ public class MapController {
     @RequestMapping(value = "/sendtroops", method = RequestMethod.GET)
     @Transactional
     public String getSendTroopsOverview(@RequestParam(value = "x", defaultValue = "-1") int x,
-                                  @RequestParam(value = "y", defaultValue = "-1") int y,
-                                  Model model)
-    {
+                                        @RequestParam(value = "y", defaultValue = "-1") int y,
+                                        Model model) {
+        //TODO: besser machen
+        player = playerDAO.get(player.getId());
+        map = mapDAO.get(map.getId());
+
+        Troop sampleTroop = new Troop();
+        sampleTroop.setOwner(player);
+        List<Troop> troops = troopDAO.queryByExample(sampleTroop);
+
+        HashMap<Tile.Id, ArrayList<Troop>> troopsPerTile = new HashMap();
+
+        for (Troop troop : troops) {
+            Tile tile = troop.getPosition();
+
+            if (troopsPerTile.containsKey(tile.getId())) {
+                ArrayList<Troop> tmpTroops = troopsPerTile.get(tile.getId());
+                tmpTroops.add(troop);
+                troopsPerTile.put(tile.getId(), tmpTroops);
+            } else {
+                ArrayList<Troop> tmpTroops = new ArrayList<Troop>();
+                tmpTroops.add(troop);
+                troopsPerTile.put(tile.getId(), tmpTroops);
+            }
+        }
+
+        TroopsPerTileDTO dto = new TroopsPerTileDTO();
+        dto.setTroopsPerTile(troopsPerTile);
+
+        model.addAttribute("troopsPerTile", dto);
+
         return "sendtroops";
     }
-
 
 
     @RequestMapping(value = "/tile", method = RequestMethod.GET)
@@ -299,7 +326,7 @@ public class MapController {
         }
 
         ResourceType specialResource = tile.getSpecial();
-        if(specialResource == null)
+        if (specialResource == null)
             specialResource = ResourceType.NONE;
         String specialResourceString = specialResource.toString();
         tileInfo.setSpecialResource(specialResourceString);
