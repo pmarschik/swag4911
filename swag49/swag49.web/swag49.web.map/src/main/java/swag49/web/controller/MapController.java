@@ -49,6 +49,21 @@ public class MapController {
     @Qualifier("mapDAO")
     private DataAccessObject<swag49.model.Map, Long> mapDAO;
 
+
+    @Autowired
+    @Qualifier("troopActionDAO")
+    private DataAccessObject<TroopAction, Long> troopActionDAO;
+
+
+    @Autowired
+    @Qualifier("buildActionDAO")
+    private DataAccessObject<BuildAction, Long> buildActionDAO;
+
+    @Autowired
+    @Qualifier("troopUpgradeActionDAO")
+    private DataAccessObject<TroopUpgradeAction, Long> troopUpgradeActionDAO;
+
+
     @Autowired
     @Qualifier("playerDAO")
     private DataAccessObject<Player, Long> playerDAO;
@@ -159,7 +174,7 @@ public class MapController {
 
             if (playerValues != null && playerValues.size() == 1) {
                 player = playerValues.iterator().next();
-                logger.error("Player " + player.getId() + " found");
+                logger.info("Player " + player.getId() + " found");
             } else if (playerValues != null && playerValues.size() == 0) {
                 // create new player & create start conditions ( map, resources, units, etc)
 
@@ -384,6 +399,7 @@ public class MapController {
             } catch (NotEnoughMoneyException e) {
                 return NOTENOUGHRESOURCES;
             } catch (Exception e) {
+                logger.error("Error during /buildingupgrade", e);
                 return ERROR;
             }
 
@@ -411,6 +427,7 @@ public class MapController {
             try {
                 mapLogic.upgradeTroop(player, troop, nextLevel);
             } catch (Exception e) {
+                logger.error("Error during /troopupgrade", e);
                 return ERROR;
             }
 
@@ -493,10 +510,93 @@ public class MapController {
         try {
             mapLogic.buildTroop(player, type, level, base.getLocatedOn(), 1);
         } catch (NotEnoughMoneyException e) {
+            logger.error("Error during train", e);
             return ERROR;
         }
 
-        return "TODO";
+        return "traintroops";
+    }
+
+    @RequestMapping(value = "/actions", method = RequestMethod.GET)
+    @Transactional("swag49.map")
+    public String getActionOverview(Model model) {
+        Date now = new Date();
+
+        player = playerDAO.get(player.getId());
+
+        //troop actions
+        TroopAction troopAction = new TroopAction();
+        troopAction.setPlayer(player);
+        List<TroopAction> troopActionsList = troopActionDAO.queryByExample(troopAction);
+
+        List<TroopActionDTO> troopActionDTOList = new ArrayList<TroopActionDTO>();
+
+        for (TroopAction action : troopActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopActionDTO dto = new TroopActionDTO();
+
+                dto.setDestionation(action.getSource().getId().getX(), action.getSource().getId().getX());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setStartDate(action.getStartDate());
+                dto.setEndDate(action.getEndDate());
+
+                troopActionDTOList.add(dto);
+            }
+        }
+
+
+        //troop upgrades
+        TroopUpgradeAction troopUpgradeAction = new TroopUpgradeAction();
+        troopUpgradeAction.setPlayer(player);
+        List<TroopUpgradeAction> troopUpgradeActionsList = troopUpgradeActionDAO.queryByExample(troopUpgradeAction);
+
+        List<TroopUpgradeActionDTO> troopUpgradeActionDTOList = new ArrayList<TroopUpgradeActionDTO>();
+
+        for (TroopUpgradeAction action : troopUpgradeActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopUpgradeActionDTO dto = new TroopUpgradeActionDTO();
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setAbortable(action.getIsAbortable());
+                dto.setTroopName(action.getTroop().getType().getName());
+                dto.setLevel(action.getTroopLevel().getLevel());
+
+
+                troopUpgradeActionDTOList.add(dto);
+            }
+        }
+
+        //buildings
+        BuildAction buildAction = new BuildAction();
+        buildAction.setPlayer(player);
+        List<BuildAction> buildActionList = buildActionDAO.queryByExample(buildAction);
+
+        List<BuildActionDTO> buildActionDTOList = new ArrayList<BuildActionDTO>();
+
+        for (BuildAction action : buildActionList) {
+            if (action.getEndDate().after(now)) {
+                BuildActionDTO dto = new BuildActionDTO();
+
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setBuildingName(action.getConcerns().getType().getName());
+                dto.setLevel(action.getConcerns().getIsOfLevel().getLevel() + 1);
+                dto.setSquareId(action.getConcerns().getSquare().getId().getPosition());
+                dto.setEndDate(action.getEndDate());
+
+                buildActionDTOList.add(dto);
+            }
+        }
+
+        model.addAttribute("troopActions", troopActionDTOList);
+
+        model.addAttribute("troopUpgradeActions", troopUpgradeActionDTOList);
+
+        model.addAttribute("baseActions", buildActionDTOList);
+
+
+        return "actions";
     }
 
     @RequestMapping(value = "/troopoverview", method = RequestMethod.GET)
@@ -566,6 +666,7 @@ public class MapController {
             try {
                 mapLogic.build(square, buildingType);
             } catch (Exception e) {
+                logger.error("Error during build", e);
                 return ERROR;
             }
 

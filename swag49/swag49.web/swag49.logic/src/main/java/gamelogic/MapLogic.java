@@ -251,7 +251,7 @@ public class MapLogic {
             BuildAction action = new BuildAction();
             action.setConcerns(constructionYard);
             action.setTarget(square.getBase().getLocatedOn());
-            action.setDuration(level.getUpgradeDuration());
+            action.setDuration(levelOne.getUpgradeDuration());
             action.setStartDate(new Date());
             action.setPlayer(square.getBase().getOwner());
             action.setIsAbortable(true);

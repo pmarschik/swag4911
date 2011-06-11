@@ -8,6 +8,7 @@
 </head>
 <body>
 <h1>[SWAG] Messaging</h1>
+<div id="message"></div>
 <c:if test="${user == null}">
     <h3>You have to register or login!</h3>
 </c:if>
