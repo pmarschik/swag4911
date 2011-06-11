@@ -5,8 +5,6 @@ import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,11 +14,7 @@ import swag49.transfer.model.MessageQueryDTO;
 import swag49.transfer.model.MessageQueryResponse;
 import swag49.web.InternalMessageStore;
 
-import javax.security.auth.Subject;
-import javax.validation.Valid;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author michael
@@ -143,8 +137,8 @@ public class MessagingController {
 
     @RequestMapping(value = "/send", method = RequestMethod.POST)
     public String handleSend(String username, String subject, String content) {
-         MessageDTO newMessage = new MessageDTO();
-         MessageDTO.UserDTO user= new MessageDTO.UserDTO(null, username);
+        MessageDTO newMessage = new MessageDTO();
+        MessageDTO.UserDTO user = new MessageDTO.UserDTO(null, username);
 
         newMessage.setReceiver(user);
         newMessage.setContent(content);
@@ -168,7 +162,15 @@ public class MessagingController {
             }
         }
 
-        return Lists.newArrayList(messages.values());
+        List<MessageDTO> messages = Lists.newArrayList(messages.values());
+        Collections.sort(messages, new Comparator<MessageDTO>() {
+            @Override
+            public int compare(MessageDTO o1, MessageDTO o2) {
+                return o1.getSent().compareTo(o2.getSent());
+            }
+        });
+
+        return messages;
     }
 
     public List<MessageDTO> getOutgoingMessages() {
@@ -183,7 +185,15 @@ public class MessagingController {
                 messages.put(message.getId(), message);
         }
 
-        return Lists.newArrayList(messages.values());
+        List<MessageDTO> messages = Lists.newArrayList(messages.values());
+        Collections.sort(messages, new Comparator<MessageDTO>() {
+            @Override
+            public int compare(MessageDTO o1, MessageDTO o2) {
+                return o1.getSent().compareTo(o2.getSent());
+            }
+        });
+
+        return messages;
     }
 
     public void sendMessage(MessageDTO message) {
