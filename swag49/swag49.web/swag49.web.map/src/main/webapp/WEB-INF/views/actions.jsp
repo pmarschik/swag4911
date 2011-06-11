@@ -91,7 +91,7 @@
                     <c:choose>
                         <c:when test="${action.isAbortable}">
                             <td><a href="cancelbuildaction.html?id=${action.id}"><img
-                                    src="<spring:theme code='theme.image.misc.cancel'/>"
+                                    src="${resourcesUrl}<spring:theme code='theme.image.misc.cancel'/>"
                                     alt="Cancel" height="30"> </a>
                             </td>
                         </c:when>
