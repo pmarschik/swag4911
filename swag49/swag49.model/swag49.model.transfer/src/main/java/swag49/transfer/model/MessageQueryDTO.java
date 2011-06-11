@@ -1,4 +1,4 @@
-package swag49.messaging.model;
+package swag49.transfer.model;
 
 import com.google.common.base.Objects;
 

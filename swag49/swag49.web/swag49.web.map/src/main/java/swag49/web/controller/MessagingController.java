@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
+import swag49.transfer.model.MessageDTO;
+import swag49.transfer.model.MessageQueryDTO;
+import swag49.transfer.model.MessageQueryResponse;
 import swag49.web.InternalMessageStore;
-import swag49.web.model.MessageDTO;
-import swag49.web.model.MessageQueryDTO;
-import swag49.web.model.MessageQueryResponse;
 
 import javax.security.auth.Subject;
 import javax.validation.Valid;

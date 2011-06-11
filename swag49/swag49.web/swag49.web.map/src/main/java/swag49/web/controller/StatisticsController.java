@@ -12,8 +12,8 @@ import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
 import swag49.model.Statistic;
 import swag49.model.StatisticEntry;
-import swag49.web.model.StatisticDTO;
-import swag49.web.model.StatisticEntryDTO;
+import swag49.transfer.model.StatisticDTO;
+import swag49.transfer.model.StatisticEntryDTO;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;

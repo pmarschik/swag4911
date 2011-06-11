@@ -6,7 +6,7 @@ for details see http://ehcache.org/documentation/hibernate.html
 -->
 
 <ehcache>
-    <cache name="swag49.messaging.model.MessageDTO"
+    <cache name="swag49.transfer.model.MessageDTO"
            maxElementsInMemory="1000"
            eternal="false"
            timeToIdleSeconds="300"

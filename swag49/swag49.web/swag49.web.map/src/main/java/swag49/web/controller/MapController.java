@@ -1,5 +1,8 @@
 package swag49.web.controller;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import gamelogic.MapLogic;
 import gamelogic.exceptions.NotEnoughMoneyException;
@@ -17,10 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
 import swag49.model.*;
+import swag49.model.ResourceType;
 import swag49.model.helper.ResourceValueHelper;
+import swag49.transfer.model.*;
 import swag49.util.Log;
-import swag49.web.model.*;
+import swag49.web.model.TileOverviewDTOFull;
 
+import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.Map;
@@ -259,7 +265,7 @@ public class MapController {
         sampleTroop.setOwner(player);
         List<Troop> troops = troopDAO.queryByExample(sampleTroop);
 
-        HashMap<Tile.Id, ArrayList<Troop>> troopsPerTile = new HashMap();
+        HashMap<Tile.Id, ArrayList<Troop>> troopsPerTile = Maps.newHashMap();
 
         for (Troop troop : troops) {
             Tile tile = troop.getPosition();
@@ -297,15 +303,26 @@ public class MapController {
 
         tile = tileDAO.get(tile.getId());
 
-        TileOverviewDTOFull tileInfo = new TileOverviewDTOFull(tile);
+        TileOverviewDTOFull tileInfo = new TileOverviewDTOFull(tile.getId().getX(), tile.getId().getY());
         tileInfo.setBase(tile.getBase());
-        tileInfo.setTroops(Sets.newHashSet(tile.getTroops()));
+        tileInfo.setTroops(Sets.<TroopDTO>newHashSet(Collections2.transform(tile.getTroops(),
+                new Function<Troop, TroopDTO>() {
+                    @Override
+                    public TroopDTO apply(@Nullable Troop input) {
+                        if (input == null) return null;
+
+                        return new TroopDTO(input.getType().getName(), input.getIsOfLevel().getLevel(),
+                                input.getIsOfLevel().getStrength(), input.getIsOfLevel().getDefense(),
+                                input.getIsOfLevel().getSpeed(), input.getIsOfLevel().getCargo_capacity(),
+                                input.getId(), input.getActive());
+                    }
+                })));
 
         if (tile.getBase() != null) {
 //            tileInfo.setHasBase(true);
 
             Base base = tile.getBase();
-            if (base.getOwner().getUserId() == player.getUserId()) {
+            if (base.getOwner().getUserId().equals(player.getUserId())) {
                 tileInfo.setEnemyTerritory(false);
                 tileInfo.setSquares(Sets.newHashSet(base.getConsistsOf()));
             } else {
@@ -380,7 +397,7 @@ public class MapController {
     public String getUpgradeTroops(@RequestParam(value = "troopId", defaultValue = "-1") long troopId,
                                    Model model) {
         player = playerDAO.get(player.getId());
-        Troop troop = troopDAO.get(Long.valueOf(troopId));
+        Troop troop = troopDAO.get(troopId);
         if (troop != null) {
             //get next Level
             TroopLevel.Id id = new TroopLevel.Id(troop.getIsOfLevel().getLevel(), troop.getType().getId());
@@ -420,12 +437,14 @@ public class MapController {
         List<TroopTypeDTO> troopTypeDTOList = new ArrayList<TroopTypeDTO>();
 
         for (TroopType type : troopTypes) {
-            TroopTypeDTO dto = new TroopTypeDTO(type);
+            TroopTypeDTO dto = new TroopTypeDTO(type.getName(), type.getCanFoundBase(), null, type.getId());
 
             ResourceValueDTO costs = null;
             for (TroopLevel level : type.getLevels()) {
                 if (level.getLevel() == 1) {
-                    costs = new ResourceValueDTO(level.getBuildCosts());
+                    costs = new ResourceValueDTO(level.getBuildCosts().getAmount_gold(),
+                            level.getBuildCosts().getAmount_wood(), level.getBuildCosts().getAmount_stone(),
+                            level.getBuildCosts().getAmount_crops());
                     break;
                 }
             }
@@ -495,7 +514,10 @@ public class MapController {
         ArrayList<TroopDTO> troops = new ArrayList<TroopDTO>();
 
         for (Troop troop : base.getLocatedOn().getTroops()) {
-            TroopDTO dto = new TroopDTO(troop);
+            TroopDTO dto = new TroopDTO(troop.getType().getName(), troop.getIsOfLevel().getLevel(),
+                    troop.getIsOfLevel().getStrength(), troop.getIsOfLevel().getDefense(),
+                    troop.getIsOfLevel().getSpeed(), troop.getIsOfLevel().getCargo_capacity(), troop.getId(),
+                    troop.getActive());
 
             //set upgrade
             //get current TroopTypeLevel
@@ -510,7 +532,9 @@ public class MapController {
                 dto.setCanUpgrade(false);
             else {
                 dto.setCanUpgrade(true);
-                dto.setUpgradeCost(new ResourceValueDTO(nextLevel.getBuildCosts()));
+                dto.setUpgradeCost(new ResourceValueDTO(nextLevel.getBuildCosts().getAmount_gold(),
+                        nextLevel.getBuildCosts().getAmount_wood(), nextLevel.getBuildCosts().getAmount_stone(),
+                        nextLevel.getBuildCosts().getAmount_crops()));
             }
 
             troops.add(dto);
@@ -564,7 +588,9 @@ public class MapController {
                 }
             }
 
-            buildingType.setCosts(costs);
+            buildingType.setCosts(
+                    new ResourceValueDTO(costs.getAmount_gold(), costs.getAmount_wood(), costs.getAmount_stone(),
+                            costs.getAmount_crops()));
             availableBuildings.add(buildingType);
         }
 
@@ -624,13 +650,13 @@ public class MapController {
         for (int y = y_low; y <= y_high; y++) {
             ArrayList<TileOverviewDTO> currentRow = new ArrayList<TileOverviewDTO>();
             for (int x = x_low; x <= x_high; x++) {
-                id.setX(Integer.valueOf(x));
-                id.setY(Integer.valueOf(y));
+                id.setX(x);
+                id.setY(y);
                 Tile tile = tileDAO.get(id);
                 if (tile != null) {
-                    TileOverviewDTO dto = new TileOverviewDTO(tile);
+                    TileOverviewDTO dto = new TileOverviewDTO(tile.getId().getX(), tile.getId().getY());
 
-                    dto.setSpecialResource(tile.getSpecial());
+                    dto.setSpecialResource(swag49.transfer.model.ResourceType.values()[tile.getSpecial().ordinal()]);
 
                     // TODO: TOOLTIP Java Script???
 
@@ -639,7 +665,7 @@ public class MapController {
 
                     // check if base
                     if (tile.getBase() != null) {
-                        if (tile.getBase().getOwner().getId() != player.getId()) {
+                        if (!tile.getBase().getOwner().getId().equals(player.getId())) {
                             sb.append("Enemy base owned by ");
                             sb.append(tile.getBase().getOwner());
                         } else {
@@ -696,7 +722,9 @@ public class MapController {
         //  model.addAttribute("amount_wood", player.getResources().getAmount_wood());
         //  model.addAttribute("amount_stone", player.getResources().getAmount_stone());
         //  model.addAttribute("amount_crops", player.getResources().getAmount_crops());
-        ResourceValueDTO resourceValue = new ResourceValueDTO(player.getResources());
+        ResourceValueDTO resourceValue =
+                new ResourceValueDTO(player.getResources().getAmount_gold(), player.getResources().getAmount_wood(),
+                        player.getResources().getAmount_stone(), player.getResources().getAmount_crops());
         model.addAttribute("tiles", displayedTiles);
         model.addAttribute("resources", resourceValue);
 
@@ -710,12 +738,9 @@ public class MapController {
                                  @RequestParam(value = "yLow", defaultValue = "-1") int y_low,
                                  @RequestParam(value = "xHigh", defaultValue = "-1") int x_high,
                                  @RequestParam(value = "yHigh", defaultValue = "-1") int y_high, Model model) {
-
-
         //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
-
 
         //default values
         if (x_low == x_high && y_low == y_high && y_low == x_low && x_low == -1) {
@@ -752,13 +777,13 @@ public class MapController {
         for (int y = y_low; y <= y_high; y++) {
             ArrayList<TileOverviewDTO> currentRow = new ArrayList<TileOverviewDTO>();
             for (int x = x_low; x <= x_high; x++) {
-                id.setX(Integer.valueOf(x));
-                id.setY(Integer.valueOf(y));
+                id.setX(x);
+                id.setY(y);
                 Tile tile = tileDAO.get(id);
                 if (tile != null) {
-                    TileOverviewDTO dto = new TileOverviewDTO(tile);
+                    TileOverviewDTO dto = new TileOverviewDTO(tile.getId().getX(), tile.getId().getY());
 
-                    dto.setSpecialResource(tile.getSpecial());
+                    dto.setSpecialResource(swag49.transfer.model.ResourceType.values()[tile.getSpecial().ordinal()]);
 
                     // TODO: TOOLTIP Java Script???
 
@@ -767,7 +792,7 @@ public class MapController {
 
                     // check if base
                     if (tile.getBase() != null) {
-                        if (tile.getBase().getOwner().getId() != player.getId()) {
+                        if (!tile.getBase().getOwner().getId().equals(player.getId())) {
                             sb.append("Enemy base owned by ");
                             sb.append(tile.getBase().getOwner());
                         } else {
@@ -841,13 +866,8 @@ public class MapController {
     }
 
     private boolean checkForEnemyTerritory(Tile tile) {
-        if (tile.getBase() != null && tile.getBase().getOwner() != player)
-            return true;
-        if (!tile.getTroops().isEmpty()
-                && tile.getTroops().iterator().next().getOwner() != player)
-            return true;
-
-        return false;
+        return tile.getBase() != null && tile.getBase().getOwner() != player ||
+                !tile.getTroops().isEmpty() && tile.getTroops().iterator().next().getOwner() != player;
     }
 
 

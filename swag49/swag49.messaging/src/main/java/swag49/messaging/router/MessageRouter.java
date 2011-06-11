@@ -8,7 +8,7 @@ import org.springframework.integration.annotation.Router;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import swag49.messaging.model.Message;
-import swag49.messaging.model.PlayerDTO;
+import swag49.transfer.model.PlayerDTO;
 import swag49.util.Log;
 
 @Component("messageRouter")

@@ -17,6 +17,7 @@
         <module>swag49.model.common</module>
         <module>swag49.model.map</module>
         <module>swag49.model.user</module>
+        <module>swag49.model.transfer</module>
     </modules>
 
     <dependencies>

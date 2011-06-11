@@ -1,4 +1,4 @@
-package swag49.web.model;
+package swag49.transfer.model;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
