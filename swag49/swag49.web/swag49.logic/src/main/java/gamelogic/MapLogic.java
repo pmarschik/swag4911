@@ -10,8 +10,8 @@ import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
 import swag49.model.*;
 import swag49.model.Map;
-import swag49.transfer.model.MessageDTO;
 import swag49.model.helper.ResourceValueHelper;
+import swag49.transfer.model.MessageDTO;
 import swag49.util.Log;
 
 import java.util.*;
@@ -279,6 +279,9 @@ public class MapLogic {
         if (!ResourceValueHelper.geq(player.getResources(), levelOne.getBuildCosts())) {
             throw new NotEnoughMoneyException();
         }
+
+        //reduce resources
+       // ResourceValueHelper.remove(player.getResources(), levelOne.getBuildCosts());
 
 
         // create BuildAction

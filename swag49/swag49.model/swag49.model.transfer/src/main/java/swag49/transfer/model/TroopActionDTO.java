@@ -15,6 +15,15 @@ public class TroopActionDTO {
     private boolean isAbortable;
     private Date startDate;
     private Date endDate;
+    private long id;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public int getDestination_x() {
         return destination_x;

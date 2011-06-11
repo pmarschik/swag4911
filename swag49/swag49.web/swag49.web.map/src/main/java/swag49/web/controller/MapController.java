@@ -208,6 +208,22 @@ public class MapController {
                 tile.getTroops().add(startUnit);
                 tileDAO.update(tile);
 
+                //create additional start units
+
+                startUnit = new Troop(type, level, tile, player);
+
+                startUnit = troopDAO.create(startUnit);
+
+                tile.getTroops().add(startUnit);
+
+                startUnit = troopDAO.create(startUnit);
+                tile.getTroops().add(startUnit);
+
+                startUnit = troopDAO.create(startUnit);
+                tile.getTroops().add(startUnit);
+
+                tileDAO.update(tile);
+
 
                 logger.info("Player " + player.getId() + " initialized");
             } else {
@@ -539,6 +555,7 @@ public class MapController {
                 dto.setIsAbortable(action.getIsAbortable());
                 dto.setStartDate(action.getStartDate());
                 dto.setEndDate(action.getEndDate());
+                dto.setId(action.getId());
 
                 troopActionDTOList.add(dto);
             }
@@ -560,7 +577,7 @@ public class MapController {
                 dto.setAbortable(action.getIsAbortable());
                 dto.setTroopName(action.getTroop().getType().getName());
                 dto.setLevel(action.getTroopLevel().getLevel());
-
+                dto.setId(action.getId());
 
                 troopUpgradeActionDTOList.add(dto);
             }
@@ -584,6 +601,7 @@ public class MapController {
                 dto.setLevel(action.getConcerns().getIsOfLevel().getLevel() + 1);
                 dto.setSquareId(action.getConcerns().getSquare().getId().getPosition());
                 dto.setEndDate(action.getEndDate());
+                dto.setId(action.getId());
 
                 buildActionDTOList.add(dto);
             }
