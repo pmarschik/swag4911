@@ -36,7 +36,9 @@ public class StatisticsController {
     @Transactional("swag49.map")
     public void init() {
         statistics = Maps.newHashMap();
-        for (Statistic statistic : statisticDAO.queryByExample(new Statistic())) {
+        Statistic statisticExample = new Statistic();
+        statisticExample.setEntries(null);
+        for (Statistic statistic : statisticDAO.queryByExample(statisticExample)) {
             StatisticDTO dto = new StatisticDTO();
             dto.setId(statistic.getId());
             dto.setName(statistic.getName());

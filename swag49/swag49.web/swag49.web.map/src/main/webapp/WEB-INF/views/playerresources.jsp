@@ -4,9 +4,9 @@
 <spring:url value="/resources" var="resourcePath"/>
 <table id="resourceTable">
     <tr>
-        <th><img src="${resourcePath}/images/misc/gold.jpg" alt="Gold"/></th>
-        <th><img src="${resourcePath}/images/misc/stone.jpg" alt="Stone"/></th>
-        <th><img src="${resourcePath}/images/misc/wood.jpg" alt="Wood"/></th>
+        <th><img src="${resourcePath}/images/misc/gold.png" alt="Gold"/></th>
+        <th><img src="${resourcePath}/images/misc/stone.png" alt="Stone"/></th>
+        <th><img src="${resourcePath}/images/misc/wood.png" alt="Wood"/></th>
         <th><img src="${resourcePath}/images/misc/crops.jpg" alt="Crops"/></th>
     </tr>
     <tr>

@@ -2,19 +2,14 @@ package swag49.web.controller;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import swag49.gamelogic.MapLogic;
-import swag49.gamelogic.exceptions.NotEnoughMoneyException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,24 +18,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
-import swag49.dao.TileDAO;
+import swag49.gamelogic.MapLogic;
+import swag49.gamelogic.exceptions.NotEnoughMoneyException;
 import swag49.model.*;
 import swag49.model.ResourceType;
 import swag49.model.helper.ResourceValueHelper;
 import swag49.transfer.model.*;
-import swag49.transfer.model.TroopDTO;
 import swag49.util.Log;
-import swag49.web.MapHelper;
-import swag49.web.model.*;
+import swag49.web.model.SendTroopDTO;
+import swag49.web.model.TileDTO;
+import swag49.web.model.TileOverviewDTOFull;
+import swag49.web.model.TroopsPerTileDTO;
 
 import javax.annotation.Nullable;
-import javax.annotation.PostConstruct;
-import javax.validation.Valid;
 import java.util.*;
 import java.util.Map;
 
 @Controller
-@Scope(value = "session")
+@Scope("session")
 @RequestMapping(value = "/map")
 public class MapController {
 
@@ -81,7 +76,6 @@ public class MapController {
     @Qualifier("buildingTypeDAO")
     private DataAccessObject<BuildingType, Long> buildingTypeDAO;
 
-
     @Autowired
     @Qualifier("buildingLevelDAO")
     private DataAccessObject<BuildingLevel, BuildingLevel.Id> buildingLevelDAO;
@@ -106,7 +100,6 @@ public class MapController {
     @Qualifier("troopDAO")
     private DataAccessObject<Troop, Long> troopDAO;
 
-
     @Autowired
     @Qualifier("buildingDAO")
     private DataAccessObject<Building, Square.Id> buildingDAO;
@@ -130,11 +123,12 @@ public class MapController {
     private swag49.model.Map map;
     private Player player;
 
-    @PostConstruct
+    //@PostConstruct
     @Transactional("swag49.map")
     public void init() {
         swag49.model.Map example = new swag49.model.Map();
         example.setUrl(nodeContext.getMapNodeUrl());
+        example.setConsistsOf(null);
         logger.error("Map url {}", nodeContext.getMapNodeUrl());
 
         Collection<swag49.model.Map> maps = mapDAO.queryByExample(example);
@@ -146,9 +140,16 @@ public class MapController {
         }
     }
 
+    @Transactional("swag49.map")
+    private void lazyInit() {
+        if (map == null)
+            init();
+    }
+
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     @Transactional("swag49.map")
     public String initPlayer(@ModelAttribute("tokenDTO") TokenDTO token) {
+        lazyInit();
         System.out.println("Got request with token: " + token);
 
         UUID userToken = token.getToken();
@@ -173,6 +174,9 @@ public class MapController {
             example.setPlays(map);
 
             example.setUserId(this.userID);
+            example.setActions(null);
+            example.setOwns(null);
+            example.setTroops(null);
             Collection<Player> playerValues = playerDAO.queryByExample(example);
 
             if (playerValues != null && playerValues.size() == 1) {
@@ -242,6 +246,8 @@ public class MapController {
 
     @Transactional("swag49.map")
     public String buildTest() {
+        lazyInit();
+
         try {
             logger.info("Start build Test");
             player = playerDAO.get(player.getId());
@@ -249,7 +255,6 @@ public class MapController {
 
             BuildingType goldMineType = new BuildingType();
             goldMineType.setName("Goldmine");
-
 
             goldMineType = buildingTypeDAO.queryByExample(goldMineType).get(0);
             Square emptySquare = null;
@@ -268,16 +273,27 @@ public class MapController {
 
         return "home";
     }
-    
+
+    @RequestMapping(value = "/")
+    public String handle(Map<String, Object> map) {
+        lazyInit();
+
+        map.put("userID", this.userID);
+
+        return "home";
+    }
+
     @RequestMapping(value = "/messaging", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String messaging() {
+        lazyInit();
         //buildTest();
         return "redirect:../messaging/";
     }
 
     @RequestMapping(value = "/statistics", method = RequestMethod.GET)
     public String statistics() {
+        lazyInit();
         return "redirect:../statistics/";
     }
 
@@ -286,6 +302,7 @@ public class MapController {
     public String getSendTroopsOverview(@RequestParam(value = "x", defaultValue = "-1") int x,
                                         @RequestParam(value = "y", defaultValue = "-1") int y,
                                         Model model) {
+        lazyInit();
         //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
@@ -348,7 +365,8 @@ public class MapController {
     }
 
     @RequestMapping(value = "/sendTroops", method = RequestMethod.POST)
-    public String handleSendTroops(@ModelAttribute("troopsPerTile") TroopsPerTileDTO troopsPerTile, BindingResult bingBindingResult,
+    public String handleSendTroops(@ModelAttribute("troopsPerTile") TroopsPerTileDTO troopsPerTile,
+                                   BindingResult bingBindingResult,
                                    Map<String, Object> modelMap) {
 
         //TODO: besser machen
@@ -363,10 +381,8 @@ public class MapController {
         Tile tile = tileDAO.get(new Tile.Id(map.getId(), troopsPerTile.getX(), troopsPerTile.getY()));
         HashSet<Troop> troopsToSend = new HashSet<Troop>();
 
-        for(TileDTO tileDto : troopsPerTile.getTileList())
-        {
-            for(SendTroopDTO sendTroopDto : tileDto.getTroops())
-            {
+        for (TileDTO tileDto : troopsPerTile.getTileList()) {
+            for (SendTroopDTO sendTroopDto : tileDto.getTroops()) {
                 Troop sendTroop = troopDAO.get(sendTroopDto.getId());
                 troopsToSend.add(sendTroop);
             }
@@ -384,8 +400,8 @@ public class MapController {
     @RequestMapping(value = "/tile", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String getTileOverview(@RequestParam(value = "x", defaultValue = "-1") int x,
-                                  @RequestParam(value = "y", defaultValue = "-1") int y,
-                                  Model model) {
+                                  @RequestParam(value = "y", defaultValue = "-1") int y, Model model) {
+        lazyInit();
         //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
@@ -466,6 +482,7 @@ public class MapController {
     public String getUpgradeBuilding(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
                                      @RequestParam(value = "position", defaultValue = "-1") int position,
                                      Model model) {
+        lazyInit();
         player = playerDAO.get(player.getId());
         Building building = buildingDAO.get(new Square.Id(baseId, position));
         if (building != null) {
@@ -488,6 +505,7 @@ public class MapController {
     @Transactional("swag49.map")
     public String getUpgradeTroops(@RequestParam(value = "troopId", defaultValue = "-1") long troopId,
                                    Model model) {
+        lazyInit();
         player = playerDAO.get(player.getId());
         Troop troop = troopDAO.get(troopId);
         if (troop != null) {
@@ -516,7 +534,7 @@ public class MapController {
     @Transactional("swag49.map")
     public String getTrainTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
                                         Model model) {
-
+        lazyInit();
         Base base = baseDAO.get(baseId);
         if (base == null || !base.getOwner().getId().equals(player.getId())) {
             return ERROR;
@@ -525,7 +543,9 @@ public class MapController {
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
 
-        List<TroopType> troopTypes = troopTypeDAO.queryByExample(new TroopType());
+        TroopType troopTypeExample = new TroopType();
+        troopTypeExample.setLevels(null);
+        List<TroopType> troopTypes = troopTypeDAO.queryByExample(troopTypeExample);
 
         List<TroopTypeDTO> troopTypeDTOList = new ArrayList<TroopTypeDTO>();
 
@@ -558,7 +578,7 @@ public class MapController {
     public String getTrainTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
                                         @RequestParam(value = "troopTypeId", defaultValue = "-1") long troopTypeId,
                                         Model model) {
-
+        lazyInit();
         Base base = baseDAO.get(baseId);
         if (base == null || !base.getOwner().getId().equals(player.getId())) {
             return ERROR;
@@ -595,6 +615,7 @@ public class MapController {
     @RequestMapping(value = "/actions", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String getActionOverview(Model model) {
+        lazyInit();
         Date now = new Date();
 
         player = playerDAO.get(player.getId());
@@ -678,8 +699,8 @@ public class MapController {
 
     @RequestMapping(value = "/troopoverview", method = RequestMethod.GET)
     @Transactional("swag49.map")
-    public String getTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
-                                   Model model) {
+    public String getTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId, Model model) {
+        lazyInit();
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
         Base base = baseDAO.get(baseId);
@@ -730,10 +751,13 @@ public class MapController {
                                @RequestParam(value = "position", defaultValue = "-1") int position,
                                @RequestParam(value = "buildingTypeId", defaultValue = "-1") long buildingTypeId,
                                Model model) {
+        lazyInit();
         //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
-        List<BuildingType> buildings = buildingTypeDAO.queryByExample(new BuildingType());
+        BuildingType buildingTypeExample = new BuildingType();
+        buildingTypeExample.setLevels(null);
+        List<BuildingType> buildings = buildingTypeDAO.queryByExample(buildingTypeExample);
 
         if (buildingTypeId != -1 && position != -1 && baseId != -1) {
             Base base = baseDAO.get(baseId);
@@ -788,10 +812,10 @@ public class MapController {
                               @RequestParam(value = "xHigh", defaultValue = "-1") int x_high,
                               @RequestParam(value = "yHigh", defaultValue = "-1") int y_high, Model model,
                               Map<String, Object> tempMap) {
-
+        lazyInit();
         tempMap.put("userID", this.userID);
 
-        if(userID == null) {
+        if (userID == null) {
             tempMap.put("userNode", nodeContext.getUserNodeUrl() + "/swag/user/");
             return "home";
         }
@@ -924,6 +948,7 @@ public class MapController {
                                  @RequestParam(value = "yLow", defaultValue = "-1") int y_low,
                                  @RequestParam(value = "xHigh", defaultValue = "-1") int x_high,
                                  @RequestParam(value = "yHigh", defaultValue = "-1") int y_high, Model model) {
+        lazyInit();
         //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
@@ -1038,7 +1063,12 @@ public class MapController {
     @RequestMapping(value = "/playerresources", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String getPlayerResources(Model model) {
+        lazyInit();
 
+        if (player == null) {
+            logger.info("no player yet set, not refreshing resources");
+            return null;
+        }
 
         //TODO: besser machen
         player = playerDAO.get(player.getId());
@@ -1066,8 +1096,8 @@ public class MapController {
         playerDAO.update(player);
 
         this.userID = null;
-        
-        return "redirect:"+ nodeContext.getUserNodeUrl() + "/swag/user/";
+
+        return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
     }
 
 

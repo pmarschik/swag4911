@@ -1,5 +1,6 @@
 package swag49.web;
 
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,8 @@ public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, A
 
     private AbstractApplicationContext applicationContext;
 
+    boolean initializerRunOnce = false;
+
     @PostConstruct
     public void init() {
         applicationContext.addApplicationListener(this);
@@ -59,6 +62,8 @@ public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, A
     @Transactional("swag49.map")
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        if (initializerRunOnce) return;
+
         try {
             //buildings
             //GOLDMINE
@@ -289,10 +294,11 @@ public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, A
             //MONEYBOY!!!!!!!!
             TroopType moneyBoyType = new TroopType();
             moneyBoyType.setName("MoneyBoy");
+            moneyBoyType.setLevels(null);
 
             if (troopTypeDAO.queryByExample(moneyBoyType).isEmpty()) {
                 moneyBoyType.setCanFoundBase(true);
-
+                moneyBoyType.setLevels(Sets.<TroopLevel>newHashSet());
 
                 moneyBoyType = troopTypeDAO.create(moneyBoyType);
 
@@ -313,8 +319,10 @@ public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, A
             //SWORDSMAN
             TroopType swordsmanType = new TroopType();
             swordsmanType.setName("Swordsman");
+            swordsmanType.setLevels(null);
             if (troopTypeDAO.queryByExample(swordsmanType).isEmpty()) {
                 swordsmanType.setCanFoundBase(false);
+                swordsmanType.setLevels(Sets.<TroopLevel>newHashSet());
 
                 swordsmanType = troopTypeDAO.create(swordsmanType);
 
@@ -360,9 +368,11 @@ public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, A
             //knight
             TroopType knightType = new TroopType();
             knightType.setName("Knight");
+            knightType.setLevels(null);
 
             if (troopTypeDAO.queryByExample(knightType).isEmpty()) {
                 knightType.setCanFoundBase(false);
+                knightType.setLevels(Sets.<TroopLevel>newHashSet());
 
                 knightType = troopTypeDAO.create(knightType);
 
@@ -408,8 +418,11 @@ public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, A
             //samurai
             TroopType samuraiType = new TroopType();
             samuraiType.setName("Samurai");
+            samuraiType.setLevels(null);
+
             if (troopTypeDAO.queryByExample(samuraiType).isEmpty()) {
                 samuraiType.setCanFoundBase(false);
+                samuraiType.setLevels(Sets.<TroopLevel>newHashSet());
 
                 samuraiType = troopTypeDAO.create(samuraiType);
 
@@ -451,6 +464,8 @@ public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, A
 
                 troopTypeDAO.update(samuraiType);
             }
+
+            initializerRunOnce = true;
         } catch (Exception e) {
             log.warn("failed generating map data", e);
         }

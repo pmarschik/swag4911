@@ -1,5 +1,6 @@
 package swag49.web;
 
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import swag49.util.DbLog;
 import swag49.util.Log;
 
 import javax.annotation.PostConstruct;
-import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
@@ -47,6 +47,8 @@ public class MapHelper implements ApplicationListener<ContextRefreshedEvent>, Ap
 
     private AbstractApplicationContext applicationContext;
 
+    boolean initializerRunOnce = false;
+
     @PostConstruct
     public void init() {
         applicationContext.addApplicationListener(this);
@@ -55,18 +57,22 @@ public class MapHelper implements ApplicationListener<ContextRefreshedEvent>, Ap
     @Transactional("swag49.map")
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        if(initializerRunOnce) return;
+
         dbLog.warn("TEST DB LOG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
         try {
             //create map
             Map map = new Map();
             map.setUrl("http://localhost:8080/map");
+            map.setConsistsOf(null);
 
             Random rnd = new Random(0);
 
             if (mapDAO.queryByExample(map).isEmpty()) {
                 map.setMaxUsers(100);
-                Set<Tile> tiles = new HashSet<Tile>();
+                map.setConsistsOf(Sets.<Tile>newHashSet());
+                Set<Tile> tiles = Sets.newHashSet();
                 map = mapDAO.create(map);
                 for (int i = 0; i < 50; i++) {
                     for (int j = 0; j < 50; j++) {
@@ -106,9 +112,11 @@ public class MapHelper implements ApplicationListener<ContextRefreshedEvent>, Ap
             //create map
             Map map = new Map();
             map.setUrl("http://localhost:8080/map1");
+            map.setConsistsOf(null);
             if (mapDAO.queryByExample(map).isEmpty()) {
+                map.setConsistsOf(Sets.<Tile>newHashSet());
                 map.setMaxUsers(100);
-                Set<Tile> tiles = new HashSet<Tile>();
+                Set<Tile> tiles = Sets.newHashSet();
                 map = mapDAO.create(map);
                 for (int i = 0; i < 50; i++) {
                     for (int j = 0; j < 50; j++) {
@@ -136,6 +144,8 @@ public class MapHelper implements ApplicationListener<ContextRefreshedEvent>, Ap
 
                 mapDAO.update(map);
             }
+
+            initializerRunOnce = true;
         } catch (Exception e) {
             log.warn("error when creating map", e);
         }

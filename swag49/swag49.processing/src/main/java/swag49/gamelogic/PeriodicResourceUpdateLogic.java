@@ -35,7 +35,11 @@ public class PeriodicResourceUpdateLogic  {
     public void updateResources() {
         logger.info("Start updating resources");
         //TODO null oder empty Player??
-        Collection<Player> players = playerDAO.queryByExample(new Player());
+        Player examplePlayer = new Player();
+        examplePlayer.setOwns(null);
+        examplePlayer.setTroops(null);
+        examplePlayer.setActions(null);
+        Collection<Player> players = playerDAO.queryByExample(examplePlayer);
 
         for (Player player : players) {
 

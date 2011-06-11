@@ -2,6 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
+<spring:url value="/resources" var="resourcesUrl"/>
+
 <h2>Troop Movements</h2>
 <c:choose>
     <c:when test="${movementActions != null && fn:length(movementActions)>0 }">
@@ -19,7 +21,7 @@
                     <c:choose>
                         <c:when test="${action.isAbortable}">
                             <td><a href="canceltroopaction.html?id=${action.id}"><img
-                                    src="<spring:theme code='theme.image.misc.cancel'/>"
+                                    src="${resourcesUrl}<spring:theme code='theme.image.misc.cancel'/>"
                                     alt="Cancel" height="30"> </a>
                             </td>
                         </c:when>
@@ -53,7 +55,7 @@
                     <c:choose>
                         <c:when test="${action.isAbortable}">
                             <td><a href="canceltroopupgradeaction.html?id=${action.id}"><img
-                                    src="<spring:theme code='theme.image.misc.cancel'/>"
+                                    src="${resourcesUrl}<spring:theme code='theme.image.misc.cancel'/>"
                                     alt="Cancel" height="30"> </a>
                             </td>
                         </c:when>

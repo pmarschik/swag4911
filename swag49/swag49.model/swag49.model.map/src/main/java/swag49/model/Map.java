@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Map {
+public class  Map {
 	@Id
 	@GeneratedValue
 	private Long id;

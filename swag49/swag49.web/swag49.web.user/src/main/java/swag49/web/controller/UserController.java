@@ -71,6 +71,8 @@ public class UserController {
             return "register";
 
         User user = new User();
+        user.setMapLocations(null);
+        user.setUsername(userDTO.getUsername());
         Collection<User> users = userDAO.queryByExample(user);
 
         // check if username already exists
@@ -185,6 +187,8 @@ public class UserController {
             return "login";
 
         User template = new User();
+        template.setMapLocations(null);
+        template.setUsername(userLoginDTO.getUsername());
         List<User> users = userDAO.queryByExample(template);
         User user = null;
 

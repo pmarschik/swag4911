@@ -15,4 +15,6 @@ public interface DataAccessObject<T, PK> {
 	public List<T> queryByExample(T model);
 
 	public T update(T model);
+
+    public void detach(T model);
 }
