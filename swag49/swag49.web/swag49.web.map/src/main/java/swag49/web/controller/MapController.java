@@ -269,7 +269,7 @@ public class MapController {
     }
 
     @RequestMapping(value = "/sendtroops", method = RequestMethod.GET)
-    @Transactional
+    @Transactional("swag49.map")
     public String getSendTroopsOverview(@RequestParam(value = "x", defaultValue = "-1") int x,
                                         @RequestParam(value = "y", defaultValue = "-1") int y,
                                         Model model) {
