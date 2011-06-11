@@ -33,6 +33,10 @@
         <property name="url" value="${db.url}"/>
         <property name="username" value="${db.username}"/>
         <property name="password" value="${db.password}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="1800000"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="false"/>
+        <property name="minEvictableIdleTimeMillis" value="1800000"/>
     </bean>
 
     <bean id="userTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
