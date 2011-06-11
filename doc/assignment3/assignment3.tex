@@ -123,24 +123,33 @@
 
 \subsection{(Entity) Class Diagram}
 
-The class diagram (see Figure \ref{fig:class}) describes the basic domain model. The facts were assumed:
+The entities of the system are distributed over three different persistence units. 
 
-\begin{itemize}
-\item The maps are created by the system and not the users.
-\item Maps consist of tiles. Each tile can have a base which consists of 32 squares
-\item Upgrading buildings and sending troops takes some time
-\item Creating troops and running buildings may cost some resources.
-\end{itemize}
+\begin{description}
+\item[Map domain (see Figure \ref{fig:map_cd})]
+	The map domain describes all the classes that are needed to play on a specific map. 
+\item[Message domain (see Figure \ref{fig:message_cd})]
+	The message domain consists of all classes that are persisted due to messaging.
+\item[User domain (see Figure \ref{fig:user_cd})]
+	The user domain consists of all classes that are persisted by the user management component.
+\end{description}
 
-The User embeds adddress information and stores the difference to UTC to ensure messages are sent in right order. All other dates are stored in UTC. Troop and TroopGroup uses the Composite Object Pattern. A Building can either be a ResourceBuilding (for mining resources) or a NormalBuilding. Every Action performed by a certain user is stored in the database.
+%\begin{itemize}
+%\item The maps are created by the system and not the users.
+%\item Maps consist of tiles. Each tile can have a base which consists of 32 squares
+%\item Upgrading buildings and sending troops takes some time
+%\item Creating troops and running buildings may cost some resources.
+%\end{itemize}
+%
+%The User embeds adddress information and stores the difference to UTC to ensure messages are sent in right order. All other dates are stored in UTC. Troop and TroopGroup uses the Composite Object Pattern. A Building can either be a ResourceBuilding (for mining resources) or a NormalBuilding. Every Action performed by a certain user is stored in the database.
 
 \subsection{Component Diagram}
 
-The component diagram (see Figure \ref{fig:component}) illustrates the interaction between the components. The web  interface is the only component located in the presentation layer. The Map Controller is the core component and offers interfaces for browsing, troop management, building management and resource management. Itself depends on Persistence and the Notification Controller. The User Management Component offers interfaces for registration/deletion of accounts and session management. The Statistics component offers functionality about the ranking of players and so on. Finally the Storage component is used to store and retrieve data from the database. The Cache component offers the same interface as the Storage component, since it should be transparent for the client wether or not caching is enabled.
+%The component diagram (see Figure \ref{fig:component}) illustrates the interaction between the components. The web  interface is the only component located in the presentation layer. The Map Controller is the core component and offers interfaces for browsing, troop management, building management and resource management. Itself depends on Persistence and the Notification Controller. The User Management Component offers interfaces for registration/deletion of accounts and session management. The Statistics component offers functionality about the ranking of players and so on. Finally the Storage component is used to store and retrieve data from the database. The Cache component offers the same interface as the Storage component, since it should be transparent for the client wether or not caching is enabled.
 
 \subsection{Deployment Diagram}
 
-Text \dots (see Figure \ref{fig:deployment}) \dots Text \dots
+%Text \dots (see Figure \ref{fig:deployment}) \dots Text \dots
 
 \subsubsection{Uptime Calculation}
 
@@ -559,6 +568,7 @@ Run quartz script!!
 Run log4j script!!
 
 \subsection{Compiling and Deploying}
+asdf
 
 \subsection{Entry Point}
 
@@ -572,24 +582,23 @@ The entry point to play \textbf{SWAG} is \href{http:localhost:8080/user/swag/use
 
 \begin{figure}[h]
 \center
-\includegraphics[scale=0.9]{diagrams/SWAG_Class_Diagram.pdf}
-\caption{SWAG - Class Diagram}
-\label{fig:class}
+\includegraphics[angle=90, scale=0.3]{diagrams/map.png}
+\caption{SWAG - Map Class Diagram}
+\label{fig:map_cd}
 \end{figure}
 
 \begin{figure}[h]
 \center
-\includegraphics[scale=0.5]{diagrams/SWAG_Component_Diagram.pdf}
-\caption{SWAG - Component Diagram}
-\label{fig:component}
+\includegraphics[scale=1]{diagrams/user.png}
+\caption{SWAG - User Class Diagram}
+\label{fig:user_cd}
 \end{figure}
 
 \begin{figure}[h]
-\hspace{-2cm}
-\includegraphics[scale=0.55]{diagrams/SWAG_Deployment_Diagram.pdf}
-\caption{SWAG - Deployment Diagram}
-\label{fig:deployment}
+\center
+\includegraphics[scale=1]{diagrams/message.png}
+\caption{SWAG - Message Class Diagram}
+\label{fig:message_cd}
 \end{figure}
 
  \end{document}
-
