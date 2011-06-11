@@ -77,7 +77,7 @@ public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, A
 
                 BuildingLevel level_1 = new BuildingLevel(goldMineType, 1);
                 level_1.setResourceProduction(new ResourceValue(0, 0, 50, 0));
-                level_1.setUpgradeDuration(Long.valueOf(360000));
+                level_1.setUpgradeDuration(Long.valueOf(1000));
                 level_1.setBuildCosts(new ResourceValue(50, 00, 50, 50));
                 level_1.setUpkeepCosts(new ResourceValue());
 
@@ -85,7 +85,7 @@ public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, A
 
                 BuildingLevel level_2 = new BuildingLevel(goldMineType, 2);
                 level_2.setResourceProduction(new ResourceValue(0, 0, 100, 0));
-                level_2.setUpgradeDuration(Long.valueOf(600000));
+                level_2.setUpgradeDuration(Long.valueOf(2000));
                 level_2.setBuildCosts(new ResourceValue(50, 00, 50, 50));
                 level_2.setUpkeepCosts(new ResourceValue());
 

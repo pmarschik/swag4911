@@ -9,9 +9,11 @@ import swag49.model.TroopAction;
 
 public class TroopActionJob extends ActionJobBase<TroopAction> {
 
-	@Autowired
-	@Qualifier("troopActionDAO")
 	private DataAccessObject<TroopAction, Long> troopActionDao;
+
+    public void setTroopActionDao(DataAccessObject<TroopAction, Long> troopActionDao) {
+        this.troopActionDao = troopActionDao;
+    }
 
 	@Override
 	protected void doWork(TroopAction action, JobExecutionContext context) {

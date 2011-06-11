@@ -4,12 +4,13 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import gamelogic.MapLogic;
-import gamelogic.exceptions.NotEnoughMoneyException;
+import swag49.gamelogic.MapLogic;
+import swag49.gamelogic.exceptions.NotEnoughMoneyException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -54,7 +55,6 @@ public class MapController {
     @Qualifier("mapDAO")
     private DataAccessObject<swag49.model.Map, Long> mapDAO;
 
-
     @Autowired
     @Qualifier("troopActionDAO")
     private DataAccessObject<TroopAction, Long> troopActionDAO;
@@ -67,7 +67,6 @@ public class MapController {
     @Autowired
     @Qualifier("troopUpgradeActionDAO")
     private DataAccessObject<TroopUpgradeAction, Long> troopUpgradeActionDAO;
-
 
     @Autowired
     @Qualifier("playerDAO")
@@ -111,7 +110,6 @@ public class MapController {
     @Qualifier("buildingDAO")
     private DataAccessObject<Building, Square.Id> buildingDAO;
 
-
     @Autowired
     private RestTemplate restTemplate;
 
@@ -126,6 +124,10 @@ public class MapController {
     private String userName;
     private static final String NOTENOUGHRESOURCES = "notenoughmoney";
     private static final String ERROR = "error";
+
+    //TODO: GET MAP AND PLAYER
+    private swag49.model.Map map;
+    private Player player;
 
     @PostConstruct
     @Transactional("swag49.map")
@@ -142,11 +144,6 @@ public class MapController {
             logger.error("Error while finding map");
         }
     }
-
-
-    //TODO: GET MAP AND PLAYER
-    private swag49.model.Map map;
-    private Player player;
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     @Transactional("swag49.map")
@@ -211,6 +208,22 @@ public class MapController {
                 startUnit = troopDAO.create(startUnit);
 
                 tile.getTroops().add(startUnit);
+                tileDAO.update(tile);
+
+                //create additional start units
+
+                startUnit = new Troop(type, level, tile, player);
+
+                startUnit = troopDAO.create(startUnit);
+
+                tile.getTroops().add(startUnit);
+
+                startUnit = troopDAO.create(startUnit);
+                tile.getTroops().add(startUnit);
+
+                startUnit = troopDAO.create(startUnit);
+                tile.getTroops().add(startUnit);
+
                 tileDAO.update(tile);
 
 
@@ -606,6 +619,7 @@ public class MapController {
                 dto.setIsAbortable(action.getIsAbortable());
                 dto.setStartDate(action.getStartDate());
                 dto.setEndDate(action.getEndDate());
+                dto.setId(action.getId());
 
                 troopActionDTOList.add(dto);
             }
@@ -627,7 +641,7 @@ public class MapController {
                 dto.setAbortable(action.getIsAbortable());
                 dto.setTroopName(action.getTroop().getType().getName());
                 dto.setLevel(action.getTroopLevel().getLevel());
-
+                dto.setId(action.getId());
 
                 troopUpgradeActionDTOList.add(dto);
             }
@@ -651,6 +665,7 @@ public class MapController {
                 dto.setLevel(action.getConcerns().getIsOfLevel().getLevel() + 1);
                 dto.setSquareId(action.getConcerns().getSquare().getId().getPosition());
                 dto.setEndDate(action.getEndDate());
+                dto.setId(action.getId());
 
                 buildActionDTOList.add(dto);
             }

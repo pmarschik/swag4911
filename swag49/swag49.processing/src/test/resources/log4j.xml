@@ -11,11 +11,11 @@
 	</appender>
 	
 	<!-- Application Loggers -->
-	<!--<logger name="swag49">
-		<level value="debug" />
+	<logger name="swag49">
+		<level value="info" />
 	</logger>
 	
-	 3rdparty Loggers 
+	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
 		<level value="info" />
 	</logger>	
@@ -36,7 +36,7 @@
 		<level value="info" />
 	</logger>
 
-	--><!-- Root Logger -->
+	<!-- Root Logger -->
 	<root>
 		<priority value="error" />
 		<appender-ref ref="console" />

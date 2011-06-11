@@ -17,6 +17,15 @@ public class BuildActionDTO {
     private int squareId;
     private int level;
     private Date endDate;
+    private long id;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getBuildingName() {
         return buildingName;

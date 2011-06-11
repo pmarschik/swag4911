@@ -1,4 +1,4 @@
-package gamelogic;
+package swag49.gamelogic;
 
 import swag49.model.Base;
 import swag49.model.ResourceValue;
