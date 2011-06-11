@@ -16,6 +16,7 @@ import swag49.dao.DataAccessObject;
 import swag49.model.Map;
 import swag49.model.ResourceType;
 import swag49.model.Tile;
+import swag49.util.DbLog;
 import swag49.util.Log;
 
 import javax.annotation.PostConstruct;
@@ -32,6 +33,9 @@ public class MapHelper implements ApplicationListener<ContextRefreshedEvent>, Ap
 
     @Log
     private Logger log;
+
+    @DbLog
+    private Logger dbLog;
 
     @Autowired
     @Qualifier("mapDAO")
@@ -51,6 +55,8 @@ public class MapHelper implements ApplicationListener<ContextRefreshedEvent>, Ap
     @Transactional("swag49.map")
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        dbLog.warn("TEST DB LOG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
         try {
             //create map
             Map map = new Map();

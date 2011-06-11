@@ -21,7 +21,11 @@ public class LogInjector implements BeanPostProcessor {
                 // make the field accessible if defined private
                 ReflectionUtils.makeAccessible(field);
                 if (field.getAnnotation(Log.class) != null) {
-                    Logger log = LoggerFactory.getLogger(bean.getClass());
+                    Logger log = LoggerFactory.getLogger(bean.getClass().getName());
+                    field.set(bean, log);
+                } else if (field.getAnnotation(DbLog.class) != null) {
+                    String loggerName = "db." + bean.getClass().getName();
+                    Logger log = LoggerFactory.getLogger(loggerName);
                     field.set(bean, log);
                 }
             }
