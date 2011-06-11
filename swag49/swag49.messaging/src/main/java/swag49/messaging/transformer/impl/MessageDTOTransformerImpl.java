@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import swag49.dao.DataAccessObject;
 import swag49.messaging.model.Message;
-import swag49.messaging.model.MessageDTO;
 import swag49.messaging.transformer.MessageDTOTransformer;
 import swag49.model.User;
+import swag49.transfer.model.MessageDTO;
 
 @Component("messageDTOTransformer")
 public class MessageDTOTransformerImpl implements MessageDTOTransformer {

@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import swag49.dao.DataAccessObject;
 import swag49.model.Player;
+import swag49.transfer.model.MessageDTO;
+import swag49.transfer.model.PlayerDTO;
 import swag49.util.Log;
 import swag49.web.InternalMessageStore;
-import swag49.web.model.MessageDTO;
-import swag49.web.model.PlayerDTO;
 
 import java.util.Collection;
 

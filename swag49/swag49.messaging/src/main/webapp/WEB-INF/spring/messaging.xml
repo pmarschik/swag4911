@@ -17,10 +17,10 @@
     <bean id="handlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
 
     <http:inbound-channel-adapter id="playerMessageChannelAdapter" channel="playerMessageXmlChannel"
-                                  request-payload-type="swag49.messaging.model.MessageDTO"
+                                  request-payload-type="swag49.transfer.model.MessageDTO"
                                   supported-methods="PUT, POST" name="/send" message-converters="messageConverter"/>
 
-    <si:channel id="playerMessageXmlChannel" datatype="swag49.messaging.model.MessageDTO"/>
+    <si:channel id="playerMessageXmlChannel" datatype="swag49.transfer.model.MessageDTO"/>
 
     <si:transformer id="playerMessageTransformer" input-channel="playerMessageXmlChannel"
                     output-channel="playerMessageChannel" ref="messageTransformer"/>
@@ -55,9 +55,9 @@
 
     <http:inbound-gateway request-channel="listMessagesXmlChannel" reply-channel="listMessagesReplyChannel"
                           name="/get" message-converters="messageConverter"
-                          request-payload-type="swag49.messaging.model.MessageQueryDTO" supported-methods="PUT, POST"/>
+                          request-payload-type="swag49.transfer.model.MessageQueryDTO" supported-methods="PUT, POST"/>
 
-    <si:channel id="listMessagesXmlChannel" datatype="swag49.messaging.model.MessageQueryDTO"/>
+    <si:channel id="listMessagesXmlChannel" datatype="swag49.transfer.model.MessageQueryDTO"/>
 
     <!--<si:transformer id="listMessagesTransformer" input-channel="listMessagesXmlChannel"-->
     <!--output-channel="listMessagesReplyChannel" ref="messageListHandler"/>-->

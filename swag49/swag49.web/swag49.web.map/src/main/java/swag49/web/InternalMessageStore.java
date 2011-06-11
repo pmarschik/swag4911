@@ -1,8 +1,9 @@
 package swag49.web;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import swag49.web.model.MessageDTO;
+import swag49.transfer.model.MessageDTO;
 
 import java.util.Collection;
 
@@ -16,7 +17,7 @@ public class InternalMessageStore {
     }
 
     public Collection<MessageDTO> getNewMessagesAndRemoveFromCache(String userId) {
-        Collection<MessageDTO> result = receivedMessages.get(userId);
+        Collection<MessageDTO> result = Lists.newArrayList(receivedMessages.get(userId));
         receivedMessages.removeAll(userId);
         return result;
     }

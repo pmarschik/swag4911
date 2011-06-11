@@ -32,7 +32,7 @@
                     </table>
                 </td>
                 <td><a class="contentLink"
-                       href="train.html?troopTypeId=${building.id}&baseId=${baseId}"><img
+                       href="train.html?troopTypeId=${troop.id}&baseId=${baseId}"><img
                         src="${resourcePath}<spring:theme code='theme.image.troops.train'/>" alt="Build"></a></td>
             </tr>
         </c:forEach>

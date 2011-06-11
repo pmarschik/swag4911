@@ -11,6 +11,8 @@ import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
 import swag49.model.*;
 import swag49.model.Map;
+import swag49.model.helper.ResourceValueHelper;
+import swag49.transfer.model.MessageDTO;
 import swag49.util.Log;
 
 import java.util.*;
@@ -120,9 +122,9 @@ public class MapLogic {
         ResourceValue cost = new ResourceValue(troopLevel.getBuildCosts());
 
         //check if user can afford the troops
-        if (player.getResources().geq(cost)) {
+        if (ResourceValueHelper.geq(player.getResources(), cost)) {
 
-            player.getResources().remove(cost);
+            ResourceValueHelper.remove(player.getResources(), cost);
             Long duration = troopLevel.getUpgradeDuration();
 
             playerDAO.update(player);
@@ -149,8 +151,8 @@ public class MapLogic {
             troopDAO.update(troop);
 
             //update upkeep
-            action.getPlayer().getUpkeep().remove(currentLevel.getUpkeepCosts());
-            action.getPlayer().getUpkeep().add(nextLevel.getUpkeepCosts());
+            ResourceValueHelper.remove(action.getPlayer().getUpkeep(), currentLevel.getUpkeepCosts());
+            ResourceValueHelper.add(action.getPlayer().getUpkeep(), nextLevel.getUpkeepCosts());
 
             playerDAO.update(action.getPlayer());
         }
@@ -174,7 +176,7 @@ public class MapLogic {
                 player.getResources().getAmount_wood() >= cost.getAmount_wood() &&
                 player.getResources().getAmount_stone() >= cost.getAmount_stone()) {
 
-            player.getResources().remove(cost);
+            ResourceValueHelper.remove(player.getResources(), cost);
             Long duration = level.getUpgradeDuration();
 
             playerDAO.update(player);
@@ -206,7 +208,7 @@ public class MapLogic {
                 tile.getTroops().add(troop);
 
                 //update upkeep
-                action.getPlayer().getUpkeep().add(action.getTroopLevel().getUpkeepCosts());
+                ResourceValueHelper.add(action.getPlayer().getUpkeep(), action.getTroopLevel().getUpkeepCosts());
             }
 
             tileDAO.update(tile);
@@ -226,7 +228,7 @@ public class MapLogic {
 
             //check if the player has enough resources
 
-            if (!player.getResources().geq(levelOne.getBuildCosts())) {
+            if (!ResourceValueHelper.geq(player.getResources(), levelOne.getBuildCosts())) {
                 throw new NotEnoughMoneyException();
             }
 
@@ -251,7 +253,7 @@ public class MapLogic {
             BuildAction action = new BuildAction();
             action.setConcerns(constructionYard);
             action.setTarget(square.getBase().getLocatedOn());
-            action.setDuration(level.getUpgradeDuration());
+            action.setDuration(levelOne.getUpgradeDuration());
             action.setStartDate(new Date());
             action.setPlayer(square.getBase().getOwner());
             action.setIsAbortable(true);
@@ -276,9 +278,12 @@ public class MapLogic {
 
         //check if the player has enough resources
 
-        if (!player.getResources().geq(levelOne.getBuildCosts())) {
+        if (!ResourceValueHelper.geq(player.getResources(), levelOne.getBuildCosts())) {
             throw new NotEnoughMoneyException();
         }
+
+        //reduce resources
+       // ResourceValueHelper.remove(player.getResources(), levelOne.getBuildCosts());
 
 
         // create BuildAction
@@ -433,7 +438,8 @@ public class MapLogic {
 
         tile.setBase(base);
         tileDAO.update(tile);
-        owner.getResources().add(resourceProduction);
+        ResourceValueHelper.add(owner.getResources(), resourceProduction);
+
         playerDAO.update(owner);
 
         return base;
@@ -460,12 +466,12 @@ public class MapLogic {
 
             Player player = action.getPlayer();
             // update upkeep
-            player.getUpkeep().remove(currentLevel.getUpkeepCosts());
-            player.getUpkeep().add(nextLevel.getUpkeepCosts());
+            ResourceValueHelper.remove(player.getUpkeep(), currentLevel.getUpkeepCosts());
+            ResourceValueHelper.add(player.getUpkeep(), nextLevel.getUpkeepCosts());
 
             // update income
-            player.getIncome().remove(currentLevel.getUpkeepCosts());
-            player.getIncome().add(nextLevel.getUpkeepCosts());
+            ResourceValueHelper.remove(player.getIncome(), currentLevel.getUpkeepCosts());
+            ResourceValueHelper.add(player.getIncome(), nextLevel.getUpkeepCosts());
 
             playerDAO.update(player);
         }
@@ -526,7 +532,8 @@ public class MapLogic {
                     //rob base
                     ResourceValue booty = calculateBooty(tile.getBase().getOwner(), action.getConcerns());
 
-                    action.getPlayer().getResources().add(booty);
+                    ResourceValueHelper.add(action.getPlayer().getResources(), booty);
+
                     //write ms to both players
                     sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_FIGHTRESULT,
                             "You robed the base of player " + tile.getBase().getOwner().getId() + " at tile (" +
@@ -549,7 +556,7 @@ public class MapLogic {
                     if (tile.getBase() != null) {
                         //rob base
                         ResourceValue booty = calculateBooty(enemyOwner, attackers);
-                        action.getPlayer().getResources().add(booty);
+                        ResourceValueHelper.add(action.getPlayer().getResources(), booty);
 
                         if (canBuildBase && !tile.getBase().isHome()) {
                             Base base = tile.getBase();
@@ -777,7 +784,7 @@ public class MapLogic {
     }
 
     private void sendMessage(Player sender, Player receiver, String subject, String content) {
-        MessageDTO message = new MessageDTO(subject, content, sender.getUserId(), null, receiver.getUserId(),
+        MessageDTO message = new MessageDTO(null, subject, content, sender.getUserId(), null, receiver.getUserId(),
                 null, new Date(), new Date(), sender.getPlays().getUrl());
 
         restTemplate.put("http://localhost:8080/messaging/send", message);

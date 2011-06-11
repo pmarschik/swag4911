@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import swag49.dao.DataAccessObject;
 import swag49.model.Player;
 import swag49.model.ResourceValue;
+import swag49.model.helper.ResourceValueHelper;
 import swag49.util.Log;
 
 import javax.persistence.EntityManager;
@@ -42,9 +43,9 @@ public class PeriodicResourceUpdateLogic  {
             ResourceValue resources = player.getResources();
 
             // add income
-            resources.add(player.getIncome());
+            ResourceValueHelper.add(resources,player.getIncome() );
 
-            resources.remove(player.getUpkeep());
+             ResourceValueHelper.remove(resources,player.getUpkeep() );
 
             // set minimal amount to zero
             resources.setAmount_gold(Math.max(0, resources.getAmount_gold()));

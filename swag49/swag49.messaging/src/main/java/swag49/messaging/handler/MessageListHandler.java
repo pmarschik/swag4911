@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
 import swag49.messaging.model.Message;
-import swag49.messaging.model.MessageDTO;
-import swag49.messaging.model.MessageQueryDTO;
-import swag49.messaging.model.MessageQueryResponse;
 import swag49.messaging.transformer.MessageDTOTransformer;
+import swag49.transfer.model.MessageDTO;
+import swag49.transfer.model.MessageQueryDTO;
+import swag49.transfer.model.MessageQueryResponse;
 import swag49.util.Log;
 
 import java.util.List;
