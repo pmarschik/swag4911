@@ -149,15 +149,15 @@ public class MessagingController {
             }
         }
 
-        List<MessageDTO> messages = Lists.newArrayList(messages.values());
-        Collections.sort(messages, new Comparator<MessageDTO>() {
+        List<MessageDTO> result = Lists.newArrayList(messages.values());
+        Collections.sort(result, new Comparator<MessageDTO>() {
             @Override
             public int compare(MessageDTO o1, MessageDTO o2) {
                 return o1.getSent().compareTo(o2.getSent());
             }
         });
 
-        return messages;
+        return result;
     }
 
     public List<MessageDTO> getOutgoingMessages() {
@@ -172,15 +172,15 @@ public class MessagingController {
                 messages.put(message.getId(), message);
         }
 
-        List<MessageDTO> messages = Lists.newArrayList(messages.values());
-        Collections.sort(messages, new Comparator<MessageDTO>() {
+        List<MessageDTO> result = Lists.newArrayList(messages.values());
+        Collections.sort(result, new Comparator<MessageDTO>() {
             @Override
             public int compare(MessageDTO o1, MessageDTO o2) {
                 return o1.getSent().compareTo(o2.getSent());
             }
         });
 
-        return messages;
+        return result;
     }
 
     public void sendMessage(MessageDTO message) {
