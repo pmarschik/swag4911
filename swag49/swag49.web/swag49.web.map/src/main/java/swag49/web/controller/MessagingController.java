@@ -38,6 +38,8 @@ public class MessagingController {
 
     private Map<Long, MessageDTO> messages = Maps.newHashMap();
 
+    private int newMessages = 0;
+
     @RequestMapping(value = "/")
     public String handle(Map<String, Object> map) {
         map.put("user", mapController.getUserName());
@@ -64,6 +66,8 @@ public class MessagingController {
     public String incoming(Map<String, Object> map) {
         if (mapController.getUserID() == null)
             return "redirect:./";
+
+        newMessages = 0;
 
         map.put("user", mapController.getUserName());
         map.put("incomingMessages", getIncomingMessages());
@@ -108,33 +112,6 @@ public class MessagingController {
         return "message";
     }
 
-//    @RequestMapping(value = "/send", method = RequestMethod.POST)
-//    public String handleSend(@Valid @ModelAttribute("message")
-//                             MessageDTO message, BindingResult bingBindingResult,
-//                             Map<String, Object> map) {
-//
-//        System.out.println("Received request to send message: " + message);
-//
-//        if (bingBindingResult.hasErrors()) {
-//            map.put("view", false);
-//            return "message";
-//        }
-//
-//        sendMessage(message);
-//
-//        return "redirect:./";
-//    }
-
-//    @RequestMapping(value = "/send", method = RequestMethod.POST)
-//    public String handleSend(String dataString) {
-//
-//        System.out.println("Received request to send message: " + dataString);
-//
-//
-//
-//        return "redirect:./";
-//    }
-
     @RequestMapping(value = "/send", method = RequestMethod.POST)
     public String handleSend(String username, String subject, String content) {
         MessageDTO newMessage = new MessageDTO();
@@ -147,6 +124,16 @@ public class MessagingController {
         sendMessage(newMessage);
 
         return "redirect:./";
+    }
+
+    @RequestMapping(value = "/newMessages", method = RequestMethod.GET)
+    public String getNewMessageCount(Map<String, Object> map) {
+
+        newMessages = newMessages + messageStore.
+                getNewMessagesAndRemoveFromCache(mapController.getUserID()).size();
+        map.put("newMessages", newMessages);
+
+        return "newmessage";
     }
 
     public List<MessageDTO> getIncomingMessages() {
