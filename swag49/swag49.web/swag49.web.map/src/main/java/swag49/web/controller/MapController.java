@@ -13,22 +13,27 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
+import swag49.dao.TileDAO;
 import swag49.model.*;
 import swag49.model.ResourceType;
 import swag49.model.helper.ResourceValueHelper;
 import swag49.transfer.model.*;
+import swag49.transfer.model.TroopDTO;
 import swag49.util.Log;
-import swag49.web.model.TileOverviewDTOFull;
-import swag49.web.model.TroopsPerTileDTO;
+import swag49.web.MapHelper;
+import swag49.web.model.*;
 
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
+import javax.validation.Valid;
 import java.util.*;
 import java.util.Map;
 
@@ -281,28 +286,90 @@ public class MapController {
         sampleTroop.setOwner(player);
         List<Troop> troops = troopDAO.queryByExample(sampleTroop);
 
-        HashMap<Tile.Id, ArrayList<Troop>> troopsPerTile = Maps.newHashMap();
+        //HashMap<Tile.Id, ArrayList<Troop>> troopsPerTile = Maps.newHashMap();
+        ArrayList<TileDTO> tileList = new ArrayList<TileDTO>();
 
         for (Troop troop : troops) {
             Tile tile = troop.getPosition();
+            SendTroopDTO troopDTO = new SendTroopDTO();
+            troopDTO.setSendMe(false);
+            troopDTO.setId(troop.getId());
+            troopDTO.setName(troop.getType().getName());
 
-            if (troopsPerTile.containsKey(tile.getId())) {
-                ArrayList<Troop> tmpTroops = troopsPerTile.get(tile.getId());
-                tmpTroops.add(troop);
-                troopsPerTile.put(tile.getId(), tmpTroops);
-            } else {
-                ArrayList<Troop> tmpTroops = new ArrayList<Troop>();
-                tmpTroops.add(troop);
-                troopsPerTile.put(tile.getId(), tmpTroops);
+            boolean existed = false;
+            for (TileDTO exTile : tileList) {
+                if (exTile.equals(exTile)) {
+                    exTile.getTroops().add(troopDTO);
+                    existed = true;
+                }
             }
+            if (existed == false) {
+                TileDTO newTile = new TileDTO();
+                newTile.setMapId(map.getId());
+                newTile.setX(tile.getId().getX());
+                newTile.setY(tile.getId().getY());
+                ArrayList<SendTroopDTO> sendTroops = new ArrayList<SendTroopDTO>();
+                sendTroops.add(troopDTO);
+                newTile.setTroops(sendTroops);
+                tileList.add(newTile);
+            }
+
+//            if (troopsPerTile.containsKey(tile.getId())) {
+//                ArrayList<Troop> tmpTroops = troopsPerTile.get(tile.getId());
+//                tmpTroops.add(troop);
+//                troopsPerTile.put(tile.getId(), tmpTroops);
+//            } else {
+//                ArrayList<Troop> tmpTroops = new ArrayList<Troop>();
+//                tmpTroops.add(troop);
+//                troopsPerTile.put(tile.getId(), tmpTroops);
+//            }
         }
 
-        TroopsPerTileDTO dto = new TroopsPerTileDTO();
-        dto.setTroopsPerTile(troopsPerTile);
+//        TroopsPerTileDTO dto = new TroopsPerTileDTO();
+//        dto.setTroopsPerTile(troopsPerTile);
 
+        TroopsPerTileDTO dto = new TroopsPerTileDTO();
+        dto.setTileList(tileList);
+        dto.setX(x);
+        dto.setY(y);
         model.addAttribute("troopsPerTile", dto);
 
+//        model.addAttribute("troopsPerTile", tileList);
+
         return "sendtroops";
+    }
+
+    @RequestMapping(value = "/sendTroops", method = RequestMethod.POST)
+    public String handleSendTroops(@ModelAttribute("troopsPerTile") TroopsPerTileDTO troopsPerTile, BindingResult bingBindingResult,
+                                   Map<String, Object> modelMap) {
+
+        //TODO: besser machen
+        player = playerDAO.get(player.getId());
+        map = mapDAO.get(map.getId());
+
+        if (bingBindingResult.hasErrors()) {
+            modelMap.put("view", false);
+            return "redirect:../map";
+        }
+
+        Tile tile = tileDAO.get(new Tile.Id(map.getId(), troopsPerTile.getX(), troopsPerTile.getY()));
+        HashSet<Troop> troopsToSend = new HashSet<Troop>();
+
+        for(TileDTO tileDto : troopsPerTile.getTileList())
+        {
+            for(SendTroopDTO sendTroopDto : tileDto.getTroops())
+            {
+                Troop sendTroop = troopDAO.get(sendTroopDto.getId());
+                troopsToSend.add(sendTroop);
+            }
+        }
+        try {
+            mapLogic.sendTroops(tile, troopsToSend);
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        return "redirect:../map";
     }
 
 
