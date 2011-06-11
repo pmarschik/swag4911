@@ -39,10 +39,17 @@ public class MessagingService {
         playerExample.setUpkeep(null);
         //noinspection NullableProblems
         playerExample.setIncome(null);
+        playerExample.setTroops(null);
+        playerExample.setActions(null);
+        playerExample.setOwns(null);
         playerExample.setUserId(userId);
 
         Collection<Player> queryResult = playerDAO.queryByExample(playerExample);
-        assert queryResult.size() == 1;
+
+        if(queryResult.size() != 1) {
+            log.warn("no or too many players with playerId {} found, sending message aborted", userId);
+            return null;
+        }
 
         Player player = queryResult.iterator().next();
 
