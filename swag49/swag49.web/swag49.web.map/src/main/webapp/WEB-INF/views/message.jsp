@@ -54,26 +54,51 @@
         <table>
             <tr>
                 <td><form:label path="receiver.username">Receiver</form:label></td>
-                <td><form:input path="receiver.username"/></td>
+                <td><form:input path="receiver.username" id="username" /></td>
                 <td style="color:red;0"><form:errors path="receiver"/></td>
             </tr>
             <tr>
                 <td><form:label path="subject">Subject</form:label></td>
-                <td><form:input path="subject"/></td>
+                <td><form:input path="subject" id="subject"/></td>
                 <td style="color:red;0"><form:errors path="subject"/></td>
             </tr>
             <tr>
                 <td><form:label path="content">Content</form:label></td>
-                <td><form:textarea path="content" rows="5" cols="40"/></td>
+                <td><form:textarea path="content" id="content" rows="5" cols="40"/></td>
                 <td style="color:red;0"><form:errors path="content"/></td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="submit" value="Send"/>
+                    <input class="button" type="submit" value="Send"/>
                 </td>
             </tr>
         </table>
     </form:form>
 </c:if>
+<script type="text/javascript">
+    $(function()
+    {
+        $(".button").click(function()
+        {
+
+            var username = $("input#username").val();
+            var subject = $("input#subject").val();
+            var content = $("textarea#content").val();
+            var dataString = 'username='+ username + '&subject=' + subject + '&content=' + content;
+
+            $.ajax({
+                type: "POST",
+                url: "../messaging/send.html",
+                data: {username : username, subject: subject, content: content},
+                    success: function()
+                    {
+                        $('#message').html("<h2>Message sent!</h2>");
+                    }
+            });
+
+            return false;
+        });
+    });
+ </script>
 </body>
 </html>
