@@ -2,6 +2,7 @@ package swag49.web.controller;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import gamelogic.MapLogic;
 import gamelogic.exceptions.NotEnoughMoneyException;
@@ -20,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
 import swag49.model.*;
 import swag49.model.ResourceType;
+import swag49.model.helper.ResourceValueHelper;
 import swag49.transfer.model.*;
 import swag49.util.Log;
 import swag49.web.model.TileOverviewDTOFull;
@@ -101,7 +103,7 @@ public class MapController {
     private UUID userToken;
     private String userID;
     private String userName;
-    private static final String NOTENOUGHRESOURCES = "notenoughresources";
+    private static final String NOTENOUGHRESOURCES = "notenoughmoney";
     private static final String ERROR = "error";
 
     @PostConstruct
@@ -255,6 +257,35 @@ public class MapController {
     public String getSendTroopsOverview(@RequestParam(value = "x", defaultValue = "-1") int x,
                                         @RequestParam(value = "y", defaultValue = "-1") int y,
                                         Model model) {
+        //TODO: besser machen
+        player = playerDAO.get(player.getId());
+        map = mapDAO.get(map.getId());
+
+        Troop sampleTroop = new Troop();
+        sampleTroop.setOwner(player);
+        List<Troop> troops = troopDAO.queryByExample(sampleTroop);
+
+        HashMap<Tile.Id, ArrayList<Troop>> troopsPerTile = Maps.newHashMap();
+
+        for (Troop troop : troops) {
+            Tile tile = troop.getPosition();
+
+            if (troopsPerTile.containsKey(tile.getId())) {
+                ArrayList<Troop> tmpTroops = troopsPerTile.get(tile.getId());
+                tmpTroops.add(troop);
+                troopsPerTile.put(tile.getId(), tmpTroops);
+            } else {
+                ArrayList<Troop> tmpTroops = new ArrayList<Troop>();
+                tmpTroops.add(troop);
+                troopsPerTile.put(tile.getId(), tmpTroops);
+            }
+        }
+
+        TroopsPerTileDTO dto = new TroopsPerTileDTO();
+        dto.setTroopsPerTile(troopsPerTile);
+
+        model.addAttribute("troopsPerTile", dto);
+
         return "sendtroops";
     }
 
@@ -372,11 +403,14 @@ public class MapController {
             TroopLevel.Id id = new TroopLevel.Id(troop.getIsOfLevel().getLevel(), troop.getType().getId());
 
             TroopLevel nextLevel = troopLevelDAO.get(id);
+            if (!ResourceValueHelper.geq(player.getResources(), nextLevel.getBuildCosts())) {
+                return NOTENOUGHRESOURCES;
+            }
 
             try {
                 mapLogic.upgradeTroop(player, troop, nextLevel);
-            } catch (NotEnoughMoneyException e) {
-                return NOTENOUGHRESOURCES;
+            } catch (Exception e) {
+                return ERROR;
             }
 
             return "troopoverview";
@@ -386,7 +420,7 @@ public class MapController {
     }
 
     @RequestMapping(value = "/traintroops", method = RequestMethod.GET)
-    @Transactional
+    @Transactional("swag49.map")
     public String getTrainTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
                                         Model model) {
 
@@ -398,12 +432,36 @@ public class MapController {
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
 
-        return "TODO";
+        List<TroopType> troopTypes = troopTypeDAO.queryByExample(new TroopType());
+
+        List<TroopTypeDTO> troopTypeDTOList = new ArrayList<TroopTypeDTO>();
+
+        for (TroopType type : troopTypes) {
+            TroopTypeDTO dto = new TroopTypeDTO(type.getName(), type.getCanFoundBase(), null, type.getId());
+
+            ResourceValueDTO costs = null;
+            for (TroopLevel level : type.getLevels()) {
+                if (level.getLevel() == 1) {
+                    costs = new ResourceValueDTO(level.getBuildCosts().getAmount_gold(),
+                            level.getBuildCosts().getAmount_wood(), level.getBuildCosts().getAmount_stone(),
+                            level.getBuildCosts().getAmount_crops());
+                    break;
+                }
+            }
+
+            dto.setCosts(costs);
+
+            troopTypeDTOList.add(dto);
+        }
+
+        model.addAttribute("troops", troopTypeDTOList);
+        model.addAttribute("baseId", baseId);
+        return "traintroops";
     }
 
 
     @RequestMapping(value = "/train", method = RequestMethod.GET)
-    @Transactional
+    @Transactional("swag49.map")
     public String getTrainTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
                                         @RequestParam(value = "troopTypeId", defaultValue = "-1") long troopTypeId,
                                         Model model) {
@@ -427,7 +485,7 @@ public class MapController {
         TroopLevel.Id id = new TroopLevel.Id(1, type.getId());
         TroopLevel level = troopLevelDAO.get(id);
 
-        if (player.getResources().geq(level.getBuildCosts())) {
+        if (!ResourceValueHelper.geq(player.getResources(), level.getBuildCosts())) {
             return NOTENOUGHRESOURCES;
         }
 
@@ -613,7 +671,6 @@ public class MapController {
                         } else {
                             sb.append("Your base!");
                         }
-                        System.out.println("Base found: " + tile.getId().getX() + tile.getId().getY());
                         sb.append("<br/>");
                     }
 
@@ -741,7 +798,6 @@ public class MapController {
                         } else {
                             sb.append("Your base!");
                         }
-                        System.out.println("BAse found: " + tile.getId().getX() + tile.getId().getY());
                         sb.append("<br/>");
                     }
 

@@ -12,7 +12,6 @@ import org.springframework.test.jdbc.SimpleJdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import swag49.model.Statistic;
 import swag49.model.StatisticEntry;
-import swag49.statistics.MostBasesCalculator;
 import swag49.statistics.MostTroopsCalculator;
 import swag49.statistics.StatisticCalculator;
 
@@ -27,7 +26,7 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/test-context.xml"})
 public class MostTroopsCalculatorTest {
-    @PersistenceContext (unitName = "swag49.map")
+    @PersistenceContext(unitName = "swag49.map")
     private EntityManager em;
 
     @Autowired
