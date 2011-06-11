@@ -50,6 +50,7 @@ public class MapViewController {
     public void init() {
         swag49.model.Map example = new swag49.model.Map();
         example.setUrl(nodeController.getMapNodeUrl());
+        example.setConsistsOf(null);
 
         Collection<swag49.model.Map> maps = mapDAO.queryByExample(example);
         if (maps != null && maps.size() == 1) {
@@ -103,6 +104,7 @@ public class MapViewController {
 
         // get all visible tiles
         Tile exampleTile = new Tile(map, x_low, y_low);
+        exampleTile.setTroops(null);
         for (int y = y_low; y <= y_high; y++) {
             ArrayList<TileOverviewDTO> currentRow = new ArrayList<TileOverviewDTO>();
             for (int x = x_low; x <= x_high; x++) {

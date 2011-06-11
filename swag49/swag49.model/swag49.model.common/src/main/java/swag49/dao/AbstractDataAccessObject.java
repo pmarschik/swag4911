@@ -14,7 +14,6 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +41,10 @@ public abstract class AbstractDataAccessObject<T, PK> implements DataAccessObjec
         return getEntityManager().merge(message);
     }
 
+    public void detach(T model) {
+        getEntityManager().detach(model);
+    }
+
     @Override
     public void delete(T message) {
         message = getEntityManager().merge(message);
@@ -53,8 +56,20 @@ public abstract class AbstractDataAccessObject<T, PK> implements DataAccessObjec
         return getEntityManager().find(modelClass, id);
     }
 
+    @SuppressWarnings({"unchecked"})
     @Override
     public List<T> queryByExample(T model) {
+//        EntityManager em = getEntityManager();
+//        HibernateEntityManager hem = em.unwrap(HibernateEntityManager.class);
+//        Session session = hem.getSession();
+//
+//        Criteria criteria = session.createCriteria(modelClass);
+//
+//        if (model != null)
+//            criteria.add(Example.create(model));
+//
+//        return (List<T>) criteria.list();
+
         try {
             return findByExample(model, modelClass);
         } catch (Exception e) {
@@ -84,12 +99,14 @@ public abstract class AbstractDataAccessObject<T, PK> implements DataAccessObjec
             String javaName = a.getJavaMember().getName();
             String getter = "get" + javaName.substring(0, 1).toUpperCase() + javaName.substring(1);
             Method m = clazz.getMethod(getter, (Class<?>[]) null);
+            Object value = m.invoke(example, (Object[]) null);
 
-            if (m.invoke(example, (Object[]) null) != null) {
-                boolean isCollection = Collection.class.isAssignableFrom(m.getReturnType());
+            if (value != null) {
+                if (!a.isCollection())
+                    p = cb.and(p, cb.equal(r.get(name), value));
 
-                if (!isCollection)
-                    p = cb.and(p, cb.equal(r.get(name), m.invoke(example, (Object[]) null)));
+                if (a.isAssociation())
+                    r.fetch(name);
             }
         }
         cq.select(r).where(p);

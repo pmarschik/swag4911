@@ -47,7 +47,9 @@ public class EmailMessageHandler {
 
     @Transactional("swag49.user")
     private User getUser(String id) {
-        return userDAO.get(id);
+        User result = userDAO.get(id);
+        userDAO.detach(result);
+        return result;
     }
 
     @Transactional("swag49.map")
