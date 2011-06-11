@@ -4,13 +4,10 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import swag49.gamelogic.MapLogic;
-import swag49.gamelogic.exceptions.NotEnoughMoneyException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -24,6 +21,8 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
 import swag49.dao.TileDAO;
+import swag49.gamelogic.MapLogic;
+import swag49.gamelogic.exceptions.NotEnoughMoneyException;
 import swag49.model.*;
 import swag49.model.ResourceType;
 import swag49.model.helper.ResourceValueHelper;
@@ -268,7 +267,7 @@ public class MapController {
 
         return "home";
     }
-    
+
     @RequestMapping(value = "/messaging", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String messaging() {
@@ -1038,7 +1037,10 @@ public class MapController {
     @RequestMapping(value = "/playerresources", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String getPlayerResources(Model model) {
-
+        if(player == null) {
+            logger.info("no player yet set, not refreshing resources");
+            return null;
+        }
 
         //TODO: besser machen
         player = playerDAO.get(player.getId());
@@ -1066,7 +1068,7 @@ public class MapController {
         playerDAO.update(player);
 
         this.userID = null;
-        
+
         return "redirect:"+ nodeContext.getUserNodeUrl() + "/swag/user/";
     }
 
