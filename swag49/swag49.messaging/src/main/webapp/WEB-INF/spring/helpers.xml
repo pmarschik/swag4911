@@ -45,10 +45,10 @@
     <bean id="jaxbMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="classesToBeBound">
             <util:list>
-                <value>swag49.messaging.model.MessageDTO</value>
-                <value>swag49.messaging.model.PlayerDTO</value>
-                <value>swag49.messaging.model.MessageQueryDTO</value>
-                <value>swag49.messaging.model.MessageQueryResponse</value>
+                <value>swag49.transfer.model.MessageDTO</value>
+                <value>swag49.transfer.model.PlayerDTO</value>
+                <value>swag49.transfer.model.MessageQueryDTO</value>
+                <value>swag49.transfer.model.MessageQueryResponse</value>
             </util:list>
         </property>
     </bean>

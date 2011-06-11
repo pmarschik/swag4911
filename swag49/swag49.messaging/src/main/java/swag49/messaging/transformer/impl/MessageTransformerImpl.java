@@ -10,9 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import swag49.dao.DataAccessObject;
 import swag49.messaging.model.Message;
-import swag49.messaging.model.MessageDTO;
 import swag49.messaging.transformer.MessageTransformer;
 import swag49.model.User;
+import swag49.transfer.model.MessageDTO;
 import swag49.util.Log;
 
 import java.util.List;
@@ -50,6 +50,7 @@ public class MessageTransformerImpl implements MessageTransformer {
 
     @Transformer
     @Override
+    @Transactional("swag49.user")
     public Message apply(MessageDTO input) {
         Message output = new Message();
 

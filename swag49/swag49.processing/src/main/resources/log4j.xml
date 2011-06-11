@@ -11,7 +11,7 @@
     </appender>
 
     <!-- Application Loggers -->
-    <logger name="org.application">
+    <logger name="swag49">
         <level value="debug"/>
     </logger>
 
@@ -34,10 +34,6 @@
 
     <logger name="org.hibernate">
         <level value="warn"/>
-    </logger>
-
-    <logger name="swag49">
-        <level value="debug"/>
     </logger>
 
 

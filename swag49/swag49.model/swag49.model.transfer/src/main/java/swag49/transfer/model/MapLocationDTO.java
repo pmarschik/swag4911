@@ -1,23 +1,21 @@
-package swag49.web.model;
-
-import swag49.model.MapLocation;
+package swag49.transfer.model;
 
 /**
  * @author michael
  */
 public class MapLocationDTO {
 
-    private Long id;
+    private long id;
     private String url;
     private String mapName;
 
     public MapLocationDTO() {
     }
 
-    public MapLocationDTO(MapLocation mapLocation) {
-        this.id = mapLocation.getId();
-        this.url = mapLocation.getUrl();
-        this.mapName = mapLocation.getMapName();
+    public MapLocationDTO(long id, String url, String mapName) {
+        this.id = id;
+        this.url = url;
+        this.mapName = mapName;
     }
 
     public Long getId() {

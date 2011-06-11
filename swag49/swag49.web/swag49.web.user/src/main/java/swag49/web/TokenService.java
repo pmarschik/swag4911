@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import swag49.model.User;
+import swag49.transfer.model.TokenDTO;
 import swag49.util.Log;
-import swag49.web.model.TokenDTO;
 
 import java.util.Map;
 import java.util.UUID;

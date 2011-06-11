@@ -1,4 +1,4 @@
-package swag49.web.model;
+package swag49.transfer.model;
 
 import javax.xml.bind.annotation.*;
 
@@ -15,7 +15,7 @@ public class PlayerDTO {
     public PlayerDTO() {
     }
 
-    public PlayerDTO(Long id, String userId, boolean online) {
+    public PlayerDTO(long id, String userId, boolean online) {
         this.id = id;
         this.userId = userId;
         isOnline = online;

@@ -2,7 +2,7 @@ package swag49.web;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import swag49.web.model.MessageDTO;
+import swag49.transfer.model.MessageDTO;
 
 import java.util.Collection;
 
