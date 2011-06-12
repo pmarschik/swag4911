@@ -20,8 +20,6 @@ public class PeriodicResourceUpdateJobBean extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-
-        System.out.println("HALLOOOOOO!!!!");
         try {
             ApplicationContext appContext = getApplicationContext(context);
             PeriodicResourceUpdateLogic logic = appContext.getBean("periodicResourceUpdateLogic", PeriodicResourceUpdateLogic.class);
