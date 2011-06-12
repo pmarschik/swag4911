@@ -1,7 +1,8 @@
 body
 {
 	width:100%;
-	}
+    background-image:url('../images/misc/content_back.png');
+}
 	
 #header 
 {
