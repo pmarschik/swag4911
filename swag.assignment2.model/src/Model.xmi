@@ -35,5 +35,7 @@
       <members name="mapLocations" complexType="//@models.1/@entities.1" hasMultipleValues="true" persistenceRelation="ManyToMany" persistenceMappedBy="" persistenceOptional="true"/>
       <members name="address" complexType="//@models.1/@entities.0"/>
     </entities>
+    <daos daoFor="//@models.1/@entities.1" name="MapLocationDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.1/@entities.2" name="UserDAO"/>
   </models>
 </metamodel:SWA>

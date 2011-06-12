@@ -370,113 +370,35 @@
 		package «standardPackage()».«daoPackage()»;
 		
 		import «standardPackage()».«modelPackage()».«daoFor.name»;
+		import org.springframework.stereotype.Repository;
+		import org.springframework.transaction.annotation.Transactional;
+		import javax.persistence.EntityManager;
+		import javax.persistence.PersistenceContext;
 	
-		«IF isContainerManaged == true»
-			@org.springframework.stereotype.Repository(value = "«daoFor.name.toLowerCase()»DAO")
+		@Repository(value="«name.toFirstLower()»")
+		«IF modelName == "swag49.model.user"-»
+			@Transactional("swag49.user")
+		«ELSE-»
+			@Transactional("swag49.map")
 		«ENDIF»
-		public class «name» implements DataAccessObject<«daoFor.name»> {
-		
-			«IF persistenceInjection == PersistenceInjection::Member || 
-				isContainerManaged == true»
-				@javax.persistence.PersistenceContext
-			«ENDIF»
-			private javax.persistence.EntityManager em;
-			
-			«IF this.persistenceInjection == PersistenceInjection::Constructor»
-				public «name»(javax.persistence.EntityManager em) {
-					this.em = em;
-				}
-			«ELSE»
-				public «name»() {
-				}
-			«ENDIF»
-		
-			«EXPAND getMethodForDao(isContainerManaged) FOR this»
-			«EXPAND createMethodForDao(isContainerManaged) FOR this»
-			«EXPAND updateMethodForDao(isContainerManaged) FOR this»
-			«EXPAND deleteMethodForDao(isContainerManaged) FOR this»
-			«EXPAND containsMethodForDao(isContainerManaged) FOR this»
-			
-			«EXPAND queryByExampleMethodForDao(isContainerManaged) FOR this»
-			
+		public class «name» extends AbstractDataAccessObject<«daoFor.name», String> {
+			«IF modelName == "swag49.model.user"-»
+    			@PersistenceContext(unitName = "swag49.user")
+    		«ELSE-»
+    			@PersistenceContext(unitName = "swag49.map")
+    		«ENDIF»
+    		private EntityManager em;
+
+    		public «name»() {
+        		super(«daoFor.name».class);
+    		}
+
+    		@Override
+    		protected EntityManager getEntityManager() {
+        		return em;
+    		}
 		}
 	«ENDFILE»
-«ENDDEFINE»
-
-«DEFINE getMethodForDao(Boolean isContainerManaged) FOR DAO»
-	public «daoFor.name» get(Object id) {
-		return em.find(«daoFor.name».class, id);
-	}
-«ENDDEFINE»
-
-«DEFINE createMethodForDao(Boolean isContainerManaged) FOR DAO»
-	«IF isContainerManaged == true»
-		@org.springframework.transaction.annotation.Transactional
-	«ENDIF»
-	public «daoFor.name» create(«daoFor.name» «daoFor.name.toLowerCase()») {
-		«daoFor.name» temp = null;
-		«IF isContainerManaged == false»
-			«EXPAND beginTransactionForDaoMethod FOR this»
-		«ENDIF»
-		temp = em.merge(«daoFor.name.toLowerCase()»);
-		«IF isContainerManaged == false»
-			«EXPAND endTransactionForDaoMethod FOR this»
-		«ENDIF»
-		return temp;
-	}
-«ENDDEFINE»
-
-«DEFINE updateMethodForDao(Boolean isContainerManaged) FOR DAO»
-	«IF isContainerManaged == true»
-		@org.springframework.transaction.annotation.Transactional
-	«ENDIF»
-	public «daoFor.name» update(«daoFor.name» «daoFor.name.toLowerCase()») {
-		«daoFor.name» temp = null;
-		«IF isContainerManaged == false»
-			«EXPAND beginTransactionForDaoMethod FOR this»
-		«ENDIF»
-		temp = em.merge(«daoFor.name.toLowerCase()»);
-		«IF isContainerManaged == false»
-			«EXPAND endTransactionForDaoMethod FOR this»
-		«ENDIF»
-		return temp;
-	}
-«ENDDEFINE»
-
-«DEFINE deleteMethodForDao(Boolean isContainerManaged) FOR DAO»
-	«IF isContainerManaged == true»
-		@org.springframework.transaction.annotation.Transactional
-	«ENDIF»
-	public void delete(«daoFor.name» «daoFor.name.toLowerCase()») {
-		«IF isContainerManaged == false»
-			«EXPAND beginTransactionForDaoMethod FOR this»
-		«ENDIF»
-		em.remove(«daoFor.name.toLowerCase()»);
-		«IF isContainerManaged == false»
-			«EXPAND endTransactionForDaoMethod FOR this»
-		«ENDIF»
-	}
-«ENDDEFINE»
-
-«DEFINE containsMethodForDao(Boolean isContainerManaged) FOR DAO»
-	public boolean contains(«daoFor.name» «daoFor.name.toLowerCase()») {
-		return em.contains(«daoFor.name.toLowerCase()»);
-	}
-«ENDDEFINE»
-
-«DEFINE queryByExampleMethodForDao(Boolean isContainerManaged) FOR DAO»
-	public java.util.Collection<«daoFor.name»> queryByExample(«daoFor.name» «daoFor.name.toLowerCase()») {
-		return null;
-	}
-«ENDDEFINE»
-
-«DEFINE beginTransactionForDaoMethod FOR DAO»
-	javax.persistence.EntityTransaction tx = em.getTransaction();
-	tx.begin();
-«ENDDEFINE»
-
-«DEFINE endTransactionForDaoMethod FOR DAO»
-	tx.commit();
 «ENDDEFINE»
 
 «DEFINE persistenceProperties(String modelName) FOR PersistenceProperties»
