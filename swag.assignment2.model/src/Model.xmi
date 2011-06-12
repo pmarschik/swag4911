@@ -184,7 +184,16 @@
       </members>
       <members name="consistsOf" complexType="//@models.0/@entities.2" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="map" persistenceOptional="true"/>
     </entities>
-    <entities name="Troop"/>
+    <entities name="Troop" persistenceTableName="">
+      <members name="type" complexType="//@models.0/@entities.15" persistenceRelation="ManyToOne"/>
+      <members name="position" complexType="//@models.0/@entities.2" persistenceRelation="ManyToOne" persistenceOptional="true"/>
+      <members name="isOfLevel" complexType="//@models.0/@entities.16" persistenceRelation="ManyToOne"/>
+      <members name="owner" complexType="//@models.0/@entities.1" persistenceRelation="ManyToOne"/>
+      <members name="active" type="Boolean">
+        <column/>
+      </members>
+      <specialConstructor>public Troop(TroopType type, TroopLevel level, Tile position, Player owner) {&#xA;        this.type = type;&#xA;        this.position = position;&#xA;        this.owner = owner;&#xA;        this.isOfLevel = level;&#xA;        this.active = Boolean.TRUE;&#xA;    }</specialConstructor>
+    </entities>
     <entities name="Statistic">
       <members name="name" type="String">
         <column/>
@@ -204,6 +213,57 @@
         <members name="ranking" type="Integer"/>
       </embeddedId>
       <specialConstructor>public StatisticEntry(Statistic statistic, int ranking) {&#xA;&#x9;&#x9;this.statistic = statistic;&#xA;&#x9;&#x9;this.id.statisticId = statistic.getId();&#xA;&#x9;&#x9;this.id.ranking = ranking;&#xA;&#xA;&#x9;&#x9;statistic.getEntries().add(this);&#xA;&#x9;}</specialConstructor>
+    </entities>
+    <entities name="TroopType">
+      <members name="name" type="String">
+        <column/>
+      </members>
+      <members name="levels" complexType="//@models.0/@entities.16" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="troopType" persistenceOptional="true">
+        <persistenceCascadeType>CascadeType.ALL</persistenceCascadeType>
+      </members>
+      <members name="canFoundBase" type="Boolean">
+        <column/>
+      </members>
+    </entities>
+    <entities name="TroopLevel" superClass="//@models.0/@entities.10">
+      <members name="troopType" complexType="//@models.0/@entities.15" persistenceRelation="ManyToOne">
+        <joincolumn name="troopTypeId"/>
+      </members>
+      <members name="strength" type="Integer">
+        <column/>
+      </members>
+      <members name="speed" type="Integer">
+        <column/>
+      </members>
+      <members name="defense" type="Integer">
+        <column/>
+      </members>
+      <members name="cargo_capacity" type="Integer">
+        <column/>
+      </members>
+      <embeddedId name="Id">
+        <members name="level" type="Integer"/>
+        <members name="troopTypeId" type="Long"/>
+        <specialConstructor>public Id(int level, long troopTypeId) {&#xA;            this.level = level;&#xA;            this.troopTypeId = troopTypeId;&#xA;        }</specialConstructor>
+      </embeddedId>
+      <specialConstructor> public TroopLevel(TroopType troopType, int level) {&#xA;        this.setTroopType(troopType);&#xA;&#xA;        this.id.troopTypeId = troopType.getId();&#xA;        this.id.level = level;&#xA;&#xA;        this.getTroopType().getLevels().add(this);&#xA;    }</specialConstructor>
+      <specialMethod>@Override&#xA;    public Integer getLevel() {&#xA;        return id.level;&#xA;    }</specialMethod>
+    </entities>
+    <entities name="TroopAction" superClass="//@models.0/@entities.0">
+      <members name="concerns" complexType="//@models.0/@entities.12" hasMultipleValues="true" persistenceRelation="ManyToMany" persistenceOptional="true"/>
+      <members name="shouldFoundBase" type="Boolean"/>
+      <members name="source" complexType="//@models.0/@entities.2" persistenceRelation="ManyToOne"/>
+    </entities>
+    <entities name="TroopBuildAction" superClass="//@models.0/@entities.0">
+      <members name="troopType" complexType="//@models.0/@entities.15" persistenceRelation="ManyToOne"/>
+      <members name="troopLevel" complexType="//@models.0/@entities.16" persistenceRelation="ManyToOne"/>
+      <members name="amount" type="int"/>
+      <specialConstructor>public TroopBuildAction(Player player, Tile tile, TroopType type, TroopLevel level, int amount, Long duration) {&#xA;        super();&#xA;        this.setPlayer(player);&#xA;        this.setTarget(tile);&#xA;        this.setDuration(duration);&#xA;        this.setTroopType(type);&#xA;        this.setAmount(amount);&#xA;        this.setTroopLevel(level);&#xA;&#xA;    }</specialConstructor>
+    </entities>
+    <entities name="TroopUpgradeAction" superClass="//@models.0/@entities.0">
+      <members name="troop" type="" complexType="//@models.0/@entities.12" persistenceRelation="OneToOne" persistenceOptional="true"/>
+      <members name="troopLevel" complexType="//@models.0/@entities.16" persistenceRelation="ManyToOne"/>
+      <specialConstructor>public TroopUpgradeAction(Player player, Troop troop, TroopLevel troopLevel, Long duration) {&#xA;        this.setPlayer(player);&#xA;        this.setTroop(troop);&#xA;        this.setTroopLevel(troopLevel);&#xA;        this.setDuration(duration);&#xA;    }</specialConstructor>
     </entities>
     <enums name="ResourceType">
       <items value="STONE"/>
