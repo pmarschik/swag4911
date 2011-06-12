@@ -3,7 +3,6 @@ package swag49.web.controller;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
-import com.sun.javaws.jnl.XMLFormat;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -303,8 +302,7 @@ public class MapController {
         lazyInit();
 
         if (!loggedIn())
-//            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
-            return "NotLoggedIn";
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         //buildTest();
         return "redirect:../messaging/";
