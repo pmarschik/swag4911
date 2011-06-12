@@ -5,6 +5,7 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.transaction.annotation.Transactional;
 import swag49.dao.DataAccessObject;
 import swag49.gamelogic.MapLogic;
 import swag49.model.Action;
@@ -21,6 +22,7 @@ public abstract class ActionJobBase<T extends Action> extends QuartzJobBean {
 
 
     @Override
+    @Transactional("swag49.map")
     protected void executeInternal(JobExecutionContext context)
             throws JobExecutionException {
         logger.info("Executing job with name {} and group {}.", context.getJobDetail().getName(), context.getJobDetail().getGroup());

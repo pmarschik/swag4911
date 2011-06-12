@@ -5,44 +5,63 @@
 <spring:url value="/resources" var="resourcePath"/>
 
 <h2>Troops:</h2>
-<a class="contentLink" href="troopoverview.html?baseId=${tileInfo.baseId}"><img
-        src="${resourcePath}<spring:theme code='theme.image.misc.troops'/>" alt="Troops"></a>
+<table>
+    <tr>
+        <td><a class="contentLink" href="troopoverview.html?baseId=${tileInfo.baseId}"><img
+                src="${resourcePath}<spring:theme code='theme.image.misc.troops'/>" alt="watch troops" height="30"></a>
+        </td>
+        <td>Present Troops</td>
+    </tr>
+    <tr>
+        <td><a class="contentLink" href="traintroops.html?baseId=${tileInfo.baseId}"><img
+                src="${resourcePath}<spring:theme code='theme.image.misc.train_troops'/>" alt="train new troops"
+                height="30"></a></td>
+        <td>Train New Troops</td>
+    </tr>
+</table>
 
-<a class="contentLink" href="traintroops.html?baseId=${tileInfo.baseId}"><img
-        src="${resourcePath}<spring:theme code='theme.image.buildings.build'/>" alt="TrainTroops"></a>
 
 <h2>Squares:</h2>
-<table>
+<table border="1">
+    <tr>
+        <td>Name</td>
+        <td>Level</td>
+        <td>Resource Production</td>
+        <td>Upkeep Costs</td>
+        <td>Upgrade</td>
+    </tr>
+
     <%--@elvariable id="tileInfo" type="swag49.web.model.TileOverviewDTOFull"--%>
     <c:forEach items="${tileInfo.squares}" var="square">
         <tr>
             <c:choose>
-                <c:when test="${square.building != null && square.building.isOfLevel.id.level == 0}">
+                <c:when test="${square.building != null && square.building.level == 0}">
                     <!-- Building under construction -->
-                    <td>${square.building.type.name} under construction</td>
+                    <td colspan="5">${square.building.name} under construction</td>
                 </c:when>
 
-                <c:when test="${square.building != null && square.building.isOfLevel.id.level > 0}">
+                <c:when test="${square.building != null && square.building.level > 0}">
                     <!-- existing Building -->
-                    <td>${square.building.type.name} , Level ${square.building.isOfLevel.id.level}</td>
+                    <td>${square.building.name}</td>
+                    <td>${square.building.level}</td>
                     <td>
                         <table width="60" border="0">
                             <tr>
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.wood'/>" alt="Wood:"
                                          title="Wood" height="30"></td>
-                                <td>${square.building.isOfLevel.resourceProduction.amount_wood}</td>
+                                <td>${square.building.resourceProduction.amount_wood}</td>
 
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.stone'/>" alt="Stone:"
                                          title="Stone" height="30"></td>
-                                <td>${square.building.isOfLevel.resourceProduction.amount_stone}</td>
+                                <td>${square.building.resourceProduction.amount_stone}</td>
 
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.crops'/>"
                                          alt="Crops::" title="Crops" height="30"></td>
-                                <td>${square.building.isOfLevel.resourceProduction.amount_crops}</td>
+                                <td>${square.building.resourceProduction.amount_crops}</td>
 
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.gold'/>" alt="Gold:"
                                          title="Gold" height="30"></td>
-                                <td>${square.building.isOfLevel.resourceProduction.amount_gold}</td>
+                                <td>${square.building.resourceProduction.amount_gold}</td>
                             </tr>
                         </table>
                     </td>
@@ -51,35 +70,45 @@
                             <tr>
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.wood'/>" alt="Wood:"
                                          title="Wood" height="30"></td>
-                                <td>${square.building.isOfLevel.upkeepCosts.amount_wood}</td>
+                                <td>${square.building.upkeepCosts.amount_wood}</td>
 
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.stone'/>" alt="Stone:"
                                          title="Stone" height="30"></td>
-                                <td>${square.building.isOfLevel.upkeepCosts.amount_stone}</td>
+                                <td>${square.building.upkeepCosts.amount_stone}</td>
 
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.crops'/>"
                                          alt="Crops::" title="Crops" height="30"></td>
-                                <td>${square.building.isOfLevel.upkeepCosts.amount_crops}</td>
+                                <td>${square.building.upkeepCosts.amount_crops}</td>
 
                                 <td><img src="${resourcePath}<spring:theme code='theme.image.misc.gold'/>" alt="Gold:"
                                          title="Gold" height="30"></td>
-                                <td>${square.building.isOfLevel.upkeepCosts.amount_gold}</td>
+                                <td>${square.building.upkeepCosts.amount_gold}</td>
                             </tr>
                         </table>
                     </td>
                     <td>
-                        <%--<c:if test="${fn:length(square.building.type.levels) > square.building.isOfLevel.level}">--%>
-                            <%--<a href="buildingupgrade.html"><img src="<spring:theme code='theme.image.misc.upgrade'/>"--%>
-                                                                <%--alt="Upgrade"> </a>--%>
-                        <%--</c:if>--%>
+                        <c:choose>
+                            <c:when test="${square.building.canUpgrade && square.building.upgradeCosts != null}">
+                                <a href="buildingupgrade.html"><img
+                                        src="<spring:theme code='theme.image.misc.upgrade'/>"
+                                        alt="Upgrade"> </a>
+                            </c:when>
+                            <c:when test="${square.building.canUpgrade == false && square.building.upgradeCosts != null}">
+                                Upgrade in progress...
+                            </c:when>
+                            <c:otherwise>
+                                maximal level reached!!!
+                            </c:otherwise>
+                        </c:choose>
+
                     </td>
                 </c:when>
 
                 <c:otherwise>
                     <!-- Empty Square -->
                     <td colspan="2">Empty Square</td>
-                    <td><a class="contentLink"
-                           href="build.html?baseId=${square.id.baseId}&position=${square.id.position}"><img
+                    <td colspan="3"><a class="contentLink"
+                                       href="build.html?baseId=${square.baseId}&position=${square.position}"><img
                             src="${resourcePath}<spring:theme code='theme.image.buildings.build'/>" alt="Build"></a>
                     </td>
                 </c:otherwise>
@@ -87,31 +116,3 @@
         </tr>
     </c:forEach>
 </table>
-
-<c:if test="${availableTroops != null && fn:length(availableTroops)>0 }">
-    <h2>Train Troops:</h2>
-    <table>
-        <c:forEach items="${availableTroops}" var="troopType">
-            <tr>
-                <td><img src="<spring:theme code='theme.image.troops.${troopType.name}'/>" alt="${troopType.name}"/>
-                </td>
-                <td>${troopType.name}</td>
-                <td>
-                    <jsp:include page="displaycosts.jsp">
-                        <jsp:param name="resourceValue" value="${troopType.costs}"/>
-                    </jsp:include>
-                </td>
-                <td><a href="TODO"><img src="<spring:theme code='theme.image.buy'/>" alt="Buy"> </a></td>
-            </tr>
-        </c:forEach>
-    </table>
-</c:if>
-
-
-<!-- <select>
-<option>Small
-<option>Medium
-<option>Large
-<option>X-Large
-</select>
--->

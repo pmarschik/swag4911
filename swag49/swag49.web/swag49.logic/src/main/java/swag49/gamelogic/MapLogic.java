@@ -1,7 +1,6 @@
 package swag49.gamelogic;
 
 import com.google.common.collect.Lists;
-import swag49.gamelogic.exceptions.NotEnoughMoneyException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import swag49.dao.DataAccessObject;
+import swag49.gamelogic.exceptions.NotEnoughMoneyException;
 import swag49.model.*;
 import swag49.model.Map;
 import swag49.model.helper.ResourceValueHelper;
@@ -129,6 +129,9 @@ public class MapLogic {
 
             playerDAO.update(player);
 
+            troop.setActive(Boolean.FALSE);
+            troopDAO.update(troop);
+
             TroopUpgradeAction action = new TroopUpgradeAction(player, troop, troopLevel, duration);
         } else {
             throw new NotEnoughMoneyException();
@@ -147,6 +150,7 @@ public class MapLogic {
 
         if (nextLevel != null) {
             troop.setIsOfLevel(nextLevel);
+            troop.setActive(Boolean.TRUE);
 
             troopDAO.update(troop);
 
@@ -201,7 +205,7 @@ public class MapLogic {
             for (int i = 0; i < action.getAmount(); i++) {
                 //ad troops to that base
                 Troop troop = new Troop(type, action.getTroopLevel(), tile, action.getPlayer());
-
+                troop.setActive(Boolean.TRUE);
                 troop = troopDAO.create(troop);
 
                 //add troops to tile
@@ -232,6 +236,8 @@ public class MapLogic {
                 throw new NotEnoughMoneyException();
             }
 
+            ResourceValueHelper.remove(player.getResources(), levelOne.getBuildCosts());
+
             Building constructionYard = new Building(square);
 
             square.setBuilding(constructionYard);
@@ -243,6 +249,7 @@ public class MapLogic {
             BuildingLevel level = buildingLevelDAO.get(id);
 
             constructionYard.setIsOfLevel(level);
+            constructionYard.setActive(Boolean.FALSE);
 
             constructionYard = buildingDAO.create(constructionYard);
 
@@ -263,7 +270,7 @@ public class MapLogic {
         }
     }
 
-
+    @Transactional("swag49.map")
     public void upgradeBuilding(Building building) throws Exception {
 
         Player player = building.getSquare().getBase().getOwner();
@@ -283,8 +290,11 @@ public class MapLogic {
         }
 
         //reduce resources
-       // ResourceValueHelper.remove(player.getResources(), levelOne.getBuildCosts());
+        ResourceValueHelper.remove(player.getResources(), levelOne.getBuildCosts());
 
+
+        building.setActive(Boolean.FALSE);
+        building = buildingDAO.update(building);
 
         // create BuildAction
         BuildAction action = new BuildAction();
@@ -324,8 +334,10 @@ public class MapLogic {
 
         //remove troop location of troops
         for (Troop troop : troops) {
+
             troop.setPosition(null);
             troopDAO.update(troop);
+
         }
 
         action = troopActionDAO.create(action);
@@ -338,7 +350,7 @@ public class MapLogic {
         // sort troops according to start position
         HashMap<Tile, ArrayList<Troop>> map = new HashMap<Tile, ArrayList<Troop>>();
         for (Troop troop : troops) {
-            if (!map.containsKey(troop.getPosition())) {
+            if (map.containsKey(troop.getPosition())) {
                 map.get(troop.getPosition()).add(troop);
             } else {
                 ArrayList<Troop> list = new ArrayList<Troop>();
@@ -461,7 +473,7 @@ public class MapLogic {
 
         if (nextLevel != null) {
             building.setIsOfLevel(nextLevel);
-
+            building.setActive(Boolean.TRUE);
             buildingDAO.update(building);
 
             Player player = action.getPlayer();

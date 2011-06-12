@@ -25,10 +25,7 @@ import swag49.model.ResourceType;
 import swag49.model.helper.ResourceValueHelper;
 import swag49.transfer.model.*;
 import swag49.util.Log;
-import swag49.web.model.SendTroopDTO;
-import swag49.web.model.TileDTO;
-import swag49.web.model.TileOverviewDTOFull;
-import swag49.web.model.TroopsPerTileDTO;
+import swag49.web.model.*;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -316,6 +313,13 @@ public class MapController {
 
         for (Troop troop : troops) {
             Tile tile = troop.getPosition();
+
+            if(tile == null)       //then the troops are moving
+                continue;
+
+            if(troop.getActive() == false)    //troops are upgrading
+                continue;
+
             SendTroopDTO troopDTO = new SendTroopDTO();
             troopDTO.setSendMe(false);
             troopDTO.setId(troop.getId());
@@ -365,6 +369,7 @@ public class MapController {
     }
 
     @RequestMapping(value = "/sendTroops", method = RequestMethod.POST)
+    @Transactional("swag49.map")
     public String handleSendTroops(@ModelAttribute("troopsPerTile") TroopsPerTileDTO troopsPerTile,
                                    BindingResult bingBindingResult,
                                    Map<String, Object> modelMap) {
@@ -431,7 +436,60 @@ public class MapController {
             Base base = tile.getBase();
             if (base.getOwner().getUserId().equals(player.getUserId())) {
                 tileInfo.setEnemyTerritory(false);
-                tileInfo.setSquares(Sets.newHashSet(base.getConsistsOf()));
+
+                List<SquareDTO> squareDTOList = new ArrayList<SquareDTO>();
+
+                for (Square square : base.getConsistsOf()) {
+                    SquareDTO dto = new SquareDTO();
+
+                    dto.setBaseId(square.getId().getBaseId());
+                    dto.setPosition(square.getId().getPosition());
+
+                    Building building = square.getBuilding();
+                    if (building != null) {
+                        BuildingDTO buildingDTO = new BuildingDTO();
+                        buildingDTO.setLevel(building.getIsOfLevel().getLevel());
+                        buildingDTO.setResourceProduction(new ResourceValueDTO(building.getIsOfLevel().getResourceProduction().getAmount_gold(),
+                                building.getIsOfLevel().getResourceProduction().getAmount_wood(),
+                                building.getIsOfLevel().getResourceProduction().getAmount_stone(),
+                                building.getIsOfLevel().getResourceProduction().getAmount_crops()));
+
+                        buildingDTO.setUpkeepCosts(new ResourceValueDTO(building.getIsOfLevel().getUpkeepCosts().getAmount_gold(),
+                                building.getIsOfLevel().getUpkeepCosts().getAmount_wood(),
+                                building.getIsOfLevel().getUpkeepCosts().getAmount_stone(),
+                                building.getIsOfLevel().getUpkeepCosts().getAmount_crops()));
+
+                        buildingDTO.setName(building.getType().getName());
+
+                        buildingDTO.setCanUpgrade(building.getActive());
+
+                        BuildingLevel nextLevel = buildingLevelDAO.get(new BuildingLevel.Id(building.getIsOfLevel().getLevel() + 1, building.getType().getId()));
+
+                        if (nextLevel != null) {
+                            buildingDTO.setUpgradeCosts(new ResourceValueDTO(nextLevel.getBuildCosts().getAmount_gold(),
+                                    nextLevel.getBuildCosts().getAmount_wood(),
+                                    nextLevel.getBuildCosts().getAmount_stone(),
+                                    nextLevel.getBuildCosts().getAmount_crops()));
+
+                            buildingDTO.setUpgradeDuration(nextLevel.getUpgradeDuration());
+                        }
+
+                        dto.setBuilding(buildingDTO);
+                    } else {
+                        dto.setBuilding(null);
+                    }
+
+                    squareDTOList.add(dto);
+                }
+
+                Collections.sort(squareDTOList, new Comparator<SquareDTO>() {
+                    @Override
+                    public int compare(SquareDTO o1, SquareDTO o2) {
+                        return o1.getPosition() - o2.getPosition();
+                    }
+                });
+
+                tileInfo.setSquares(squareDTOList);
             } else {
                 tileInfo.setEnemyTerritory(true);
             }
@@ -476,7 +534,6 @@ public class MapController {
         return userName;
     }
 
-    //TEST
     @RequestMapping(value = "/buildingupgrade", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String getUpgradeBuilding(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
@@ -696,6 +753,91 @@ public class MapController {
 
         return "actions";
     }
+
+
+    @RequestMapping(value = "/canceltroopaction", method = RequestMethod.GET)
+    @Transactional("swag49.map")
+    public String cancelTroopAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
+
+        TroopAction action = troopActionDAO.get(Long.valueOf(id));
+        if (action == null) {
+            logger.error("Action with id " + id + " not found");
+            return ERROR;
+        }
+
+        if (action.getIsAbortable()) {
+            //create new action for the way back
+            Date now = new Date();
+            TroopAction newAction = new TroopAction();
+            newAction.setPlayer(action.getPlayer());
+            newAction.setConcerns(action.getConcerns());
+            newAction.setStartDate(now);
+            newAction.setShouldFoundBase(Boolean.FALSE);
+            newAction.setIsAbortable(Boolean.FALSE);
+            newAction.setDuration(now.getTime() - action.getStartDate().getTime());
+
+            newAction = troopActionDAO.create(newAction);
+
+            troopActionDAO.delete(action);
+        }
+
+
+        return "actions";
+    }
+
+
+    @RequestMapping(value = "/canceltroopupgradeaction", method = RequestMethod.GET)
+    @Transactional("swag49.map")
+    public String cancelTroopUpgradeAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
+        TroopUpgradeAction action = troopUpgradeActionDAO.get(id);
+        if (action == null) {
+            logger.error("Action with id " + id + " not found");
+            return ERROR;
+        }
+
+        if (action.getIsAbortable()) {
+            Troop troop = action.getTroop();
+            troop.setActive(Boolean.TRUE);
+
+            troopDAO.update(troop);
+
+            troopUpgradeActionDAO.delete(action);
+
+        }
+
+        return "actions";
+    }
+
+
+    @RequestMapping(value = "/cancelbuildaction", method = RequestMethod.GET)
+    @Transactional("swag49.map")
+    public String cancelBuildAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
+
+        BuildAction action = buildActionDAO.get(Long.valueOf(id));
+        if (action == null) {
+            logger.error("Action with id " + id + " not found");
+            return ERROR;
+        }
+
+        if (action.getIsAbortable()) {
+
+            Building building = action.getConcerns();
+
+            if (building.getIsOfLevel().getLevel().equals(0)) {
+                //delete construction yard
+                buildActionDAO.delete(action);
+                buildingDAO.delete(building);
+            } else {
+                building.setActive(Boolean.TRUE);
+                buildingDAO.update(building);
+                buildActionDAO.delete(action);
+            }
+        }
+
+
+        return "actions";
+    }
+
 
     @RequestMapping(value = "/troopoverview", method = RequestMethod.GET)
     @Transactional("swag49.map")
@@ -964,7 +1106,15 @@ public class MapController {
                         break;
                     }
                 }
-                int maxVal = (int) Math.sqrt(map.getConsistsOf().size());
+
+                int maxVal = homeBase.getLocatedOn().getId().getX() + VIEWSIZE + 1;
+                Tile.Id id = new Tile.Id(map.getId(), maxVal, 0);
+                Tile testTile = tileDAO.get(id);
+                while (testTile == null && maxVal > 0) {
+                    maxVal--;
+                    id.setX(maxVal);
+                    testTile = tileDAO.get(id);
+                }
 
                 x_low = Math.max(0, homeBase.getLocatedOn().getId().getX() - VIEWSIZE);
                 x_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getX() + VIEWSIZE + 1);

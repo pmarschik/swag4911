@@ -4,6 +4,7 @@ import swag49.model.Base;
 import swag49.model.Square;
 import swag49.transfer.model.TroopDTO;
 
+import java.util.List;
 import java.util.Set;
 
 public class TileOverviewDTOFull {
@@ -15,7 +16,7 @@ public class TileOverviewDTOFull {
 	private boolean enemyTerritory;
     private Set<TroopDTO> troops;
     private Base base;
-    private Set<Square> squares;
+    private List<SquareDTO> squares;
 
     public long getBaseId() {
         return baseId;
@@ -25,11 +26,11 @@ public class TileOverviewDTOFull {
         this.baseId = baseId;
     }
 
-    public Set<Square> getSquares() {
+    public List<SquareDTO> getSquares() {
         return squares;
     }
 
-    public void setSquares(Set<Square> squares) {
+    public void setSquares(List<SquareDTO> squares) {
         this.squares = squares;
     }
 

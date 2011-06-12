@@ -20,6 +20,7 @@ public class Building {
     @ManyToOne(optional = false)
     private BuildingLevel isOfLevel;
 
+    @Column(nullable = false)
     private Boolean active;
 
     public Boolean getActive() {

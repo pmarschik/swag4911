@@ -12,4 +12,4 @@
         <jsp:include page="tilebaseview.jsp"/>
     </c:otherwise>
 </c:choose>
-<a class="contentLink" href="sendtroops.html?x=${tileInfo.x}&${tileInfo.y}">Send Troops</a>
+<a class="contentLink" href="sendtroops.html?x=${tileInfo.x}&y=${tileInfo.y}">Send Troops</a>

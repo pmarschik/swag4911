@@ -20,24 +20,21 @@
                     <form:hidden path="tileList[${tileIndex.index}].x"/>
                     <form:hidden path="tileList[${tileIndex.index}].y"/>
                     <form:hidden path="tileList[${tileIndex.index}].mapId"/>
-                     <table>
-                    <c:forEach items="${tile.troops}" var="troop" varStatus="troopIndex">
+                    <table>
+                        <c:forEach items="${tile.troops}" var="troop" varStatus="troopIndex">
 
-                        <tr>
+                            <tr>
+                                <td>${troop.name}</td>
+                                <form:hidden path="tileList[${tileIndex.index}].troops[${troopIndex.index}].id"/>
+                                <form:hidden path="tileList[${tileIndex.index}].troops[${troopIndex.index}].name"/>
+                                <td>
+                                    <form:checkbox
+                                            path="tileList[${tileIndex.index}].troops[${troopIndex.index}].sendMe"/>
+                                </td>
+                            </tr>
 
-
-
-
-                            <td>${troop.name}</td>
-                            <form:hidden path="tileList[${tileIndex.index}].troops[${troopIndex.index}].id"/>
-                            <form:hidden path="tileList[${tileIndex.index}].troops[${troopIndex.index}].name"/>
-                            <td>
-                                <form:checkbox path="tileList[${tileIndex.index}].troops[${troopIndex.index}].sendMe"/>
-                            </td>
-                        </tr>
-
-                    </c:forEach>
-                      </table>
+                        </c:forEach>
+                    </table>
                 </div>
             </c:forEach>
         </div>

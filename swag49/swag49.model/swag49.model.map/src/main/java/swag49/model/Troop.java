@@ -1,9 +1,6 @@
 package swag49.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class Troop {
@@ -24,6 +21,7 @@ public class Troop {
     @ManyToOne(optional = false)
     private Player owner;
 
+    @Column(nullable = false)
     private Boolean active;
 
     public Boolean getActive() {
