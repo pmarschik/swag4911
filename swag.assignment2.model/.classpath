@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="swag49.model.common"/>
 	<classpathentry kind="src" path="swag49.model.map"/>
-	<classpathentry kind="src" path="swag49.model.user"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="lib/hibernate-envers-3.6.2.Final.jar"/>
