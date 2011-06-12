@@ -54,7 +54,7 @@
         <%--<a id="resourceRefresh" href="playerresources.html">Refresh</a>--%>
 </div>
 <div id="subContent">
-<div id="menu">Menu:<br/>
+<div id="menu" class="menu">
     <ul>
         <li><a class="contentLink" href="mapoverview.html">Map Overview</a></li>
         <li><a id="messagingLink" class="contentLink" href="messaging.html">Messaging</a>

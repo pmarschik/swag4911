@@ -85,7 +85,7 @@ public class MapLogic {
     private static final int START_AMOUNT_GOLD = 1000;
     private static final int START_AMOUNT_CROPS = 1000;
 
-    private static final int DISTANCEFACTOR = 600;
+    private static final int DISTANCEFACTOR = 60000;
 
     private static final int NO_SQUARES = 10;
     private static final int INCOME_WOOD = 15;
@@ -577,7 +577,7 @@ public class MapLogic {
         Set<Troop> defenders = tile.getTroops();
 
         if (!defenders.isEmpty() && !defenders.iterator().next().getOwner().equals(action.getPlayer())) {
-            enemyTerritory = false;
+            enemyTerritory = true;
             otherPlayer = defenders.iterator().next().getOwner();
         }
 
@@ -619,6 +619,14 @@ public class MapLogic {
 
                     otherPlayer.getOwns().remove(base);
                     playerDAO.update(otherPlayer);
+
+                    tile.getTroops().addAll(action.getConcerns());
+                    for (Troop troop : action.getConcerns()) {
+                        troop.setPosition(tile);
+                        troopDAO.update(troop);
+                    }
+
+                    tileDAO.update(tile);
 
                     //write msg to both players
                     sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
@@ -665,6 +673,7 @@ public class MapLogic {
                         playerDAO.update(action.getPlayer());
                         playerDAO.update(otherPlayer);
 
+
                         if (canBuildBase && !tile.getBase().isHome()) {
                             Base base = tile.getBase();
 
@@ -675,6 +684,14 @@ public class MapLogic {
                             base = baseDAO.update(base);
                             playerDAO.update(action.getPlayer());
                             playerDAO.update(otherPlayer);
+
+                            tile.getTroops().addAll(attackers);
+                            for (Troop troop : attackers) {
+                                troop.setPosition(tile);
+                                troopDAO.update(troop);
+                            }
+
+                            tileDAO.update(tile);
 
 
                             sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
@@ -689,6 +706,15 @@ public class MapLogic {
                         }
                     } else if (canBuildBase) {
                         Base base = createBase(tile, action.getPlayer());
+
+                        tile.getTroops().addAll(action.getConcerns());
+                        for (Troop troop : action.getConcerns()) {
+                            troop.setPosition(tile);
+                            troopDAO.update(troop);
+                        }
+
+                        tileDAO.update(tile);
+
                         //write msg to player
                         sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
                                 "You have successfully found a new base at tile (" + tile.getId().getX() + "," +
@@ -731,11 +757,28 @@ public class MapLogic {
             deadTroops_defenders = calculateAttack(defenders, attackers);
 
             // remove victims of the sets
-            if (!deadTroops_defenders.isEmpty())
-                defenders.removeAll(deadTroops_defenders);
+            if (!deadTroops_defenders.isEmpty()) {
+                for (Troop dead : deadTroops_defenders) {
+                    for (Troop def : defenders) {
+                        if (dead.getId().equals(def.getId())) {
+                            defenders.remove(def);
+                            break;
+                        }
+                    }
+                }
+            }
 
-            if (!deadTroops_attacker.isEmpty())
-                attackers.removeAll(deadTroops_attacker);
+
+            if (!deadTroops_attacker.isEmpty()) {
+                for (Troop dead : deadTroops_attacker) {
+                    for (Troop att : attackers) {
+                        if (dead.getId().equals(att.getId())) {
+                            attackers.remove(att);
+                            break;
+                        }
+                    }
+                }
+            }
 
             // remove victims in persistence layer
             for (Troop troop : deadTroops_attacker) {
@@ -904,10 +947,14 @@ public class MapLogic {
     }
 
     private void sendMessage(Player sender, Player receiver, String subject, String content) {
-        MessageDTO message = new MessageDTO(null, subject, content, sender.getUserId(), null, receiver.getUserId(),
-                null, new Date(), new Date(), sender.getPlays().getUrl());
+        try {
+            MessageDTO message = new MessageDTO(null, subject, content, sender.getUserId(), null, receiver.getUserId(),
+                    null, new Date(), new Date(), sender.getPlays().getUrl());
 
-        restTemplate.put("http://localhost:8080/messaging/send", message);
+            restTemplate.put("http://localhost:8080/messaging/send", message);
+        } catch (Exception e) {
+            logger.error("Error during messaging", e);
+        }
     }
 
 }

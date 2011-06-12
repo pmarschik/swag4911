@@ -13,7 +13,18 @@ body
 	display:block;
 	width:100%;
     background-color: #cccccc;
+    background-image:url('../images/misc/stone_texture1.jpg');
 }
+
+#menu a:link {text-decoration: none; color:white;}
+#menu a:visited {text-decoration: none; color:white;}
+#menu a:active {text-decoration: none; color:white;}
+#menu a:hover {text-decoration: underline; ; color:white;}
+
+a:link {text-decoration: underline; color:black;}
+a:visited {text-decoration: underline; color:black;}
+a:active {text-decoration: underline; color:red;}
+a:hover {text-decoration: underline; ; color:red;}
 
 #subContent
 {
@@ -21,6 +32,11 @@ body
 	border-width:2px;
 	border-color:black;
 	width:100%;
+}
+
+#playerResources
+{
+    color:white;
 }
 
 .tilePic
@@ -50,6 +66,7 @@ img.tilePic
 	border-right-width:2px;
 	border-right-color:black;
     background-color:#cccccc;
+    background-image:url('../images/misc/stone_texture1.jpg');
 }
 
 #menu ul
@@ -61,6 +78,7 @@ img.tilePic
 {
 	float:left;
 	text-align:left;
+    padding:25px;
 }
 
 #resourceTable
@@ -69,6 +87,7 @@ img.tilePic
 	border-style:solid;
 	border-width:1px;
 	border-color:black;
+    color:white;
 }
 
 .arrowUpCell

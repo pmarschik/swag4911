@@ -5,16 +5,19 @@
 <spring:url value="/resources" var="resourcePath"/>
 
 
-<h2>Send to this position:</h2>
+<img
+                src="${resourcePath}<spring:theme code='theme.image.troops.movement'/>" alt="Troop Movement"
+                width="200">
 <c:if test="${troopsPerTile.tileList != null && fn:length(troopsPerTile.tileList)>0 }">
     <form:form method="post" action="./sendTroops" commandName="troopsPerTile">
+        Found new base <form:checkbox path="foundBase"/>
         <form:hidden path="x"/>
         <form:hidden path="y"/>
-        <div id="accordion">
+        <%--<div id="accordion">--%>
 
             <c:forEach items="${troopsPerTile.tileList}" var="tile" varStatus="tileIndex">
 
-                <h3><a href="#">Tile</a></h3>
+                <h3>Tile X: ${tile.x} Y: ${tile.y}</h3>
 
                 <div>
                     <form:hidden path="tileList[${tileIndex.index}].x"/>
@@ -37,13 +40,13 @@
                     </table>
                 </div>
             </c:forEach>
-        </div>
-         <form:checkbox path="foundBase"/>
+        <%--</div>--%>
+
         <input class="button" type="submit" value="Send"/>
     </form:form>
 </c:if>
-<script type="text/javascript">
-    $(function() {
-        $("#accordion").accordion();
-    });
-</script>
+<%--<script type="text/javascript">--%>
+    <%--$(function() {--%>
+        <%--$("#accordion").accordion();--%>
+    <%--});--%>
+<%--</script>--%>
