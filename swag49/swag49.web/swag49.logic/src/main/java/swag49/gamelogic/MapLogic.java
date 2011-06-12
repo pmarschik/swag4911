@@ -574,7 +574,7 @@ public class MapLogic {
         }
 
         // check if other troops are on that tile
-        Set<Troop> defenders = tile.getTroops();
+        List<Troop> defenders = new ArrayList<Troop>(tile.getTroops());
 
         if (!defenders.isEmpty() && !defenders.iterator().next().getOwner().equals(action.getPlayer())) {
             enemyTerritory = true;
@@ -655,10 +655,14 @@ public class MapLogic {
                                     action.getPlayer() +
                                     " . \n  Unfortunately, the attacking troops robed your base and stole some resources from you.");
 
+
+                    //send attackers home
+                    sendHome(action.getConcerns(), action.getSource(), tile);
                 }
             } else {
                 // oho - enemies....FIGHT!!!!
-                Set<Troop> attackers = new HashSet<Troop>(action.getConcerns());
+                List<Troop> attackers = new ArrayList<Troop>(action.getConcerns());
+
                 boolean attackerWin = calculateFight(action.getPlayer(), otherPlayer,
                         attackers, defenders, tile);
 
@@ -685,6 +689,7 @@ public class MapLogic {
                             playerDAO.update(action.getPlayer());
                             playerDAO.update(otherPlayer);
 
+                            // attacking troops stay on the tile
                             tile.getTroops().addAll(attackers);
                             for (Troop troop : attackers) {
                                 troop.setPosition(tile);
@@ -702,31 +707,39 @@ public class MapLogic {
                                     "Player " + action.getPlayer().getId() + " has taken your base at  (" + tile.getId().getX() + "," + tile.getId().getY() +
                                             ").");
                         } else {
-                            sendHome(attackers, action.getSource());
+                            sendHome(attackers, action.getSource(), tile);
                         }
                     } else if (canBuildBase) {
                         Base base = createBase(tile, action.getPlayer());
-
-                        tile.getTroops().addAll(action.getConcerns());
-                        for (Troop troop : action.getConcerns()) {
-                            troop.setPosition(tile);
-                            troopDAO.update(troop);
-                        }
-
-                        tileDAO.update(tile);
 
                         //write msg to player
                         sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
                                 "You have successfully found a new base at tile (" + tile.getId().getX() + "," +
                                         tile.getId().getY() + ").");
 
+
+                        tile.getTroops().addAll(attackers);
+                        for (Troop troop : attackers) {
+                            troop.setPosition(tile);
+                            troopDAO.update(troop);
+                        }
+
+                        tileDAO.update(tile);
                     } else {
                         //stay
+
+                        tile.getTroops().addAll(attackers);
+                        for (Troop troop : attackers) {
+                            troop.setPosition(tile);
+                            troopDAO.update(troop);
+                        }
+
+                        tileDAO.update(tile);
                     }
                 } else {
                     if (!attackers.isEmpty()) {
                         // send attacking army home to mom
-                        sendHome(attackers, action.getSource());
+                        sendHome(attackers, action.getSource(), tile);
                     }
                 }
             }
@@ -734,35 +747,41 @@ public class MapLogic {
     }
 
     @Transactional("swag49.map")
-    private void sendHome(Set<Troop> attackers, Tile destination) {
+    private void sendHome(Collection<Troop> attackers, Tile destination, Tile source) {
         TroopAction homeAction = new TroopAction();
-        homeAction.setConcerns(attackers);
-        homeAction.setShouldFoundBase(false);
+        homeAction.getConcerns().addAll(attackers);
+        homeAction.setShouldFoundBase(Boolean.FALSE);
         homeAction.setTarget(destination);
-        homeAction.setIsAbortable(false);
+        homeAction.setIsAbortable(Boolean.FALSE);
+        homeAction.setSource(source);
+        homeAction.setStartDate(new Date());
+        homeAction.setDuration(calculateTravelTime(source, destination, attackers));
+        homeAction.setPlayer(attackers.iterator().next().getOwner());
 
         homeAction = troopActionDAO.create(homeAction);
     }
 
     @Transactional("swag49.map")
     private boolean calculateFight(Player attackers_owner, Player defenders_owner,
-                                   Set<Troop> attackers, Set<Troop> defenders, Tile tile) {
+                                   List<Troop> tmpAttackers, List<Troop> tmpDefenders, Tile tile) {
+
 
         Collection<Troop> deadTroops_attacker = null;
         Collection<Troop> deadTroops_defenders = null;
 
         do {
             // calculate victims
-            deadTroops_attacker = calculateAttack(attackers, defenders);
-            deadTroops_defenders = calculateAttack(defenders, attackers);
+            deadTroops_defenders = calculateAttack(tmpAttackers, tmpDefenders);
+            deadTroops_attacker = calculateAttack(tmpDefenders, tmpAttackers);
 
             // remove victims of the sets
             if (!deadTroops_defenders.isEmpty()) {
                 for (Troop dead : deadTroops_defenders) {
-                    for (Troop def : defenders) {
-                        if (dead.getId().equals(def.getId())) {
-                            defenders.remove(def);
-                            break;
+                    Iterator<Troop> iter = tmpDefenders.iterator();
+                    while (iter.hasNext()) {
+                        Troop t = iter.next();
+                        if (t.getId().equals(dead.getId())) {
+                            iter.remove();
                         }
                     }
                 }
@@ -771,21 +790,38 @@ public class MapLogic {
 
             if (!deadTroops_attacker.isEmpty()) {
                 for (Troop dead : deadTroops_attacker) {
-                    for (Troop att : attackers) {
-                        if (dead.getId().equals(att.getId())) {
-                            attackers.remove(att);
-                            break;
+
+                    Iterator<Troop> iter = tmpAttackers.iterator();
+                    while (iter.hasNext()) {
+                        Troop t = iter.next();
+                        if (t.getId().equals(dead.getId())) {
+                            iter.remove();
                         }
                     }
+                    /*         for (Troop att : tmpAttackers) {
+                     if (dead.getId().equals(att.getId())) {
+                         tmpAttackers.remove(att);
+                         break;
+                     }
+                 }   */
                 }
             }
 
             // remove victims in persistence layer
             for (Troop troop : deadTroops_attacker) {
+                //update upkeep
+                ResourceValueHelper.remove(troop.getOwner().getUpkeep(), troop.getIsOfLevel().getUpkeepCosts());
+                playerDAO.update(troop.getOwner());
+
                 troopDAO.delete(troop);
+
             }
 
             for (Troop troop : deadTroops_defenders) {
+                //update upkeep
+                ResourceValueHelper.remove(troop.getOwner().getUpkeep(), troop.getIsOfLevel().getUpkeepCosts());
+                playerDAO.update(troop.getOwner());
+
                 troopDAO.delete(troop);
 
                 tile.getTroops().remove(troop);
@@ -794,7 +830,7 @@ public class MapLogic {
         } while (!deadTroops_attacker.isEmpty()
                 && !deadTroops_defenders.isEmpty());
 
-        if (attackers.size() > 0 && defenders.isEmpty()) {
+        if (tmpAttackers.size() > 0 && tmpDefenders.isEmpty()) {
             // attacker win
             // write MSG to both player about the result of the fight
             sendMessage(attackers_owner, attackers_owner, SUBJECT_FIGHTRESULT,
@@ -807,11 +843,8 @@ public class MapLogic {
                             "). \n  Unfortunately, the defending troops where too strong and all your troops have been destroyed.");
 
 
-            // attacking troops stay on the tile
-            tile.getTroops().addAll(attackers);
-
             return true;
-        } else if (defenders.size() > 0 && attackers.isEmpty()) {
+        } else if (tmpDefenders.size() > 0 && tmpAttackers.isEmpty()) {
             // defenders win
             // write MSG to both player about the result of the fight
             sendMessage(attackers_owner, attackers_owner, SUBJECT_FIGHTRESULT,
@@ -827,7 +860,7 @@ public class MapLogic {
             return false;
         } else {
             // draw
-            if (defenders.size() == 0 && attackers.size() == 0) {
+            if (tmpDefenders.size() == 0 && tmpAttackers.size() == 0) {
                 // war - what is it good for?
 
                 // write MSG to both player that they lost their army
@@ -859,7 +892,7 @@ public class MapLogic {
     }
 
     private ResourceValue calculateBooty(Player defenders_owner,
-                                         Set<Troop> attackers) {
+                                         Collection<Troop> attackers) {
 
         ResourceValue booty = new ResourceValue();
         // determine maximal resources by dividing players resources by
@@ -924,8 +957,8 @@ public class MapLogic {
         return i;
     }
 
-    private Collection<Troop> calculateAttack(Set<Troop> attackers,
-                                              Set<Troop> defenders) {
+    private Collection<Troop> calculateAttack(List<Troop> attackers,
+                                              List<Troop> defenders) {
 
         List<Troop> deadTroops = new ArrayList<Troop>();
         int strength_attacker = 0;
