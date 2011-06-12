@@ -77,7 +77,11 @@
 	«IF persistenceEmbeddable == true»
 		@javax.persistence.Embeddable
 	«ELSE»
-		@javax.persistence.Entity
+		«IF mappedSupperClass == true»
+			@javax.persistence.MappedSuperclass
+		«ELSE»
+			@javax.persistence.Entity
+		«ENDIF»
 		«IF persistenceTableName != null && persistenceTableName.length > 0»
 			@javax.persistence.Table(name = "«persistenceTableName»")
 		«ENDIF»
@@ -223,7 +227,7 @@
 	«ENDIF»
 	«IF attributeOverride != null»
 		@javax.persistence.AttributeOverrides({
-		«EXPAND singleAttributeOverride FOREACH attributeOverride.attributeOverrides-»
+		«EXPAND singleAttributeOverride FOREACH attributeOverride.attributeOverrides SEPARATOR ','-»
 		})
 	«ENDIF»
 	«IF type == "java.util.Date"-»
@@ -262,7 +266,7 @@
 «ENDDEFINE»
 
 «DEFINE singleAttributeOverride FOR PerstistenceAttributeOverride-»
-	@javax.persistence.AttributeOverride(name = "«name»", column = @javax.persistence.Column(name = "«column»")),
+	@javax.persistence.AttributeOverride(name = "«name»", column = @javax.persistence.Column(name = "«column»"))
 «ENDDEFINE»
 
 «DEFINE entityClassMemberGetter FOR Member»
@@ -422,7 +426,7 @@
 		«ELSE-»
 			@Transactional("swag49.map")
 		«ENDIF»
-		public class «name» extends AbstractDataAccessObject<«daoFor.name», String> {
+		public class «name» extends AbstractDataAccessObject<«daoFor.name», «pk»> {
 			«IF modelName == "swag49.model.user"-»
     			@PersistenceContext(unitName = "swag49.user")
     		«ELSE-»

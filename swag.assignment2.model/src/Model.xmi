@@ -29,26 +29,26 @@
       <members name="actions" complexType="//@models.0/@entities.0" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="player" persistenceOptional="true"/>
       <members name="resources" complexType="//@models.0/@entities.4">
         <attributeOverride>
-          <attributeOverrides name="amount_gold" column="production_gold"/>
-          <attributeOverrides name="amount_stone" column="production_stone"/>
-          <attributeOverrides name="amount_wood" column="production_wood"/>
-          <attributeOverrides name="amount_crops" column="production_crops"/>
+          <attributeOverrides name="amount_gold" column="resources_gold"/>
+          <attributeOverrides name="amount_stone" column="resources_stone"/>
+          <attributeOverrides name="amount_wood" column="resources_wood"/>
+          <attributeOverrides name="amount_crops" column="resources_crops"/>
         </attributeOverride>
       </members>
       <members name="income" complexType="//@models.0/@entities.4">
         <attributeOverride>
-          <attributeOverrides name="amount_gold" column="production_gold"/>
-          <attributeOverrides name="amount_stone" column="production_stone"/>
-          <attributeOverrides name="amount_wood" column="production_wood"/>
-          <attributeOverrides name="amount_crops" column="production_crops"/>
+          <attributeOverrides name="amount_gold" column="income_gold"/>
+          <attributeOverrides name="amount_stone" column="income_stone"/>
+          <attributeOverrides name="amount_wood" column="income_wood"/>
+          <attributeOverrides name="amount_crops" column="income_crops"/>
         </attributeOverride>
       </members>
       <members name="upkeep" complexType="//@models.0/@entities.4">
         <attributeOverride>
-          <attributeOverrides name="amount_gold" column="production_gold"/>
-          <attributeOverrides name="amount_stone" column="production_stone"/>
-          <attributeOverrides name="amount_wood" column="production_wood"/>
-          <attributeOverrides name="amount_crops" column="production_crops"/>
+          <attributeOverrides name="amount_gold" column="upkeep_gold"/>
+          <attributeOverrides name="amount_stone" column="upkeep_stone"/>
+          <attributeOverrides name="amount_wood" column="upkeep_wood"/>
+          <attributeOverrides name="amount_crops" column="upkeep_crops"/>
         </attributeOverride>
       </members>
     </entities>
@@ -67,7 +67,7 @@
       </embeddedId>
       <specialConstructor>&#x9;public Tile(Map map, int x, int y) {&#xA;&#x9;&#x9;this.map = map;&#xA;        this.id = new Id(map.getId(),x,y);&#xA;&#xA;//&#x9;&#x9;map.getConsistsOf().add(this);&#xA;&#x9;}</specialConstructor>
     </entities>
-    <entities name="Base">
+    <entities name="Base" specialID="">
       <members name="home" type="Boolean">
         <column/>
       </members>
@@ -83,6 +83,7 @@
         </attributeOverride>
       </members>
       <specialConstructor>public Base(Tile tile) {&#xA;        this();&#xA;        this.locatedOn = tile;&#xA;    }</specialConstructor>
+      <specialMethod>public Boolean isHome() {&#xA;        return home;&#xA;    }&#xA;</specialMethod>
     </entities>
     <entities name="ResourceValue" persistenceEmbeddable="true" noDefaultConstructor="true">
       <members name="amount_gold" type="Integer"/>
@@ -153,24 +154,24 @@
       <specialConstructor>public BuildingLevel(BuildingType buildingType, int level) {&#xA;&#x9;&#x9;this.buildingType = buildingType;&#xA;&#xA;&#x9;&#x9;this.id.buildingTypeId = buildingType.getId();&#xA;&#x9;&#x9;this.id.level = level;&#xA;&#xA;&#x9;&#x9;this.buildingType.getLevels().add(this);&#xA;&#x9;}</specialConstructor>
       <specialMethod>@Override&#xA;&#x9;public Integer getLevel() {&#xA;&#x9;&#x9;return id.level;&#xA;&#x9;}</specialMethod>
     </entities>
-    <entities name="LevelBase" persistenceSuperclass="true" noID="true">
+    <entities name="LevelBase" persistenceSuperclass="true" noID="true" mappedSupperClass="true">
       <members name="upgradeDuration" type="Long">
         <column/>
       </members>
       <members name="upkeepCosts" complexType="//@models.0/@entities.4">
         <attributeOverride>
-          <attributeOverrides name="amount_gold" column="production_gold"/>
-          <attributeOverrides name="amount_stone" column="production_stone"/>
-          <attributeOverrides name="amount_wood" column="production_wood"/>
-          <attributeOverrides name="amount_crops" column="production_crops"/>
+          <attributeOverrides name="amount_gold" column="upkeep_gold"/>
+          <attributeOverrides name="amount_stone" column="upkeep_stone"/>
+          <attributeOverrides name="amount_wood" column="upkeep_wood"/>
+          <attributeOverrides name="amount_crops" column="upkeep_crops"/>
         </attributeOverride>
       </members>
       <members name="buildCosts" complexType="//@models.0/@entities.4">
         <attributeOverride>
-          <attributeOverrides name="amount_gold" column="production_gold"/>
-          <attributeOverrides name="amount_stone" column="production_stone"/>
-          <attributeOverrides name="amount_wood" column="production_wood"/>
-          <attributeOverrides name="amount_crops" column="production_crops"/>
+          <attributeOverrides name="amount_gold" column="cost_gold"/>
+          <attributeOverrides name="amount_stone" column="cost_stone"/>
+          <attributeOverrides name="amount_wood" column="cost_wood"/>
+          <attributeOverrides name="amount_crops" column="cost_crops"/>
         </attributeOverride>
       </members>
       <specialMethod>public abstract Integer getLevel();</specialMethod>
@@ -198,7 +199,7 @@
       <members name="name" type="String">
         <column/>
       </members>
-      <members name="entries" complexType="//@models.0/@entities.14" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="statistics" persistenceFetchType="FetchType.EAGER" persistenceOptional="true"/>
+      <members name="entries" complexType="//@models.0/@entities.14" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="statistic" persistenceFetchType="FetchType.EAGER" persistenceOptional="true"/>
     </entities>
     <entities name="StatisticEntry" specialID="">
       <members name="statistic" complexType="//@models.0/@entities.13" persistenceRelation="ManyToOne">
@@ -213,6 +214,7 @@
         <members name="ranking" type="Integer"/>
       </embeddedId>
       <specialConstructor>public StatisticEntry(Statistic statistic, int ranking) {&#xA;&#x9;&#x9;this.statistic = statistic;&#xA;&#x9;&#x9;this.id.statisticId = statistic.getId();&#xA;&#x9;&#x9;this.id.ranking = ranking;&#xA;&#xA;&#x9;&#x9;statistic.getEntries().add(this);&#xA;&#x9;}</specialConstructor>
+      <specialMethod>public Integer getRanking() {&#xA;        return id.ranking;&#xA;    }</specialMethod>
     </entities>
     <entities name="TroopType">
       <members name="name" type="String">
@@ -265,6 +267,24 @@
       <members name="troopLevel" complexType="//@models.0/@entities.16" persistenceRelation="ManyToOne"/>
       <specialConstructor>public TroopUpgradeAction(Player player, Troop troop, TroopLevel troopLevel, Long duration) {&#xA;        this.setPlayer(player);&#xA;        this.setTroop(troop);&#xA;        this.setTroopLevel(troopLevel);&#xA;        this.setDuration(duration);&#xA;    }</specialConstructor>
     </entities>
+    <daos daoFor="//@models.0/@entities.0" name="ActionDAO" persistenceInjection="Member" pk="Long"/>
+    <daos daoFor="//@models.0/@entities.3" name="BaseDAO" persistenceInjection="Member" pk="Long"/>
+    <daos daoFor="//@models.0/@entities.5" name="BuildActionDAO" persistenceInjection="Member" pk="Long"/>
+    <daos daoFor="//@models.0/@entities.6" name="BuildingDAO" persistenceInjection="Member" pk="swag49.model.Square.Id"/>
+    <daos daoFor="//@models.0/@entities.9" name="BuildingLevelDAO" persistenceInjection="Member" pk="BuildingLevel.Id"/>
+    <daos daoFor="//@models.0/@entities.8" name="BuildingTypeDAO" persistenceInjection="Member" pk="Long"/>
+    <daos daoFor="//@models.0/@entities.11" name="MapDAO" persistenceInjection="Member" pk="Long"/>
+    <daos daoFor="//@models.0/@entities.1" name="PlayerDAO" persistenceInjection="Member" pk="Long"/>
+    <daos daoFor="//@models.0/@entities.7" name="SquareDAO" persistenceInjection="Member" pk="Square.Id"/>
+    <daos daoFor="//@models.0/@entities.13" name="StatisticDAO" persistenceInjection="Member" pk="Long"/>
+    <daos daoFor="//@models.0/@entities.14" name="StatisticEntryDAO" persistenceInjection="Member" pk="StatisticEntry.Id"/>
+    <daos daoFor="//@models.0/@entities.2" name="TileDAO" persistenceInjection="Member" pk="Tile.Id"/>
+    <daos daoFor="//@models.0/@entities.17" name="TroopActionDAO" persistenceInjection="Member" pk="Long"/>
+    <daos daoFor="//@models.0/@entities.18" name="TroopBuildActionDAO" persistenceInjection="Member" pk="Long"/>
+    <daos daoFor="//@models.0/@entities.12" name="TroopDAO" persistenceInjection="Member" pk="Long"/>
+    <daos daoFor="//@models.0/@entities.16" name="TroopLevelDAO" persistenceInjection="Member" pk="TroopLevel.Id"/>
+    <daos daoFor="//@models.0/@entities.15" name="TroopTypeDAO" persistenceInjection="Member" pk="Long"/>
+    <daos daoFor="//@models.0/@entities.19" name="TroopUpgradeActionDAO" persistenceInjection="Member" pk="Long"/>
     <enums name="ResourceType">
       <items value="STONE"/>
       <items value="WOOD"/>
@@ -304,8 +324,11 @@
       </members>
       <members name="mapLocations" complexType="//@models.1/@entities.1" hasMultipleValues="true" persistenceRelation="ManyToMany" persistenceMappedBy="" persistenceOptional="true"/>
       <members name="address" complexType="//@models.1/@entities.0"/>
+      <members name="email" type="String">
+        <column persistenceLength="100"/>
+      </members>
     </entities>
-    <daos daoFor="//@models.1/@entities.1" name="MapLocationDAO" persistenceInjection="Member"/>
-    <daos daoFor="//@models.1/@entities.2" name="UserDAO"/>
+    <daos daoFor="//@models.1/@entities.1" name="MapLocationDAO" persistenceInjection="Member" pk="Long"/>
+    <daos daoFor="//@models.1/@entities.2" name="UserDAO" pk="String"/>
   </models>
 </metamodel:SWA>
