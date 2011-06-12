@@ -14,5 +14,7 @@
 	<classpathentry kind="lib" path="lib/spring-test-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/validation-api-1.0.0.GA.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j13-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/org.springframework.transaction-3.0.2.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/google-collect-snapshot-20090211.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

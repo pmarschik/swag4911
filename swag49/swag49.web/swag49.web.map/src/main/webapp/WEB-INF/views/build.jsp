@@ -21,7 +21,7 @@
                                      title="Stone" height="30"></td>
                             <td>${building.costs.amount_stone}</td>
 
-                            <td><img src="${resourcePath}<spring:theme code='theme.image.misc.crops'/>" alt="Crops::"
+                            <td><img src="${resourcePath}<spring:theme code='theme.image.misc.crops'/>" alt="Crops:"
                                      title="Crops" height="30"></td>
                             <td>${building.costs.amount_crops}</td>
 

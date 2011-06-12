@@ -22,7 +22,6 @@ public abstract class ActionJobBase<T extends Action> extends QuartzJobBean {
 
 
     @Override
-    @Transactional("swag49.map")
     protected void executeInternal(JobExecutionContext context)
             throws JobExecutionException {
         logger.info("Executing job with name {} and group {}.", context.getJobDetail().getName(), context.getJobDetail().getGroup());
