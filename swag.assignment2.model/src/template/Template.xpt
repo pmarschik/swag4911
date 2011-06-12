@@ -211,14 +211,14 @@
 		@org.hibernate.annotations.Index(name = "«index.name»")
 	«ENDIF»
 	«IF attributeOverride != null»
-		@AttributeOverrides({
-		«EXPAND singleAttributeOverride FOREACH attributeOverride.attributeOverrides»
-		}
+		@javax.persistence.AttributeOverrides({
+		«EXPAND singleAttributeOverride FOREACH attributeOverride.attributeOverrides-»
+		})
 	«ENDIF»
 «ENDDEFINE»
 
-«DEFINE singleAttributeOverride FOR PerstistenceAttributeOverride»
-	@AttributeOverride(name = "«name»", column = @Column(name = "«column»"))
+«DEFINE singleAttributeOverride FOR PerstistenceAttributeOverride-»
+	@javax.persistence.AttributeOverride(name = "«name»", column = @javax.persistence.Column(name = "«column»")),
 «ENDDEFINE»
 
 «DEFINE entityClassMemberGetter FOR Member»
@@ -245,7 +245,7 @@
 			public void delete(T model);
 			public boolean contains(T model);
 			
-			public Collection<T> queryByExample(T model);
+			public java.util.Collection<T> queryByExample(T model);
 			
 		}
 	«ENDFILE»
@@ -351,14 +351,8 @@
 «ENDDEFINE»
 
 «DEFINE queryByExampleMethodForDao(Boolean isContainerManaged) FOR DAO»
-	public Collection<«daoFor.name»> contains(«daoFor.name» «daoFor.name.toLowerCase()») {
-		Session session = (Session) em.getDelegate();
-		Criteria criteria = session.createCriteria(«daoFor.name».class);
-
-		if (model != null)
-			criteria.add(Example.create(model));
-
-		return criteria.list();
+	public java.util.Collection<«daoFor.name»> queryByExample(«daoFor.name» «daoFor.name.toLowerCase()») {
+		return null;
 	}
 «ENDDEFINE»
 

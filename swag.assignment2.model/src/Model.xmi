@@ -160,7 +160,6 @@
   <entities name="User" persistenceTableName="swag_user">
     <members name="username" type="String">
       <column persistenceUnique="true" persistenceLength="50"/>
-      <index name="idx_username"/>
     </members>
     <members name="password" type="String">
       <column persistenceLength="50"/>

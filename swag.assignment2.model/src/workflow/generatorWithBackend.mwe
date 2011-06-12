@@ -11,7 +11,7 @@ will support compilation into code directly executable by the Xtend Backend.
 
 <workflow>
 	<property name="model" value="swag.assignment2.model/src/Model.xmi" />
-	<property name="src-gen" value="../swag.assignment2.demo" />
+	<property name="src-gen" value="." />
 	
 	<!-- set up EMF for standalone execution -->
 	<bean class="org.eclipse.emf.mwe.utils.StandaloneSetup" >

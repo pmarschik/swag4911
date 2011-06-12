@@ -3,7 +3,19 @@ import metamodel;
 extension metamodel::Extensions reexport;
 
 String classSourceFolder() :
-	"/src"
+	"/swag49.model.map"
+;
+
+String mapClassSourceFolder() :
+	"/swag49.model.map"
+;
+
+String commonClassSourceFolder() :
+	"/swag49.model.common"
+;
+
+String userClassFolder() :
+	"/swag49.model.user"
 ;
 
 String persistencePropertiesFolder() :
@@ -11,7 +23,7 @@ String persistencePropertiesFolder() :
 ;
 
 String standardPackage() :
-	"swag"
+	"swag49"
 ;
 
 String modelPackage() :
