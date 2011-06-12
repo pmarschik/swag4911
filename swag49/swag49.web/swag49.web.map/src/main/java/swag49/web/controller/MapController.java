@@ -594,7 +594,7 @@ public class MapController {
                 return ERROR;
             }
 
-            return "troopoverview";
+            return "redirect: ./troopoverview";
         } else {
             return "error";
         }
@@ -626,7 +626,7 @@ public class MapController {
                 return ERROR;
             }
 
-            return "troopoverview.html?baseId=" + troop.getPosition().getBase().getId();
+            return "redirect: ./troopoverview.html?baseId=" + troop.getPosition().getBase().getId();
         } else {
             return ERROR;
         }
@@ -716,7 +716,7 @@ public class MapController {
             return ERROR;
         }
 
-        return "traintroops";
+        return "redirect: ./traintroops";
     }
 
     @RequestMapping(value = "/actions", method = RequestMethod.GET)
@@ -853,7 +853,7 @@ public class MapController {
 
         }
 
-        return "actions";
+        return "redirect: ./actions";
     }
 
 
@@ -885,7 +885,7 @@ public class MapController {
         }
 
 
-        return "actions";
+        return "redirect: ./actions";
     }
 
 
@@ -918,7 +918,7 @@ public class MapController {
 
         }
 
-        return "actions";
+        return "redirect: ./actions";
     }
 
 
@@ -961,7 +961,7 @@ public class MapController {
         }
 
 
-        return "actions";
+        return "redirect: ./actions";
     }
 
 
@@ -996,7 +996,7 @@ public class MapController {
             TroopLevel currentLevel = troop.getIsOfLevel();
 
             //get next Level
-            TroopLevel.Id id = new TroopLevel.Id(currentLevel.getLevel(), currentLevel.getId().getTroopTypeId());
+            TroopLevel.Id id = new TroopLevel.Id(currentLevel.getLevel()+1, currentLevel.getId().getTroopTypeId());
 
             TroopLevel nextLevel = troopLevelDAO.get(id);
 
