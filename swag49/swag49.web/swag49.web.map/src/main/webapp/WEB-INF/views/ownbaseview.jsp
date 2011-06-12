@@ -3,7 +3,11 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
 <spring:url value="/resources" var="resourcePath"/>
-
+ <div id="actionMessage">
+     <c:if test="${message != null}">
+        ${message}
+     </c:if>
+ </div>
 <h2>Troops:</h2>
 <table>
     <tr>
@@ -89,7 +93,7 @@
                     <td>
                         <c:choose>
                             <c:when test="${square.building.canUpgrade && square.building.upgradeCosts != null}">
-                                <a href="buildingupgrade.html?baseId=${square.baseId}&position=${square.position}"><img
+                                <a class="contentLink" href="buildingupgrade.html?baseId=${square.baseId}&position=${square.position}&x=${x}&y=${y}"><img
                                         src="<spring:theme code='theme.image.misc.upgrade'/>"
                                         alt="Upgrade"> </a>
                             </c:when>
