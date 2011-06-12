@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <workflow>
 	<property name="model" value="swag.assignment2.model/src/Model.xmi" />
-	<property name="src-gen" value="." />
+	<property name="src-gen" value="../swag49/swag49.model" />
 	
 	<!-- set up EMF for standalone execution -->
 	<bean class="org.eclipse.emf.mwe.utils.StandaloneSetup" >

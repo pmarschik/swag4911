@@ -3,19 +3,19 @@ import metamodel;
 extension metamodel::Extensions reexport;
 
 String classSourceFolder() :
-	"/swag49.model.common"
+	"/swag49.model.common/src/main/java"
 ;
 
 String mapClassSourceFolder() :
-	"/swag49.model.map"
+	"/swag49.model.map/src/main/java"
 ;
 
 String commonClassSourceFolder() :
-	"/swag49.model.common"
+	"/swag49.model.common/src/main/java"
 ;
 
 String userClassFolder() :
-	"/swag49.model.user"
+	"/swag49.model.user/src/main/java"
 ;
 
 String getClassFolder(String modelName) :
@@ -26,7 +26,7 @@ String getClassFolder(String modelName) :
 ;
 
 String persistencePropertiesFolder() :
-	"/META-INF"
+	""
 ;
 
 String standardPackage() :
