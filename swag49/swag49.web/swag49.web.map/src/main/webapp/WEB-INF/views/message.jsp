@@ -43,8 +43,8 @@
         <p>Message doesn't exist!</p>
     </c:if>
     <ul>
-        <li><a href="../messaging/incoming.html">Incoming-Messages</a></li>
-        <li><a href="../messaging/outgoing.html">Outgoing-Messages</a></li>
+        <li><a class="contentLink"  href="../messaging/incoming.html">Incoming-Messages</a></li>
+        <li><a class="contentLink"  href="../messaging/outgoing.html">Outgoing-Messages</a></li>
     </ul>
 </c:if>
 

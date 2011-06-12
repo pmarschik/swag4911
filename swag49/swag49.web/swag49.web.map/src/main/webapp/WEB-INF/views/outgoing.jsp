@@ -27,15 +27,15 @@
                     <td>${message.receiver.username}</td>
                     <td>${message.subject}</td>
                     <td>${message.sent}</td>
-                    <td><a class="messageLink" href="../messaging/view/${message.id}">View</a></td>
+                    <td><a class="contentLink"  href="../messaging/view/${message.id}">View</a></td>
                 </tr>
             </c:forEach>
         </table>
     </c:if>
     <ul class="messagingMenu">
-        <li><a class="messageLink" href="../messaging/incoming.html">Incoming Messages</a></li>
-        <li><a href="../messaging/outgoing.html">Outgoing Messages</a></li>
-        <li><a class="messageLink" href="../messaging/message.html">New message</a></li>
+        <li><a class="contentLink"  href="../messaging/incoming.html">Incoming Messages</a></li>
+        <li><a class="contentLink" href="../messaging/outgoing.html">Outgoing Messages</a></li>
+        <li><a class="contentLink"  href="../messaging/message.html">New message</a></li>
     </ul>
 </c:if>
 </body>
