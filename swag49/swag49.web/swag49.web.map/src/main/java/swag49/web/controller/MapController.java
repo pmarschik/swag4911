@@ -120,6 +120,16 @@ public class MapController {
     private swag49.model.Map map;
     private Player player;
 
+    @Transactional("swag49.map")
+    public boolean loggedIn()
+    {
+        if(this.userID == null)
+        {
+            return false;
+        }
+        return true;
+    }
+
     //@PostConstruct
     @Transactional("swag49.map")
     public void init() {
@@ -284,6 +294,11 @@ public class MapController {
     @Transactional("swag49.map")
     public String messaging() {
         lazyInit();
+
+        if(!loggedIn())
+//            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+              return "NotLoggedIn";
+
         //buildTest();
         return "redirect:../messaging/";
     }
@@ -291,6 +306,10 @@ public class MapController {
     @RequestMapping(value = "/statistics", method = RequestMethod.GET)
     public String statistics() {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         return "redirect:../statistics/";
     }
 
@@ -303,6 +322,9 @@ public class MapController {
         //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         Troop sampleTroop = new Troop();
         sampleTroop.setOwner(player);
@@ -378,6 +400,9 @@ public class MapController {
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
 
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         if (bingBindingResult.hasErrors()) {
             modelMap.put("view", false);
             return "redirect:../map";
@@ -388,8 +413,11 @@ public class MapController {
 
         for (TileDTO tileDto : troopsPerTile.getTileList()) {
             for (SendTroopDTO sendTroopDto : tileDto.getTroops()) {
-                Troop sendTroop = troopDAO.get(sendTroopDto.getId());
-                troopsToSend.add(sendTroop);
+                if(sendTroopDto.getSendMe() == true)
+                {
+                    Troop sendTroop = troopDAO.get(sendTroopDto.getId());
+                    troopsToSend.add(sendTroop);
+                }
             }
         }
         try {
@@ -410,6 +438,9 @@ public class MapController {
         //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         Tile tile = new Tile(map, x, y);
 
@@ -540,6 +571,10 @@ public class MapController {
                                      @RequestParam(value = "position", defaultValue = "-1") int position,
                                      Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         player = playerDAO.get(player.getId());
         Building building = buildingDAO.get(new Square.Id(baseId, position));
         if (building != null) {
@@ -563,6 +598,10 @@ public class MapController {
     public String getUpgradeTroops(@RequestParam(value = "troopId", defaultValue = "-1") long troopId,
                                    Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         player = playerDAO.get(player.getId());
         Troop troop = troopDAO.get(troopId);
         if (troop != null) {
@@ -591,6 +630,10 @@ public class MapController {
     public String getTrainTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
                                         Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         Base base = baseDAO.get(baseId);
         if (base == null || !base.getOwner().getId().equals(player.getId())) {
             return ERROR;
@@ -635,6 +678,10 @@ public class MapController {
                                         @RequestParam(value = "troopTypeId", defaultValue = "-1") long troopTypeId,
                                         Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         Base base = baseDAO.get(baseId);
         if (base == null || !base.getOwner().getId().equals(player.getId())) {
             return ERROR;
@@ -669,6 +716,10 @@ public class MapController {
     @Transactional("swag49.map")
     public String getActionOverview(Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         Date now = new Date();
 
         player = playerDAO.get(player.getId());
@@ -755,7 +806,8 @@ public class MapController {
     @RequestMapping(value = "/canceltroopaction", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String cancelTroopAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
-
+                        if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
         TroopAction action = troopActionDAO.get(Long.valueOf(id));
         if (action == null) {
             logger.error("Action with id " + id + " not found");
@@ -786,6 +838,10 @@ public class MapController {
     @RequestMapping(value = "/canceltroopupgradeaction", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String cancelTroopUpgradeAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         TroopUpgradeAction action = troopUpgradeActionDAO.get(id);
         if (action == null) {
             logger.error("Action with id " + id + " not found");
@@ -809,6 +865,9 @@ public class MapController {
     @RequestMapping(value = "/cancelbuildaction", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String cancelBuildAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         BuildAction action = buildActionDAO.get(Long.valueOf(id));
         if (action == null) {
@@ -840,6 +899,11 @@ public class MapController {
     @Transactional("swag49.map")
     public String getTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId, Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
+
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
         Base base = baseDAO.get(baseId);
@@ -893,6 +957,10 @@ public class MapController {
                                @RequestParam(value = "buildingTypeId", defaultValue = "-1") long buildingTypeId,
                                Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
@@ -954,6 +1022,9 @@ public class MapController {
                               @RequestParam(value = "yHigh", defaultValue = "-1") int y_high, Model model,
                               Map<String, Object> tempMap) {
         lazyInit();
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         tempMap.put("userID", this.userID);
 
         if (userID == null) {
@@ -1091,6 +1162,10 @@ public class MapController {
                                  @RequestParam(value = "xHigh", defaultValue = "-1") int x_high,
                                  @RequestParam(value = "yHigh", defaultValue = "-1") int y_high, Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
