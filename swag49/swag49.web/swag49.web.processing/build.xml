@@ -6,18 +6,32 @@
 
 <project name="swag49.web.processing" default="package" basedir=".">
 
-  <!-- ====================================================================== -->
-  <!-- Import maven-build.xml into the current project                        -->
-  <!-- ====================================================================== -->
+    <!-- ====================================================================== -->
+    <!-- Import maven-build.xml into the current project                        -->
+    <!-- ====================================================================== -->
 
-  <import file="maven-build.xml"/>
-  
-  <!-- ====================================================================== -->
-  <!-- Help target                                                            -->
-  <!-- ====================================================================== -->
+    <import file="maven-build.xml"/>
 
-  <target name="help">
-    <echo message="Please run: $ant -projecthelp"/>
-  </target>
+    <!-- ====================================================================== -->
+    <!-- Help target                                                            -->
+    <!-- ====================================================================== -->
+
+    <target name="help">
+        <echo message="Please run: $ant -projecthelp"/>
+    </target>
+
+    <property environment="env"/>
+    <property name="tomcat.home" value="${env.TOMCAT_HOME}"/>
+    <property name="war.filepath" value="${maven.build.dir}/${maven.build.finalName}.war"/>
+    <property name="webapp.name" value="processing"/>
+
+    <target name="deploy" depends="war">
+        <unwar src="${war.filepath}"
+               dest="${tomcat.home}/webapps/${webapp.name}"/>
+    </target>
+
+    <target name="undeploy">
+        <delete dir="${tomcat.home}/webapps/${webapp.name}"/>
+    </target>
 
 </project>

@@ -6,18 +6,61 @@
 
 <project name="swag49" default="package" basedir=".">
 
-  <!-- ====================================================================== -->
-  <!-- Import maven-build.xml into the current project                        -->
-  <!-- ====================================================================== -->
+    <!-- ====================================================================== -->
+    <!-- Import maven-build.xml into the current project                        -->
+    <!-- ====================================================================== -->
 
-  <import file="maven-build.xml"/>
-  
-  <!-- ====================================================================== -->
-  <!-- Help target                                                            -->
-  <!-- ====================================================================== -->
+    <import file="maven-build.xml"/>
 
-  <target name="help">
-    <echo message="Please run: $ant -projecthelp"/>
-  </target>
+    <!-- ====================================================================== -->
+    <!-- Help target                                                            -->
+    <!-- ====================================================================== -->
 
+    <target name="help">
+        <echo message="Please run: $ant -projecthelp"/>
+    </target>
+
+
+    <property name="web.user.buildfile" value="swag49.web/swag49.web.user/build.xml"/>
+    <property name="web.map.buildfile" value="swag49.web/swag49.web.map/build.xml"/>
+    <property name="web.processing.buildfile" value="swag49.web/swag49.web.processing/build.xml"/>
+    <property name="messaging.buildfile" value="swag49.messaging/build.xml"/>
+    <property file="Database/db.properties"/>
+
+    <target name="deploy">
+        <ant antfile="${web.user.buildfile}" inheritAll="false" target="deploy"/>
+        <ant antfile="${web.map.buildfile}" inheritAll="false" target="deploy"/>
+        <ant antfile="${web.processing.buildfile}" inheritAll="false" target="deploy"/>
+        <ant antfile="${messaging.buildfile}" inheritAll="false" target="deploy"/>
+    </target>
+
+    <target name="undeploy">
+        <ant antfile="${web.user.buildfile}" inheritAll="false" target="undeploy"/>
+        <ant antfile="${web.map.buildfile}" inheritAll="false" target="undeploy"/>
+        <ant antfile="${web.processing.buildfile}" inheritAll="false" target="undeploy"/>
+        <ant antfile="${messaging.buildfile}" inheritAll="false" target="undeploy"/>
+    </target>
+
+    <path id="db.classpath">
+        <fileset dir="Database">
+            <include name="postgresql-9.0-801.jdbc4.jar"/>
+        </fileset>
+    </path>
+
+    <target name="setup">
+        <sql classpathref="db.classpath"
+             driver="${db.driver}"
+             url="${db.url}"
+             userid="${db.username}"
+             password="${db.password}"
+             src="Database/logdb.sql"
+             onerror="continue"/>
+        <sql classpathref="db.classpath"
+             driver="${db.driver}"
+             url="${db.url}"
+             userid="${db.username}"
+             password="${db.password}"
+             src="Database/tables_postgres.sql"
+             onerror="continue"/>
+    </target>
 </project>
