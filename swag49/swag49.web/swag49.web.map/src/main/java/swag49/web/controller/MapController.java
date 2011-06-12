@@ -230,6 +230,8 @@ public class MapController {
                 tile.getTroops().add(startUnit);
                 tileDAO.update(tile);
 
+                ResourceValueHelper.add(player.getUpkeep(), level.getUpkeepCosts());
+
                 //create additional start units
 
                 startUnit = new Troop(type, level, tile, player);
@@ -244,14 +246,16 @@ public class MapController {
                 startUnit = troopDAO.create(startUnit);
                 tile.getTroops().add(startUnit);
 
+                ResourceValueHelper.add(player.getUpkeep(), level.getUpkeepCosts());
+
                 tileDAO.update(tile);
+
+                playerDAO.update(player);
 
 
                 logger.info("Player " + player.getId() + " initialized");
             } else {
-                //THIS SHOULD NEVER HAPPEN
-                //TODO: fehlerfall gescheit behandeln
-                return "HELP";
+                return ERROR;
             }
         }
         return "redirect:./";
@@ -370,7 +374,6 @@ public class MapController {
                 tileList.add(newTile);
             }
         }
-
 
 
         TroopsPerTileDTO dto = new TroopsPerTileDTO();
@@ -928,7 +931,7 @@ public class MapController {
             if (action.getEndDate().after(now)) {
                 TroopActionDTO dto = new TroopActionDTO();
 
-                dto.setDestination(action.getSource().getId().getX(), action.getSource().getId().getX());
+                dto.setDestination(action.getSource().getId().getX(), action.getSource().getId().getY());
                 dto.setIsAbortable(action.getIsAbortable());
                 dto.setStartDate(action.getStartDate());
                 dto.setEndDate(action.getEndDate());
@@ -1804,43 +1807,12 @@ public class MapController {
 
                     dto.setSpecialResource(swag49.transfer.model.ResourceType.values()[tile.getSpecial().ordinal()]);
 
-                    // TODO: TOOLTIP Java Script???
 
                     // create info
-                    StringBuilder sb = new StringBuilder();
+                    String toolTip = createToolTip(tile);
 
-                    // check if base
-                    if (tile.getBase() != null) {
-                        if (!tile.getBase().getOwner().getId().equals(player.getId())) {
-                            sb.append("Enemy base owned by ");
-                            sb.append(tile.getBase().getOwner());
-                        } else {
-                            sb.append("Your base!");
-                        }
-                        sb.append("<br/>");
-                    }
 
-                    // check for troops
-                    if (!tile.getTroops().isEmpty()) {
-                        for (Troop troop : tile.getTroops()) {
-                            sb.append("TODO");
-                            sb.append("<br/>");
-                        }
-
-                        sb.append("<br/>");
-                    }
-
-                    // check for special resources
-                    if (tile.getSpecial() != ResourceType.NONE) {
-                        sb.append("Special resouce: ");
-                        sb.append(tile.getSpecial().toString());
-                    }
-
-                    if (sb.length() == 0) {
-                        sb.append("Empty Tile...");
-                    }
-
-                    dto.setInfo(sb.toString());
+                    dto.setInfo(toolTip);
 
                     if (tile.getBase() != null)
                         dto.setHasBase(true);
@@ -1976,51 +1948,11 @@ public class MapController {
 
                     dto.setSpecialResource(swag49.transfer.model.ResourceType.values()[tile.getSpecial().ordinal()]);
 
-                    // create info
-                    StringBuilder sb = new StringBuilder();
 
-                    // check if base
-                    if (tile.getBase() != null) {
-                        if (!tile.getBase().getOwner().getId().equals(player.getId())) {
-                            sb.append("Enemy base owned by ");
-                            sb.append(tile.getBase().getOwner());
-                        } else {
-                            sb.append("Your base!");
-                        }
-                    } else if (!tile.getTroops().isEmpty()) {               // check for troops
+                    String toolTip = createToolTip(tile);
 
-                        int strength = 0;
-                        int defense = 0;
-                        for (Troop troop : tile.getTroops()) {
-                            strength += troop.getIsOfLevel().getStrength();
-                            defense += troop.getIsOfLevel().getDefense();
-                        }
 
-                        if (tile.getTroops().iterator().next().getOwner().getId().equals(player.getId())) {
-                            sb.append("Your troops! Strength: ");
-                            sb.append(strength);
-                            sb.append(" , Defense: ");
-                            sb.append(defense);
-                        } else {
-                            sb.append("Enemy troops! Strength: ");
-                            sb.append(strength);
-                            sb.append(" , Defense: ");
-                            sb.append(defense);
-                        }
-
-                    }
-
-                    // check for special resources
-                    if (tile.getSpecial() != ResourceType.NONE) {
-                        sb.append("Special resouce: ");
-                        sb.append(tile.getSpecial().toString());
-                    }
-
-                    if (sb.length() == 0) {
-                        sb.append("Empty Tile...");
-                    }
-
-                    dto.setInfo(sb.toString());
+                    dto.setInfo(toolTip);
 
                     if (tile.getBase() != null)
                         dto.setHasBase(true);
@@ -2047,6 +1979,53 @@ public class MapController {
 
         return "mapoverview";
     }
+
+    private String createToolTip(Tile tile) {
+        StringBuilder sb = new StringBuilder();
+
+        // check if base
+        if (tile.getBase() != null) {
+            if (!tile.getBase().getOwner().getId().equals(player.getId())) {
+                sb.append("Enemy base owned by ");
+                sb.append(tile.getBase().getOwner());
+            } else {
+                sb.append("Your base!");
+            }
+        } else if (!tile.getTroops().isEmpty()) {               // check for troops
+
+            int strength = 0;
+            int defense = 0;
+            for (Troop troop : tile.getTroops()) {
+                strength += troop.getIsOfLevel().getStrength();
+                defense += troop.getIsOfLevel().getDefense();
+            }
+
+            if (tile.getTroops().iterator().next().getOwner().getId().equals(player.getId())) {
+                sb.append("Your troops! Strength: ");
+                sb.append(strength);
+                sb.append(" , Defense: ");
+                sb.append(defense);
+            } else {
+                sb.append("Enemy troops! Strength: ");
+                sb.append(strength);
+                sb.append(" , Defense: ");
+                sb.append(defense);
+            }
+
+        }
+
+        // check for special resources
+        if (tile.getSpecial() != ResourceType.NONE) {
+            sb.append("Special Resource: ");
+            sb.append(tile.getSpecial().toString());
+        }
+
+        if (sb.length() == 0) {
+            sb.append("Empty Tile...");
+        }
+        return sb.toString();
+    }
+
 
     @RequestMapping(value = "/playerresources", method = RequestMethod.GET)
     @Transactional("swag49.map")

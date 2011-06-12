@@ -12,6 +12,7 @@
                 <td>Destination</td>
                 <td>Started</td>
                 <td>End Date</td>
+                <td>Cancel</td>
             </tr>
             <c:forEach items="${troopActions}" var="action">
                 <tr>
@@ -39,12 +40,13 @@
 <h2>Troops in Upgrade Process</h2>
 <c:choose>
     <c:when test="${troopUpgradeActions != null && fn:length(troopUpgradeActions)>0 }">
-        <table  border="1">
+        <table border="1">
             <tr>
                 <td>Building</td>
                 <td>Base</td>
                 <td>Level</td>
                 <td>End Date</td>
+                <td>Cancel</td>
             </tr>
             <c:forEach items="${troopUpgradeActions}" var="action">
                 <tr>
@@ -80,6 +82,7 @@
                 <td>Square</td>
                 <td>Level</td>
                 <td>End Date</td>
+                <td>Cancel</td>
             </tr>
             <c:forEach items="${baseActions}" var="action">
                 <tr>
@@ -116,6 +119,7 @@
                 <td>Location</td>
                 <td>Amount</td>
                 <td>End Date</td>
+                <td>Cancel</td>
             </tr>
             <c:forEach items="${troopBuildActions}" var="action">
                 <tr>
