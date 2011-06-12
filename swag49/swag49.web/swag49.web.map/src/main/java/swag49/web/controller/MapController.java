@@ -404,7 +404,6 @@ public class MapController {
                                    BindingResult bingBindingResult,
                                    Map<String, Object> modelMap) {
 
-        //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
 
@@ -429,7 +428,7 @@ public class MapController {
             }
         }
         try {
-            mapLogic.sendTroops(tile, troopsToSend);
+            mapLogic.sendTroops(tile, troopsToSend, troopsPerTile.isFoundBase());
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

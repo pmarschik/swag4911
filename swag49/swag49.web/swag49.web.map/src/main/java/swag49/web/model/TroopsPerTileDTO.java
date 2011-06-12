@@ -10,6 +10,16 @@ import java.util.HashMap;
 public class TroopsPerTileDTO {
     int x;
 
+    public boolean isFoundBase() {
+        return foundBase;
+    }
+
+    public void setFoundBase(boolean foundBase) {
+        this.foundBase = foundBase;
+    }
+
+    boolean foundBase = false;
+
     public int getX() {
         return x;
     }

@@ -38,6 +38,7 @@
                 </div>
             </c:forEach>
         </div>
+         <form:checkbox path="foundBase"/>
         <input class="button" type="submit" value="Send"/>
     </form:form>
 </c:if>
