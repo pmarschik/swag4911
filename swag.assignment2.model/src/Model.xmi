@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="ASCII"?>
 <metamodel:SWA xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:metamodel="http://www.example.org/metamodel" xsi:schemaLocation="http://www.example.org/metamodel metamodel/metamodel.ecore">
   <models name="swag49.model.map" isContainerManaged="true">
-    <entities name="Test"/>
+    <entities name="Action" persistenceSuperclass="true" persistenceListener="swag49.model.listener.ActionPersistenceEventEntityListener">
+      <members name="startDate" type="java.util.Date">
+        <column/>
+      </members>
+      <members name="duration" type="Long">
+        <column/>
+      </members>
+      <members name="target" complexType="//@models.0/@entities.2" persistenceRelation="ManyToOne"/>
+      <members name="player" complexType="//@models.0/@entities.1" persistenceRelation="ManyToOne"/>
+      <members name="isAbortable" type="Boolean"/>
+      <specialMethod>public java.util.Date getEndDate() {&#xA;        if (startDate == null || duration == null)&#xA;            return null;&#xA;&#xA;        return new java.util.Date(startDate.getTime() + duration);&#xA;    }</specialMethod>
+    </entities>
+    <entities name="Player"/>
+    <entities name="Tile"/>
   </models>
   <models name="swag49.model.user" isContainerManaged="true">
     <entities name="Address" persistenceEmbeddable="true" persistenceTableName="">

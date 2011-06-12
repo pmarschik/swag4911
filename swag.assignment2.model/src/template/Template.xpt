@@ -53,6 +53,9 @@
 			«EXPAND entityClassMemberGetter FOREACH members»
 			«EXPAND entityClassIdSetter FOR this»
 			«EXPAND entityClassMemberSetter FOREACH members»
+			«FOREACH specialMethod AS e-»
+				«e»
+			«ENDFOREACH»
 		}
 	«ENDFILE»
 «ENDDEFINE»
@@ -67,6 +70,9 @@
 		«ENDIF»
 		«IF persistenceSuperclass == true»
 			@javax.persistence.Inheritance(strategy = javax.persistence.InheritanceType.TABLE_PER_CLASS)
+		«ENDIF»
+		«IF persistenceListener != null»
+			@javax.persistence.EntityListeners(«persistenceListener».class)
 		«ENDIF»
 	«ENDIF»
 «ENDDEFINE»
@@ -217,6 +223,9 @@
 		@javax.persistence.AttributeOverrides({
 		«EXPAND singleAttributeOverride FOREACH attributeOverride.attributeOverrides-»
 		})
+	«ENDIF»
+	«IF type == "java.util.Date"-»
+		@javax.persistence.Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	«ENDIF»
 «ENDDEFINE»
 
