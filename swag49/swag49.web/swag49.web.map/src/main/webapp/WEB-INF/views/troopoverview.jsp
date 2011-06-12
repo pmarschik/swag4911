@@ -5,7 +5,7 @@
 <spring:url value="/resources" var="resourcePath"/>
 
 <c:if test="${troops != null && fn:length(troops)>0 }">
-    <h2>Troops stationed at Base with ID ${baseId}</h2>
+<h2>Troops stationed at Base with ID ${baseId}</h2>
     <table>
         <c:forEach items="${troops}" var="troop">
             <tr>
@@ -71,4 +71,9 @@
             </tr>
         </c:forEach>
     </table>
+</c:if>
+
+<c:if test="${troops == null || fn:length(troops)==0 }">
+    Sorry, but you have no troops here!
+    <a href="tile/?x=${back_x}&y=${back_y}">back</a>
 </c:if>

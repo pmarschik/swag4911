@@ -154,6 +154,7 @@ public class MapLogic {
 
     @Transactional("swag49.map")
     public void handleAction(TroopUpgradeAction action) {
+        action = troopUpgradeActionDAO.get(action.getId());
         Troop troop = action.getTroop();
 
         // get current level
@@ -211,6 +212,7 @@ public class MapLogic {
 
     @Transactional("swag49.map")
     public void handleAction(TroopBuildAction action) {
+        action = troopBuildActionDAO.get(action.getId());
         TroopType type = action.getTroopType();
 
         Tile tile = action.getTarget();
@@ -231,6 +233,8 @@ public class MapLogic {
 
                 //update upkeep
                 ResourceValueHelper.add(action.getPlayer().getUpkeep(), action.getTroopLevel().getUpkeepCosts());
+
+                playerDAO.update(action.getPlayer());
             }
 
             tileDAO.update(tile);
@@ -483,6 +487,7 @@ public class MapLogic {
 
     @Transactional("swag49.map")
     public void handleAction(BuildAction action) {
+        action = buildActionDao.get(action.getId());
         Building building = action.getConcerns();
 
         // get current level
@@ -515,6 +520,7 @@ public class MapLogic {
 
     @Transactional("swag49.map")
     public void handleAction(TroopAction action) {
+        action = troopActionDAO.get(action.getId());
         Tile tile = action.getTarget();
 
         boolean canBuildBase = false;
@@ -529,18 +535,31 @@ public class MapLogic {
 
 
         boolean enemyTerritory = false;
+        Player otherPlayer = null;
 
-        if (tile.getBase() != null && !tile.getBase().getOwner().equals(action.getPlayer()))
+        if (tile.getBase() != null && !tile.getBase().getOwner().equals(action.getPlayer())) {
             enemyTerritory = true;
+            otherPlayer = tile.getBase().getOwner();
+        }
 
         // check if other troops are on that tile
         Set<Troop> defenders = tile.getTroops();
 
-        if (!defenders.isEmpty() && !defenders.iterator().next().getOwner().equals(action.getPlayer()))
+        if (!defenders.isEmpty() && !defenders.iterator().next().getOwner().equals(action.getPlayer())) {
             enemyTerritory = false;
+            otherPlayer = defenders.iterator().next().getOwner();
+        }
 
         if (!enemyTerritory) {
             tile.getTroops().addAll(action.getConcerns());
+            for (Troop troop : action.getConcerns()) {
+                troop.setPosition(tile);
+                troopDAO.update(troop);
+            }
+
+            tileDAO.update(tile);
+
+
             if (canBuildBase && action.getShouldFoundBase()) {
                 if (tile.getBase() != null) {
                     //write errormsg
@@ -556,19 +575,26 @@ public class MapLogic {
                 }
             }
         } else {
+
             if (defenders.isEmpty()) {
                 if (canBuildBase && !tile.getBase().isHome()) {
                     //take base
                     Base base = tile.getBase();
-                    Player oldOwner = base.getOwner();
                     base.setOwner(action.getPlayer());
+
                     base = baseDAO.update(base);
+                    action.getPlayer().getOwns().add(base);
+                    playerDAO.update(action.getPlayer());
+
+                    otherPlayer.getOwns().remove(base);
+                    playerDAO.update(otherPlayer);
+
                     //write msg to both players
                     sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
                             "You have captured a new base as  (" + tile.getId().getX() + "," + tile.getId().getY() +
                                     ").");
 
-                    sendMessage(oldOwner, oldOwner, SUBJECT_BUILDBASE,
+                    sendMessage(otherPlayer, otherPlayer, SUBJECT_BUILDBASE,
                             "Player " + action.getPlayer().getId() + " has taken your base at  (" + tile.getId().getX() + "," + tile.getId().getY() +
                                     ").");
                 } else {
@@ -576,42 +602,57 @@ public class MapLogic {
                     ResourceValue booty = calculateBooty(tile.getBase().getOwner(), action.getConcerns());
 
                     ResourceValueHelper.add(action.getPlayer().getResources(), booty);
+                    ResourceValueHelper.remove(otherPlayer.getResources(), booty);
+                    playerDAO.update(action.getPlayer());
+                    playerDAO.update(otherPlayer);
 
                     //write ms to both players
                     sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_FIGHTRESULT,
-                            "You robed the base of player " + tile.getBase().getOwner().getId() + " at tile (" +
+                            "You robed the base of player " + otherPlayer.getId() + " at tile (" +
                                     tile.getId().getX() + "," + tile.getId().getY() +
                                     "). \n Your troops have stolen something and are now on their way home.");
-                    sendMessage(tile.getBase().getOwner(), tile.getBase().getOwner(), SUBJECT_FIGHTRESULT,
+                    sendMessage(otherPlayer, otherPlayer, SUBJECT_FIGHTRESULT,
                             "Your base at tile (\" + tile.getId().getX() + \",\" + tile.getId().getY() + \") has been attacked by  " +
                                     action.getPlayer() +
                                     " . \n  Unfortunately, the attacking troops robed your base and stole some resources from you.");
 
                 }
             } else {
-                Player enemyOwner = defenders.iterator().next().getOwner();
                 // oho - enemies....FIGHT!!!!
                 Set<Troop> attackers = new HashSet<Troop>(action.getConcerns());
-                boolean attackerWin = calculateFight(action.getPlayer(), enemyOwner,
+                boolean attackerWin = calculateFight(action.getPlayer(), otherPlayer,
                         attackers, defenders, tile);
 
                 if (attackerWin) {
                     if (tile.getBase() != null) {
                         //rob base
-                        ResourceValue booty = calculateBooty(enemyOwner, attackers);
+                        ResourceValue booty = calculateBooty(otherPlayer, attackers);
+
                         ResourceValueHelper.add(action.getPlayer().getResources(), booty);
+                        ResourceValueHelper.remove(otherPlayer.getResources(), booty);
+
+                        playerDAO.update(action.getPlayer());
+                        playerDAO.update(otherPlayer);
 
                         if (canBuildBase && !tile.getBase().isHome()) {
                             Base base = tile.getBase();
-                            base.setOwner(action.getPlayer());
-                            base = baseDAO.update(base);
-                             sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
-                            "You have captured a new base as  (" + tile.getId().getX() + "," + tile.getId().getY() +
-                                    ").");
 
-                    sendMessage(enemyOwner, enemyOwner, SUBJECT_BUILDBASE,
-                            "Player " + action.getPlayer().getId() + " has taken your base at  (" + tile.getId().getX() + "," + tile.getId().getY() +
-                                    ").");
+                            base.setOwner(action.getPlayer());
+                            action.getPlayer().getOwns().add(base);
+                            otherPlayer.getOwns().remove(base);
+
+                            base = baseDAO.update(base);
+                            playerDAO.update(action.getPlayer());
+                            playerDAO.update(otherPlayer);
+
+
+                            sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
+                                    "You have captured a new base as  (" + tile.getId().getX() + "," + tile.getId().getY() +
+                                            ").");
+
+                            sendMessage(otherPlayer, otherPlayer, SUBJECT_BUILDBASE,
+                                    "Player " + action.getPlayer().getId() + " has taken your base at  (" + tile.getId().getX() + "," + tile.getId().getY() +
+                                            ").");
                         } else {
                             sendHome(attackers, action.getSource());
                         }
@@ -631,7 +672,6 @@ public class MapLogic {
                         sendHome(attackers, action.getSource());
                     }
                 }
-
             }
         }
     }
