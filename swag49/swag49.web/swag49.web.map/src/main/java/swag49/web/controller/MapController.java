@@ -832,12 +832,6 @@ public class MapController {
     }
 
 
-      @RequestMapping(value = "/test1", method = RequestMethod.GET)
-      public String test1(Model model)
-      {
-          return "redirect:../../map/"  ;
-      }
-
     @RequestMapping(value = "/canceltroopbuildaction", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String cancelTroopBuildAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
