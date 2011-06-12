@@ -822,9 +822,9 @@ public class MapLogic {
                 ResourceValueHelper.remove(troop.getOwner().getUpkeep(), troop.getIsOfLevel().getUpkeepCosts());
                 playerDAO.update(troop.getOwner());
 
-                troopDAO.delete(troop);
-
                 tile.getTroops().remove(troop);
+
+                troopDAO.delete(troop);
             }
 
         } while (!deadTroops_attacker.isEmpty()

@@ -7,6 +7,7 @@
 <c:choose>
     <c:when test="${tileInfo.hasBase && tileInfo.enemyTerritory}">
         <jsp:include page="enemybaseview.jsp"/>
+        <jsp:include page="tilebaseview.jsp"/>
     </c:when>
     <c:when test="${tileInfo.hasBase && !tileInfo.enemyTerritory}">
         <jsp:include page="ownbaseview.jsp"/>
@@ -15,6 +16,7 @@
         <jsp:include page="tilebaseview.jsp"/>
     </c:otherwise>
 </c:choose>
+<p></p>
 <a class="contentLink" href="sendtroops.html?x=${tileInfo.x}&y=${tileInfo.y}"><img
                 src="${resourcePath}<spring:theme code='theme.image.troops.movement'/>" alt="Troop Movement"
                 width="200"></a>

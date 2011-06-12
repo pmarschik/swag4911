@@ -12,14 +12,14 @@
 <table>
     <tr>
         <td><a class="contentLink" href="troopoverview.html?baseId=${tileInfo.baseId}"><img
-                src="${resourcePath}<spring:theme code='theme.image.misc.troops'/>" alt="watch troops" height="30"></a>
+                src="${resourcePath}<spring:theme code='theme.image.misc.troops'/>" alt="watch troops" height="50"></a>
         </td>
         <td>Present Troops</td>
     </tr>
     <tr>
         <td><a class="contentLink" href="traintroops.html?baseId=${tileInfo.baseId}"><img
                 src="${resourcePath}<spring:theme code='theme.image.misc.train_troops'/>" alt="train new troops"
-                height="30"></a></td>
+                height="50"></a></td>
         <td>Train New Troops</td>
     </tr>
 </table>
@@ -90,11 +90,11 @@
                             </tr>
                         </table>
                     </td>
-                    <td>
+                    <td align="center">
                         <c:choose>
                             <c:when test="${square.building.canUpgrade && square.building.upgradeCosts != null}">
                                 <a class="contentLink" href="buildingupgrade.html?baseId=${square.baseId}&position=${square.position}&x=${x}&y=${y}"><img
-                                        src="<spring:theme code='theme.image.misc.upgrade'/>"
+                                        src="${resourcePath}<spring:theme code='theme.image.misc.upgrade'/>"
                                         alt="Upgrade"> </a>
                             </c:when>
                             <c:when test="${square.building.canUpgrade == false && square.building.upgradeCosts != null}">
