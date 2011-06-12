@@ -482,7 +482,7 @@ That means if that we reach an availability of $99,99\%$ if we have at least 5 n
 \subsection{Requirements}
 
 \begin{itemize}
-\item Tomcat 6 or 7 running on \texttt{localhost:8080/}
+\item Tomcat 7 running on \texttt{localhost:8080/}
 \item PostgreSQL 8.4 running on \texttt{localhost:5432/}
 	\begin{itemize}
 	\item Database: \texttt{swa}
@@ -493,7 +493,6 @@ That means if that we reach an availability of $99,99\%$ if we have at least 5 n
 	\end{itemize}
 \item Ant and Maven 2
 \item The environment variable \texttt{TOMCAT\_HOME} must be set to the installation directory of tomcat.
-\item A stable internet connection for the \texttt{ant deploy} task.
 \end{itemize}
 
 \subsection{Compiling and Deploying}
@@ -504,7 +503,7 @@ To test the demo application you have to follow these steps:
 \item Set the environment variable \texttt{TOMCAT\_HOME} to the installation directory of tomcat.
 \item Create an empty database as denoted above.
 \item Execute \texttt{mvn install -P -no-test} to ensure the artifacts are deployed to the local maven repo.
-\item Execute \texttt{ant deploy} to deploy the application to tomcat (this process can take some time, since all required jar-files get downloaded from the maven repository).
+\item Execute \texttt{ant deploy} to deploy the application to tomcat.
 \item Execute \texttt{ant setup} to prepare the database.
 \item Start tomcat. You will have to set the max. memory of the JVM at least to 512 MB.
 \end{enumerate}
