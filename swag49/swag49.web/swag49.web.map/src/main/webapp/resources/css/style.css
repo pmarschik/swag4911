@@ -46,20 +46,20 @@ a:hover {text-decoration: underline; ; color:red;}
 
 .tilePic
 {
-	width:50px;
-	height:50px;
+	width:80px;
+	height:80px;
 }
 
 img.tilePic
 {
-	width:50px;
-	height:50px;
+	width:80px;
+	height:80px;
 }
 
 .tilePic img
 {
-	width:50px;
-	height:50px;
+	width:80px;
+	height:80px;
 }
 
 #menu
