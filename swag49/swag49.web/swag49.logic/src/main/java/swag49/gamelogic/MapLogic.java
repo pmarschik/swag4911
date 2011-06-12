@@ -757,11 +757,28 @@ public class MapLogic {
             deadTroops_defenders = calculateAttack(defenders, attackers);
 
             // remove victims of the sets
-            if (!deadTroops_defenders.isEmpty())
-                defenders.removeAll(deadTroops_defenders);
+            if (!deadTroops_defenders.isEmpty()) {
+                for (Troop dead : deadTroops_defenders) {
+                    for (Troop def : defenders) {
+                        if (dead.getId().equals(def.getId())) {
+                            defenders.remove(def);
+                            break;
+                        }
+                    }
+                }
+            }
 
-            if (!deadTroops_attacker.isEmpty())
-                attackers.removeAll(deadTroops_attacker);
+
+            if (!deadTroops_attacker.isEmpty()) {
+                for (Troop dead : deadTroops_attacker) {
+                    for (Troop att : attackers) {
+                        if (dead.getId().equals(att.getId())) {
+                            attackers.remove(att);
+                            break;
+                        }
+                    }
+                }
+            }
 
             // remove victims in persistence layer
             for (Troop troop : deadTroops_attacker) {
