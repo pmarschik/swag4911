@@ -34,6 +34,11 @@ a:hover {text-decoration: underline; ; color:red;}
 	width:100%;
 }
 
+#actionMessage
+{
+    color:red;
+}
+
 #playerResources
 {
     color:white;

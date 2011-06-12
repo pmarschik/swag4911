@@ -5,6 +5,11 @@
 <spring:url value="/resources" var="resourcePath"/>
 
 <c:if test="${troops != null && fn:length(troops)>0 }">
+ <div id="actionMessage">
+     <c:if test="${message != null}">
+        ${message}
+     </c:if>
+ </div>
 <h2>Troops stationed at Base with ID ${baseId}</h2>
     <table border="1">
          <tr>
@@ -60,7 +65,7 @@
                                 </tr>
                             </table>
                         </td>
-                        <td><a href="troopupgrade.html?troopId=${troop.id}"><img
+                        <td><a class="contentLink" href="troopupgrade.html?troopId=${troop.id}"><img
                                 src="${resourcePath}<spring:theme code='theme.image.misc.upgrade'/>"
                                 alt="Upgrade"></a>
                         </td>

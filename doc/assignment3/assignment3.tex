@@ -127,38 +127,27 @@ The entities of the system are distributed over three different persistence unit
 
 \begin{description}
 \item[Map domain (see Figure \ref{fig:map_cd})]
-	The map domain describes all the classes that are needed to play on a specific map. 
+	The map domain describes all the classes that are needed to play on a specific map. The maps are created by the system and not the users. Maps consist of tiles. Each tile can have a base which consists of 32 squares. Upgrading buildings and sending troops takes some time. Creating troops and running buildings may cost some resources.
 \item[Message domain (see Figure \ref{fig:message_cd})]
-	The message domain consists of all classes that are persisted due to messaging.
+	The message domain consists of all classes that are persisted due to messaging. Message dates are stored in UTC.
 \item[User domain (see Figure \ref{fig:user_cd})]
-	The user domain consists of all classes that are persisted by the user management component.
+	The user domain consists of all classes that are persisted by the user management component. The User embeds address information and stores the difference to UTC to ensure messages are sent in right order. 
 \end{description}
-
-%\begin{itemize}
-%\item The maps are created by the system and not the users.
-%\item Maps consist of tiles. Each tile can have a base which consists of 32 squares
-%\item Upgrading buildings and sending troops takes some time
-%\item Creating troops and running buildings may cost some resources.
-%\end{itemize}
-%
-%The User embeds adddress information and stores the difference to UTC to ensure messages are sent in right order. All other dates are stored in UTC. Troop and TroopGroup uses the Composite Object Pattern. A Building can either be a ResourceBuilding (for mining resources) or a NormalBuilding. Every Action performed by a certain user is stored in the database.
 
 \subsection{Component Diagram}
 
-%The component diagram (see Figure \ref{fig:component}) illustrates the interaction between the components. The web  interface is the only component located in the presentation layer. The Map Controller is the core component and offers interfaces for browsing, troop management, building management and resource management. Itself depends on Persistence and the Notification Controller. The User Management Component offers interfaces for registration/deletion of accounts and session management. The Statistics component offers functionality about the ranking of players and so on. Finally the Storage component is used to store and retrieve data from the database. The Cache component offers the same interface as the Storage component, since it should be transparent for the client wether or not caching is enabled.
+The component diagram (see Figure \ref{fig:component}) illustrates the interaction between the components. The Map Component encapsulates the logic needed to play on a specific map. It offers logic to navigate on a map and perform actions. The actual processing of these actions is performed by the Map Processing component, which also provides an environment for periodic task like statistic calculation. The User Management Component offers interfaces for registration/deletion of accounts. It also exports a TokenService, which is used for authentication. Finally the message component offers an interface for message dispatch and receipt. All Storage components can be configured to use application level caching.
 
 \subsection{Deployment Diagram}
 
-%Text \dots (see Figure \ref{fig:deployment}) \dots Text \dots
-
-\subsubsection{Uptime Calculation}
-
-The deployment diagram shows three main sites where artifacts have to be deployed.
+The deployment diagram (see Figure \ref{fig:deployment})  shows three main sites where artifacts have to be deployed.
 \begin{enumerate}
-\item There exists a cluster hosting Map Controller and the corresponding database for each map in the game. The cluster itself can be divided into several nodes that can server requests for this map. A load balancer is responsible for the request routing. The databases of the nodes must be replicated since they hold the same set of data.
-\item A similar cluster hosting the User Management component serves registration and session management requests.
+\item There exists a cluster hosting Map Controller and the corresponding database for each map in the game. The cluster itself can be divided into several nodes that can server requests for this map. A load balancer is responsible for the request routing. Since the data for each map can be separated from data for other maps replication must not be used here. As shown in the diagram each map node can have multiple Map Processing Servers, which access the same database. For smaller maps, the swag49.web.processing could be deployed to the Map Server instead.
+\item A similar cluster hosting the User Management component runs the User Management component and  serves authentication requests. Again the load-balancer is the access point for clients.
 \item Another cluster is responsible for processing messaging requests. As denoted in D-1 there exists a message queue for each node of the cluster to provide reliable messaging. A redundant network of SMTP servers ensures availability of e-mail notifications.
 \end{enumerate}
+
+\subsubsection{Uptime Calculation}
 
 This redundancy of services is necessary on the one hand to fulfill the performance requirements and provide a scalable architecture. On the other hand it results in a fail safe system as the following calculation shows:
 
@@ -303,7 +292,6 @@ That means if that we reach an availability of $99,99\%$ if we have at least 5 n
 		\begin{enumerate}
 		\item Presentation
 		\item Business Logic (Maps, Statistics, User Management)
-		\item Access Control
 		\item Cache
 		\item Persistence
 		\end{enumerate}\\
@@ -336,13 +324,13 @@ That means if that we reach an availability of $99,99\%$ if we have at least 5 n
     	\textbf{Issue} & Important actions have to be logged. It is also necessary to monitor system performance. \\
 	\hline
 	\cellcolor[gray]{0.9}
-	\textbf{Decision} & Use the Interceptor pattern. \\
+	\textbf{Decision} & Use a logging component that writes log message to a database. Other components use this logging component. \\
 	\hline
 	\cellcolor[gray]{0.9}
 	\textbf{Group} & Adaption \\
 	\hline
 	\cellcolor[gray]{0.9}
-	\textbf{Assumptions} & There exist well-defined points where interceptors can be plugged in. \\
+	\textbf{Assumptions} & - \\
 	\hline
 	\cellcolor[gray]{0.9}
 	\textbf{Constraints} & - \\
@@ -350,15 +338,15 @@ That means if that we reach an availability of $99,99\%$ if we have at least 5 n
 	\cellcolor[gray]{0.9}
 	\textbf{Positions} &
 		\begin{itemize}
-		\item Use hard-coded logging in each component.
+		\item Use interceptors for logging.
 		\item Use profiling tools to monitor application and database.
 		\end{itemize}\\
 	\hline
 	\cellcolor[gray]{0.9}
-	\textbf{Argument} & The interceptor pattern provides hooks, where additional functionality can be injected. Thus not only auditing is supported. In contrast to hard-coded logging, interceptors can also be injected at run-time, if the configuration supports it. Compared to profiling tools, interceptors support all execution environments and databases. Besides that profiling tools consume more resources. \\
+	\textbf{Argument} & Interceptors have the advantage that the code doesn't get polluted with logging statements. However it is also possible to use AOP aspects to introduce logging at a later stage. This provides more flexibility since AOP doesn't need hooks to be plugged in.  Compared to profiling tools, modern logging libraries are much cheaper. Besides that profiling tools consume more resources. \\
 	\hline
 	\cellcolor[gray]{0.9}
-	\textbf{Implications} & Interceptors should be pluggable in the following scenarios:
+	\textbf{Implications} & Logging should happen in the following scenarios:
 		\begin{itemize}
 		\item user login/logout
 		\item action start/end
@@ -392,16 +380,16 @@ That means if that we reach an availability of $99,99\%$ if we have at least 5 n
 	\begin{tabularx}{\textwidth}{ | l | X |}
     	\hline
 	\cellcolor[gray]{0.9}
-    	\textbf{Issue} & No other user should be able to access or manipulate sensitive data of other users. \\
+    	\textbf{Issue} &  Actions take some time. The execution is delayed.\\
 	\hline
 	\cellcolor[gray]{0.9}
-	\textbf{Decision} & Provide special interceptors to ensure access control. \\
+	\textbf{Decision} & Use a job scheduling approach. \\
 	\hline
 	\cellcolor[gray]{0.9}
-	\textbf{Group} & Adaptation \\
+	\textbf{Group} & Business Logic \\
 	\hline
 	\cellcolor[gray]{0.9}
-	\textbf{Assumptions} & The system supports interceptors. \\
+	\textbf{Assumptions} & - \\
 	\hline
 	\cellcolor[gray]{0.9}
 	\textbf{Constraints} & - \\
@@ -409,32 +397,27 @@ That means if that we reach an availability of $99,99\%$ if we have at least 5 n
 	\cellcolor[gray]{0.9}
 	\textbf{Positions} &
 		\begin{itemize}
-		\item Implement access control in database.
-		\item Implement access control directly in the business logic.
+		\item Execute actions when they are performed and mark the result as inactive.
 		\end{itemize}\\
 	\hline
 	\cellcolor[gray]{0.9}
-	\textbf{Argument} & Realizing access control via interceptors has two advantages compared with the other positions: Firstly as denoted in D-3 interceptors can be plugged into the system at run-time. This means changes in access control don't demand the rollout of a new version and therefore do not result in downtime. Secondly the business code isn't messed up with security specific code and therefore easier to read, which directly corresponds to better maintainability and a lower bug rate. \\
+	\textbf{Argument} & The job approach has the advantage that the result of the action is visible as soon as the action finishes. So there is no need to store temporary action results and we don't have to care about issues that arise when actions should be canceled. In this case the scheduled job would simply be deleted. Existing job scheduling libraries also offer the possibility to store the job and trigger data in database, which would be needed in a distributed environment.  \\
 	\hline
 	\cellcolor[gray]{0.9}
-	\textbf{Implications} & Security interceptors should be placed at the following scenarios:
-		\begin{itemize}
-		\item action start
-		\item database access
-		\end{itemize}\\
+	\textbf{Implications} & The job scheduling library must support clustered execution of jobs, since action execution is one of the most performance crucial parts of the whole system. Therefore this task can't be handled by a single server.\\
 	\hline
 	\cellcolor[gray]{0.9}
-	\textbf{Related decisions} & D-3 \\
+	\textbf{Related decisions} & D-5 \\
 	\hline
 	\cellcolor[gray]{0.9}
-	\textbf{Related requirements} & The system has strong security requirements, and you should prevent users from cheating or manipulating the game. No other user should be able to access or manipulate sensitive data of other users.\\
+	\textbf{Related requirements} & Performance must be consistent. It is not acceptable for a user to have to wait more than two or three seconds when submitting a post or loading a page. So think about a good strategy how to scale all parts of the application.\\
 	\hline
 	\cellcolor[gray]{0.9}
 	\textbf{Related artifacts} & Requirements specification\\
 	\hline
 	\cellcolor[gray]{0.9}
 	\textbf{Related principles} & -\\
-	\hline
+%	\hline
 	\end{tabularx}
 	\caption{Design decision - D-4}
 	\label{dec:D4}
@@ -451,7 +434,7 @@ That means if that we reach an availability of $99,99\%$ if we have at least 5 n
     	\textbf{Issue} & Performance is crucial. The system needs to handle 1000's of concurrent users. \\
 	\hline
 	\cellcolor[gray]{0.9}
-	\textbf{Decision} & It should be possible to partition the system horizontally for each map. That means that each map should have a denoted server (or server farm). Besides that each node has a cache to minimize database roundtrips. \\
+	\textbf{Decision} & It should be possible to partition the system horizontally for each map. That means that each map should have a denoted server (or server farm). Besides that the storage components are configured to use a cache to minimize database roundtrips. \\
 	\hline
 	\cellcolor[gray]{0.9}
 	\textbf{Group} & Performance \\
@@ -493,59 +476,6 @@ That means if that we reach an availability of $99,99\%$ if we have at least 5 n
 \end{table}
 
 \newpage
-
-\subsubsection{D-1}
-
-\begin{table}[h] \small
-	\begin{tabularx}{\textwidth}{ | l | X |}
-    	\hline
-	\cellcolor[gray]{0.9}
-    	\textbf{Issue} & TODO \\
-	\hline
-	\cellcolor[gray]{0.9}
-	\textbf{Decision} & TODO \\
-	\hline
-	\cellcolor[gray]{0.9}
-	\textbf{Group} & TODO \\
-	\hline
-	\cellcolor[gray]{0.9}
-	\textbf{Assumptions} & TODO \\
-	\hline
-	\cellcolor[gray]{0.9}
-	\textbf{Constraints} & TODO \\
-	\hline
-	\cellcolor[gray]{0.9}
-	\textbf{Positions} & TODO \\
-	\hline
-	\cellcolor[gray]{0.9}
-	\textbf{Argument} & TODO \\
-	\hline
-	\cellcolor[gray]{0.9}
-	\textbf{Implications} & TODO \\
-	\hline
-	\cellcolor[gray]{0.9}
-	\textbf{Related decisions} & TODO \\
-	\hline
-	\cellcolor[gray]{0.9}
-	\textbf{Related requirements} & TODO\\
-	\hline
-	\cellcolor[gray]{0.9}
-	\textbf{Related artifacts} & TODO\\
-	\hline
-	\cellcolor[gray]{0.9}
-	\textbf{Related principles} & TODO\\
-	\hline
-	\end{tabularx}
-	\caption{Design decision - D-1}
-	\label{dec:D1}
-\end{table}
-
-\subsection{Future work}
-
-\begin{itemize}
-\item Load-Balancer?
-\item https?
-\end{itemize}
 
 \section{Prototype Installation Guidelines}
 
@@ -599,6 +529,20 @@ The entry point to play \textbf{SWAG} is \href{http:localhost:8080/user/swag/use
 \includegraphics[scale=1]{diagrams/message.png}
 \caption{SWAG - Message Class Diagram}
 \label{fig:message_cd}
+\end{figure}
+
+\begin{figure}[h]
+\center
+\includegraphics[scale=0.7]{diagrams/component.png}
+\caption{SWAG - Component Diagram}
+\label{fig:component}
+\end{figure}
+
+\begin{figure}[h]
+\center
+\includegraphics[angle=90, scale=0.6]{diagrams/deployment.png}
+\caption{SWAG - Deployment Diagram}
+\label{fig:deployment}
 \end{figure}
 
  \end{document}
