@@ -89,7 +89,7 @@
                     <td>
                         <c:choose>
                             <c:when test="${square.building.canUpgrade && square.building.upgradeCosts != null}">
-                                <a href="buildingupgrade.html"><img
+                                <a href="buildingupgrade.html?baseId=${square.baseId}&position=${square.position}"><img
                                         src="<spring:theme code='theme.image.misc.upgrade'/>"
                                         alt="Upgrade"> </a>
                             </c:when>

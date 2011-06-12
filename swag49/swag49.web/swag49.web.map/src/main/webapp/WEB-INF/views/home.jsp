@@ -23,10 +23,10 @@
 
         <table id="resourceTable">
             <tr>
-                <th><img src="${resourcePath}/images/misc/gold.jpg" alt="Gold"/></th>
-                <th><img src="${resourcePath}/images/misc/stone.jpg" alt="Stone"/></th>
-                <th><img src="${resourcePath}/images/misc/wood.jpg" alt="Wood"/></th>
-                <th><img src="${resourcePath}/images/misc/crops.jpg" alt="Crops"/></th>
+                <th><img src="${resourcePath}<spring:theme code='theme.image.misc.gold'/>" alt="Gold"/></th>
+                <th><img src="${resourcePath}<spring:theme code='theme.image.misc.stone'/>" alt="Stone"/></th>
+                <th><img src="${resourcePath}<spring:theme code='theme.image.misc.wood'/>" alt="Wood"/></th>
+                <th><img src="${resourcePath}<spring:theme code='theme.image.misc.crops'/>" alt="Crops"/></th>
             </tr>
             <tr>
                 <td>${resources.amount_gold}</td>
@@ -136,7 +136,7 @@
                                                      title="${tile.info}"/>
                                             </c:when>
                                             <c:otherwise>
-                                                <img src="${resourcePath}<spring:theme code='theme.image.misc.gold'/>"
+                                                <img src="${resourcePath}<spring:theme code='theme.image.tile.gold.empty'/>"
                                                      alt="${tile.info}"
                                                      title="${tile.info}"/>
                                             </c:otherwise>
@@ -165,7 +165,7 @@
                                                      title="${tile.info}"/>
                                             </c:when>
                                             <c:otherwise>
-                                                <img src="${resourcePath}<spring:theme code='theme.image.misc.wood'/>"
+                                                <img src="${resourcePath}<spring:theme code='theme.image.tile.wood.empty'/>"
                                                      alt="${tile.info}"
                                                      title="${tile.info}"/>
                                             </c:otherwise>
@@ -194,7 +194,7 @@
                                                      title="${tile.info}"/>
                                             </c:when>
                                             <c:otherwise>
-                                                <img src="${resourcePath}<spring:theme code='theme.image.misc.stone'/>"
+                                                <img src="${resourcePath}<spring:theme code='theme.image.tile.stone.empty'/>"
                                                      alt="${tile.info}"
                                                      title="${tile.info}"/>
                                             </c:otherwise>
@@ -223,7 +223,7 @@
                                                      title="${tile.info}"/>
                                             </c:when>
                                             <c:otherwise>
-                                                <img src="${resourcePath}<spring:theme code='theme.image.misc.crops'/>"
+                                                <img src="${resourcePath}<spring:theme code='theme.image.tile.crops.empty'/>"
                                                      alt="${tile.info}"
                                                      title="${tile.info}"/>
                                             </c:otherwise>
