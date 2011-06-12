@@ -34,7 +34,6 @@ public class PeriodicResourceUpdateLogic  {
     @Transactional("swag49.map")
     public void updateResources() {
         logger.info("Start updating resources");
-        //TODO null oder empty Player??
         Player examplePlayer = new Player();
         examplePlayer.setOwns(null);
         examplePlayer.setTroops(null);
