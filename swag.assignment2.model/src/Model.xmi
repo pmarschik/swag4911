@@ -265,6 +265,24 @@
       <members name="troopLevel" complexType="//@models.0/@entities.16" persistenceRelation="ManyToOne"/>
       <specialConstructor>public TroopUpgradeAction(Player player, Troop troop, TroopLevel troopLevel, Long duration) {&#xA;        this.setPlayer(player);&#xA;        this.setTroop(troop);&#xA;        this.setTroopLevel(troopLevel);&#xA;        this.setDuration(duration);&#xA;    }</specialConstructor>
     </entities>
+    <daos daoFor="//@models.0/@entities.0" name="ActionDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.3" name="BaseDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.5" name="BuildActionDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.6" name="BuildingDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.9" name="BuildingLevelDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.8" name="BuildingTypeDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.11" name="MapDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.1" name="PlayerDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.7" name="SquareDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.13" name="StatisticDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.14" name="StatisticEntryDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.2" name="TileDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.17" name="TroopActionDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.18" name="TroopBuildActionDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.12" name="TroopDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.16" name="TroopLevelDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.15" name="TroopTypeDAO" persistenceInjection="Member"/>
+    <daos daoFor="//@models.0/@entities.19" name="TroopUpgradeActionDAO" persistenceInjection="Member"/>
     <enums name="ResourceType">
       <items value="STONE"/>
       <items value="WOOD"/>
