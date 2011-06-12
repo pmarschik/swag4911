@@ -1021,25 +1021,126 @@ public class MapController {
     @RequestMapping(value = "/canceltroopbuildaction", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String cancelTroopBuildAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
-        TroopBuildAction action = troopBuildActionDAO.get(id);
-        if (action == null) {
+        TroopBuildAction action2 = troopBuildActionDAO.get(id);
+        if (action2 == null) {
             logger.error("Action with id " + id + " not found");
             return ERROR;
         }
 
-        if (action.getIsAbortable()) {
+        if (action2.getIsAbortable()) {
 
             //give 50% of resources back
-            ResourceValue fiftyPerCent = action.getTroopLevel().getBuildCosts();
+            ResourceValue fiftyPerCent = action2.getTroopLevel().getBuildCosts();
             ResourceValueHelper.multiply(fiftyPerCent, 0.5);
-            ResourceValueHelper.add(action.getPlayer().getResources(), fiftyPerCent);
-            playerDAO.update(action.getPlayer());
+            ResourceValueHelper.add(action2.getPlayer().getResources(), fiftyPerCent);
+            playerDAO.update(action2.getPlayer());
 
-            troopBuildActionDAO.delete(action);
+            troopBuildActionDAO.delete(action2);
 
         }
 
-        return "redirect:actions/";
+        Date now = new Date();
+
+        player = playerDAO.get(player.getId());
+
+        //troop actions
+        TroopAction troopAction = new TroopAction();
+        troopAction.setPlayer(player);
+        Set<TroopAction> troopActionsList = new HashSet<TroopAction>(troopActionDAO.queryByExample(troopAction));
+
+        List<TroopActionDTO> troopActionDTOList = new ArrayList<TroopActionDTO>();
+
+        for (TroopAction action : troopActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopActionDTO dto = new TroopActionDTO();
+
+                dto.setDestination(action.getSource().getId().getX(), action.getSource().getId().getX());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setStartDate(action.getStartDate());
+                dto.setEndDate(action.getEndDate());
+                dto.setId(action.getId());
+
+                troopActionDTOList.add(dto);
+            }
+        }
+
+
+        //troop upgrades
+        TroopUpgradeAction troopUpgradeAction = new TroopUpgradeAction();
+        troopUpgradeAction.setPlayer(player);
+        List<TroopUpgradeAction> troopUpgradeActionsList = troopUpgradeActionDAO.queryByExample(troopUpgradeAction);
+
+        List<TroopUpgradeActionDTO> troopUpgradeActionDTOList = new ArrayList<TroopUpgradeActionDTO>();
+
+        for (TroopUpgradeAction action : troopUpgradeActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopUpgradeActionDTO dto = new TroopUpgradeActionDTO();
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setTroopName(action.getTroop().getType().getName());
+                dto.setEndDate(action.getEndDate());
+                dto.setLevel(action.getTroopLevel().getLevel());
+                dto.setId(action.getId());
+
+                troopUpgradeActionDTOList.add(dto);
+            }
+        }
+
+        //buildings
+        BuildAction buildAction = new BuildAction();
+        buildAction.setPlayer(player);
+        List<BuildAction> buildActionList = buildActionDAO.queryByExample(buildAction);
+
+        List<BuildActionDTO> buildActionDTOList = new ArrayList<BuildActionDTO>();
+
+        for (BuildAction action : buildActionList) {
+            if (action.getEndDate().after(now)) {
+                BuildActionDTO dto = new BuildActionDTO();
+
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setBuildingName(action.getConcerns().getType().getName());
+                dto.setLevel(action.getConcerns().getIsOfLevel().getLevel() + 1);
+                dto.setSquareId(action.getConcerns().getSquare().getId().getPosition());
+                dto.setEndDate(action.getEndDate());
+                dto.setId(action.getId());
+
+                buildActionDTOList.add(dto);
+            }
+        }
+
+        //troops in training
+        TroopBuildAction troopBuildAction = new TroopBuildAction();
+        troopBuildAction.setPlayer(player);
+        List<TroopBuildAction> troopBuildActionsList = troopBuildActionDAO.queryByExample(troopBuildAction);
+
+        List<TroopBuildActionDTO> buildBuildDTOList = new ArrayList<TroopBuildActionDTO>();
+
+        for (TroopBuildAction action : troopBuildActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopBuildActionDTO dto = new TroopBuildActionDTO();
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setTroopName(action.getTroopType().getName());
+                dto.setEndDate(action.getEndDate());
+                dto.setAmount(action.getAmount());
+                dto.setId(action.getId());
+
+                buildBuildDTOList.add(dto);
+            }
+        }
+
+        model.addAttribute("troopActions", troopActionDTOList);
+
+        model.addAttribute("troopUpgradeActions", troopUpgradeActionDTOList);
+
+        model.addAttribute("baseActions", buildActionDTOList);
+        model.addAttribute("troopBuildActions", buildBuildDTOList);
+
+        return "actions";
     }
 
 
@@ -1048,32 +1149,133 @@ public class MapController {
     public String cancelTroopAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
         if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
-        TroopAction action = troopActionDAO.get(Long.valueOf(id));
-        if (action == null) {
+        TroopAction action2 = troopActionDAO.get(Long.valueOf(id));
+        if (action2 == null) {
             logger.error("Action with id " + id + " not found");
             return ERROR;
         }
 
-        if (action.getIsAbortable()) {
+        if (action2.getIsAbortable()) {
             //create new action for the way back
             Date now = new Date();
             TroopAction newAction = new TroopAction();
-            newAction.setPlayer(action.getPlayer());
-            newAction.setConcerns(action.getConcerns());
+            newAction.setPlayer(action2.getPlayer());
+            newAction.setConcerns(action2.getConcerns());
             newAction.setStartDate(now);
             newAction.setShouldFoundBase(Boolean.FALSE);
             newAction.setIsAbortable(Boolean.FALSE);
-            newAction.setDuration(now.getTime() - action.getStartDate().getTime());
-            newAction.setTarget(action.getSource());
-            newAction.setSource(action.getSource());
+            newAction.setDuration(now.getTime() - action2.getStartDate().getTime());
+            newAction.setTarget(action2.getSource());
+            newAction.setSource(action2.getSource());
 
             newAction = troopActionDAO.create(newAction);
 
-            troopActionDAO.delete(action);
+            troopActionDAO.delete(action2);
         }
 
 
-        return "redirect:../../actions/";
+        Date now = new Date();
+
+        player = playerDAO.get(player.getId());
+
+        //troop actions
+        TroopAction troopAction = new TroopAction();
+        troopAction.setPlayer(player);
+        Set<TroopAction> troopActionsList = new HashSet<TroopAction>(troopActionDAO.queryByExample(troopAction));
+
+        List<TroopActionDTO> troopActionDTOList = new ArrayList<TroopActionDTO>();
+
+        for (TroopAction action : troopActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopActionDTO dto = new TroopActionDTO();
+
+                dto.setDestination(action.getSource().getId().getX(), action.getSource().getId().getX());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setStartDate(action.getStartDate());
+                dto.setEndDate(action.getEndDate());
+                dto.setId(action.getId());
+
+                troopActionDTOList.add(dto);
+            }
+        }
+
+
+        //troop upgrades
+        TroopUpgradeAction troopUpgradeAction = new TroopUpgradeAction();
+        troopUpgradeAction.setPlayer(player);
+        List<TroopUpgradeAction> troopUpgradeActionsList = troopUpgradeActionDAO.queryByExample(troopUpgradeAction);
+
+        List<TroopUpgradeActionDTO> troopUpgradeActionDTOList = new ArrayList<TroopUpgradeActionDTO>();
+
+        for (TroopUpgradeAction action : troopUpgradeActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopUpgradeActionDTO dto = new TroopUpgradeActionDTO();
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setTroopName(action.getTroop().getType().getName());
+                dto.setEndDate(action.getEndDate());
+                dto.setLevel(action.getTroopLevel().getLevel());
+                dto.setId(action.getId());
+
+                troopUpgradeActionDTOList.add(dto);
+            }
+        }
+
+        //buildings
+        BuildAction buildAction = new BuildAction();
+        buildAction.setPlayer(player);
+        List<BuildAction> buildActionList = buildActionDAO.queryByExample(buildAction);
+
+        List<BuildActionDTO> buildActionDTOList = new ArrayList<BuildActionDTO>();
+
+        for (BuildAction action : buildActionList) {
+            if (action.getEndDate().after(now)) {
+                BuildActionDTO dto = new BuildActionDTO();
+
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setBuildingName(action.getConcerns().getType().getName());
+                dto.setLevel(action.getConcerns().getIsOfLevel().getLevel() + 1);
+                dto.setSquareId(action.getConcerns().getSquare().getId().getPosition());
+                dto.setEndDate(action.getEndDate());
+                dto.setId(action.getId());
+
+                buildActionDTOList.add(dto);
+            }
+        }
+
+        //troops in training
+        TroopBuildAction troopBuildAction = new TroopBuildAction();
+        troopBuildAction.setPlayer(player);
+        List<TroopBuildAction> troopBuildActionsList = troopBuildActionDAO.queryByExample(troopBuildAction);
+
+        List<TroopBuildActionDTO> buildBuildDTOList = new ArrayList<TroopBuildActionDTO>();
+
+        for (TroopBuildAction action : troopBuildActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopBuildActionDTO dto = new TroopBuildActionDTO();
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setTroopName(action.getTroopType().getName());
+                dto.setEndDate(action.getEndDate());
+                dto.setAmount(action.getAmount());
+                dto.setId(action.getId());
+
+                buildBuildDTOList.add(dto);
+            }
+        }
+
+        model.addAttribute("troopActions", troopActionDTOList);
+
+        model.addAttribute("troopUpgradeActions", troopUpgradeActionDTOList);
+
+        model.addAttribute("baseActions", buildActionDTOList);
+        model.addAttribute("troopBuildActions", buildBuildDTOList);
+
+        return "actions";
     }
 
 
@@ -1084,29 +1286,130 @@ public class MapController {
         if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
-        TroopUpgradeAction action = troopUpgradeActionDAO.get(id);
-        if (action == null) {
+        TroopUpgradeAction action2 = troopUpgradeActionDAO.get(id);
+        if (action2 == null) {
             logger.error("Action with id " + id + " not found");
             return ERROR;
         }
 
-        if (action.getIsAbortable()) {
-            Troop troop = action.getTroop();
+        if (action2.getIsAbortable()) {
+            Troop troop = action2.getTroop();
             troop.setActive(Boolean.TRUE);
 
             troopDAO.update(troop);
 
             //give 50% of resources back
-            ResourceValue fiftyPerCent = action.getTroopLevel().getBuildCosts();
+            ResourceValue fiftyPerCent = action2.getTroopLevel().getBuildCosts();
             ResourceValueHelper.multiply(fiftyPerCent, 0.5);
-            ResourceValueHelper.add(action.getPlayer().getResources(), fiftyPerCent);
-            playerDAO.update(action.getPlayer());
+            ResourceValueHelper.add(action2.getPlayer().getResources(), fiftyPerCent);
+            playerDAO.update(action2.getPlayer());
 
-            troopUpgradeActionDAO.delete(action);
+            troopUpgradeActionDAO.delete(action2);
 
         }
 
-        return "redirect:../../actions/";
+        Date now = new Date();
+
+        player = playerDAO.get(player.getId());
+
+        //troop actions
+        TroopAction troopAction = new TroopAction();
+        troopAction.setPlayer(player);
+        Set<TroopAction> troopActionsList = new HashSet<TroopAction>(troopActionDAO.queryByExample(troopAction));
+
+        List<TroopActionDTO> troopActionDTOList = new ArrayList<TroopActionDTO>();
+
+        for (TroopAction action : troopActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopActionDTO dto = new TroopActionDTO();
+
+                dto.setDestination(action.getSource().getId().getX(), action.getSource().getId().getX());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setStartDate(action.getStartDate());
+                dto.setEndDate(action.getEndDate());
+                dto.setId(action.getId());
+
+                troopActionDTOList.add(dto);
+            }
+        }
+
+
+        //troop upgrades
+        TroopUpgradeAction troopUpgradeAction = new TroopUpgradeAction();
+        troopUpgradeAction.setPlayer(player);
+        List<TroopUpgradeAction> troopUpgradeActionsList = troopUpgradeActionDAO.queryByExample(troopUpgradeAction);
+
+        List<TroopUpgradeActionDTO> troopUpgradeActionDTOList = new ArrayList<TroopUpgradeActionDTO>();
+
+        for (TroopUpgradeAction action : troopUpgradeActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopUpgradeActionDTO dto = new TroopUpgradeActionDTO();
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setTroopName(action.getTroop().getType().getName());
+                dto.setEndDate(action.getEndDate());
+                dto.setLevel(action.getTroopLevel().getLevel());
+                dto.setId(action.getId());
+
+                troopUpgradeActionDTOList.add(dto);
+            }
+        }
+
+        //buildings
+        BuildAction buildAction = new BuildAction();
+        buildAction.setPlayer(player);
+        List<BuildAction> buildActionList = buildActionDAO.queryByExample(buildAction);
+
+        List<BuildActionDTO> buildActionDTOList = new ArrayList<BuildActionDTO>();
+
+        for (BuildAction action : buildActionList) {
+            if (action.getEndDate().after(now)) {
+                BuildActionDTO dto = new BuildActionDTO();
+
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setBuildingName(action.getConcerns().getType().getName());
+                dto.setLevel(action.getConcerns().getIsOfLevel().getLevel() + 1);
+                dto.setSquareId(action.getConcerns().getSquare().getId().getPosition());
+                dto.setEndDate(action.getEndDate());
+                dto.setId(action.getId());
+
+                buildActionDTOList.add(dto);
+            }
+        }
+
+        //troops in training
+        TroopBuildAction troopBuildAction = new TroopBuildAction();
+        troopBuildAction.setPlayer(player);
+        List<TroopBuildAction> troopBuildActionsList = troopBuildActionDAO.queryByExample(troopBuildAction);
+
+        List<TroopBuildActionDTO> buildBuildDTOList = new ArrayList<TroopBuildActionDTO>();
+
+        for (TroopBuildAction action : troopBuildActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopBuildActionDTO dto = new TroopBuildActionDTO();
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setTroopName(action.getTroopType().getName());
+                dto.setEndDate(action.getEndDate());
+                dto.setAmount(action.getAmount());
+                dto.setId(action.getId());
+
+                buildBuildDTOList.add(dto);
+            }
+        }
+
+        model.addAttribute("troopActions", troopActionDTOList);
+
+        model.addAttribute("troopUpgradeActions", troopUpgradeActionDTOList);
+
+        model.addAttribute("baseActions", buildActionDTOList);
+        model.addAttribute("troopBuildActions", buildBuildDTOList);
+
+        return "actions";
     }
 
 
@@ -1117,15 +1420,15 @@ public class MapController {
         if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
-        BuildAction action = buildActionDAO.get(Long.valueOf(id));
-        if (action == null) {
+        BuildAction action2 = buildActionDAO.get(Long.valueOf(id));
+        if (action2 == null) {
             logger.error("Action with id " + id + " not found");
             return ERROR;
         }
 
-        if (action.getIsAbortable()) {
+        if (action2.getIsAbortable()) {
 
-            Building building = action.getConcerns();
+            Building building = action2.getConcerns();
 
             //give 50% of resources back
             BuildingLevel.Id blId = new BuildingLevel.Id(building.getIsOfLevel().getLevel() + 1, building.getType().getId());
@@ -1133,23 +1436,124 @@ public class MapController {
 
             ResourceValue fiftyPerCent = nextLevel.getBuildCosts();
             ResourceValueHelper.multiply(fiftyPerCent, 0.5);
-            ResourceValueHelper.add(action.getPlayer().getResources(), fiftyPerCent);
+            ResourceValueHelper.add(action2.getPlayer().getResources(), fiftyPerCent);
 
-            playerDAO.update(action.getPlayer());
+            playerDAO.update(action2.getPlayer());
 
             if (building.getIsOfLevel().getLevel().equals(0)) {
                 //delete construction yard
-                buildActionDAO.delete(action);
+                buildActionDAO.delete(action2);
                 buildingDAO.delete(building);
             } else {
                 building.setActive(Boolean.TRUE);
                 buildingDAO.update(building);
-                buildActionDAO.delete(action);
+                buildActionDAO.delete(action2);
             }
         }
 
 
-        return "redirect:../../actions/";
+        Date now = new Date();
+
+        player = playerDAO.get(player.getId());
+
+        //troop actions
+        TroopAction troopAction = new TroopAction();
+        troopAction.setPlayer(player);
+        Set<TroopAction> troopActionsList = new HashSet<TroopAction>(troopActionDAO.queryByExample(troopAction));
+
+        List<TroopActionDTO> troopActionDTOList = new ArrayList<TroopActionDTO>();
+
+        for (TroopAction action : troopActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopActionDTO dto = new TroopActionDTO();
+
+                dto.setDestination(action.getSource().getId().getX(), action.getSource().getId().getX());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setStartDate(action.getStartDate());
+                dto.setEndDate(action.getEndDate());
+                dto.setId(action.getId());
+
+                troopActionDTOList.add(dto);
+            }
+        }
+
+
+        //troop upgrades
+        TroopUpgradeAction troopUpgradeAction = new TroopUpgradeAction();
+        troopUpgradeAction.setPlayer(player);
+        List<TroopUpgradeAction> troopUpgradeActionsList = troopUpgradeActionDAO.queryByExample(troopUpgradeAction);
+
+        List<TroopUpgradeActionDTO> troopUpgradeActionDTOList = new ArrayList<TroopUpgradeActionDTO>();
+
+        for (TroopUpgradeAction action : troopUpgradeActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopUpgradeActionDTO dto = new TroopUpgradeActionDTO();
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setTroopName(action.getTroop().getType().getName());
+                dto.setEndDate(action.getEndDate());
+                dto.setLevel(action.getTroopLevel().getLevel());
+                dto.setId(action.getId());
+
+                troopUpgradeActionDTOList.add(dto);
+            }
+        }
+
+        //buildings
+        BuildAction buildAction = new BuildAction();
+        buildAction.setPlayer(player);
+        List<BuildAction> buildActionList = buildActionDAO.queryByExample(buildAction);
+
+        List<BuildActionDTO> buildActionDTOList = new ArrayList<BuildActionDTO>();
+
+        for (BuildAction action : buildActionList) {
+            if (action.getEndDate().after(now)) {
+                BuildActionDTO dto = new BuildActionDTO();
+
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setBuildingName(action.getConcerns().getType().getName());
+                dto.setLevel(action.getConcerns().getIsOfLevel().getLevel() + 1);
+                dto.setSquareId(action.getConcerns().getSquare().getId().getPosition());
+                dto.setEndDate(action.getEndDate());
+                dto.setId(action.getId());
+
+                buildActionDTOList.add(dto);
+            }
+        }
+
+        //troops in training
+        TroopBuildAction troopBuildAction = new TroopBuildAction();
+        troopBuildAction.setPlayer(player);
+        List<TroopBuildAction> troopBuildActionsList = troopBuildActionDAO.queryByExample(troopBuildAction);
+
+        List<TroopBuildActionDTO> buildBuildDTOList = new ArrayList<TroopBuildActionDTO>();
+
+        for (TroopBuildAction action : troopBuildActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopBuildActionDTO dto = new TroopBuildActionDTO();
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setTroopName(action.getTroopType().getName());
+                dto.setEndDate(action.getEndDate());
+                dto.setAmount(action.getAmount());
+                dto.setId(action.getId());
+
+                buildBuildDTOList.add(dto);
+            }
+        }
+
+        model.addAttribute("troopActions", troopActionDTOList);
+
+        model.addAttribute("troopUpgradeActions", troopUpgradeActionDTOList);
+
+        model.addAttribute("baseActions", buildActionDTOList);
+        model.addAttribute("troopBuildActions", buildBuildDTOList);
+
+        return "actions";
     }
 
 
