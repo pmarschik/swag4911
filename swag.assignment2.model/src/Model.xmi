@@ -13,8 +13,60 @@
       <members name="isAbortable" type="Boolean"/>
       <specialMethod>public java.util.Date getEndDate() {&#xA;        if (startDate == null || duration == null)&#xA;            return null;&#xA;&#xA;        return new java.util.Date(startDate.getTime() + duration);&#xA;    }</specialMethod>
     </entities>
-    <entities name="Player"/>
-    <entities name="Tile"/>
+    <entities name="Player">
+      <members name="online" type="Boolean">
+        <column/>
+      </members>
+      <members name="deleted" type="Boolean">
+        <column/>
+      </members>
+      <members name="userId" type="String">
+        <column/>
+      </members>
+      <members name="plays" complexType="//@models.0/@entities.11" persistenceRelation="ManyToOne"/>
+      <members name="owns" complexType="//@models.0/@entities.3" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="owner" persistenceOptional="true"/>
+      <members name="troops" complexType="//@models.0/@entities.12" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="owner" persistenceOptional="true"/>
+      <members name="actions" complexType="//@models.0/@entities.0" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="player" persistenceOptional="true"/>
+      <members name="resources" complexType="//@models.0/@entities.4">
+        <attributeOverride>
+          <attributeOverrides name="amount_gold" column="production_gold"/>
+          <attributeOverrides name="amount_stone" column="production_stone"/>
+          <attributeOverrides name="amount_wood" column="production_wood"/>
+          <attributeOverrides name="amount_crops" column="production_crops"/>
+        </attributeOverride>
+      </members>
+      <members name="income" complexType="//@models.0/@entities.4">
+        <attributeOverride>
+          <attributeOverrides name="amount_gold" column="production_gold"/>
+          <attributeOverrides name="amount_stone" column="production_stone"/>
+          <attributeOverrides name="amount_wood" column="production_wood"/>
+          <attributeOverrides name="amount_crops" column="production_crops"/>
+        </attributeOverride>
+      </members>
+      <members name="upkeep" complexType="//@models.0/@entities.4">
+        <attributeOverride>
+          <attributeOverrides name="amount_gold" column="production_gold"/>
+          <attributeOverrides name="amount_stone" column="production_stone"/>
+          <attributeOverrides name="amount_wood" column="production_wood"/>
+          <attributeOverrides name="amount_crops" column="production_crops"/>
+        </attributeOverride>
+      </members>
+    </entities>
+    <entities name="Tile">
+      <members name="map" complexType="//@models.0/@entities.11" persistenceRelation="ManyToOne">
+        <joincolumn name="mapId"/>
+      </members>
+      <members name="special" enumType="//@models.0/@enums.0"/>
+      <members name="troops" complexType="//@models.0/@entities.12" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="position" persistenceOptional="true"/>
+      <members name="base" complexType="//@models.0/@entities.3" persistenceRelation="OneToOne" persistenceOptional="true"/>
+      <embeddedId name="Id">
+        <members name="mapId" type="Long"/>
+        <members name="x" type="Integer"/>
+        <members name="y" type="Integer"/>
+        <specialConstructor>public Id(long mapId, int x, int y) {&#xA;&#x9;&#x9;&#x9;super();&#xA;&#x9;&#x9;&#x9;this.mapId = mapId;&#xA;&#x9;&#x9;&#x9;this.x = x;&#xA;&#x9;&#x9;&#x9;this.y = y;&#xA;&#x9;&#x9;}</specialConstructor>
+      </embeddedId>
+      <specialConstructor>&#x9;public Tile(Map map, int x, int y) {&#xA;&#x9;&#x9;this.map = map;&#xA;        this.id = new Id(map.getId(),x,y);&#xA;&#xA;//&#x9;&#x9;map.getConsistsOf().add(this);&#xA;&#x9;}</specialConstructor>
+    </entities>
     <entities name="Base">
       <members name="home" type="Boolean">
         <column/>
@@ -32,7 +84,17 @@
       </members>
       <specialConstructor>public Base(Tile tile) {&#xA;        this();&#xA;        this.locatedOn = tile;&#xA;    }</specialConstructor>
     </entities>
-    <entities name="ResourceValue" persistenceEmbeddable="true"/>
+    <entities name="ResourceValue" persistenceEmbeddable="true" noDefaultConstructor="true">
+      <members name="amount_gold" type="Integer"/>
+      <members name="amount_stone" type="Integer"/>
+      <members name="amount_wood" type="Integer"/>
+      <members name="amount_crops" type="Integer"/>
+      <specialConstructor> public ResourceValue() {&#xA;        amount_gold = 0;&#xA;        amount_stone = 0;&#xA;        amount_wood = 0;&#xA;        amount_crops = 0;&#xA;    }</specialConstructor>
+      <specialConstructor>public ResourceValue(int wood, int crops, int gold, int stone) {&#xA;        amount_wood = wood;&#xA;        amount_crops = crops;&#xA;        amount_gold = gold;&#xA;        amount_stone = stone;&#xA;    }</specialConstructor>
+      <specialConstructor>public ResourceValue(ResourceValue value) {&#xA;        amount_wood = value.getAmount_wood();&#xA;        amount_crops = value.getAmount_crops();&#xA;        amount_gold = value.getAmount_gold();&#xA;        amount_stone = value.getAmount_stone();&#xA;&#xA;    }</specialConstructor>
+      <specialMethod>@Override&#xA;    public boolean equals(Object obj) {&#xA;        if (obj != null &amp;&amp; obj instanceof ResourceValue) {&#xA;            return this.amount_gold.equals(((ResourceValue) obj).amount_gold)&#xA;                    &amp;&amp; this.amount_stone&#xA;                    .equals(((ResourceValue) obj).amount_stone)&#xA;                    &amp;&amp; this.amount_wood&#xA;                    .equals(((ResourceValue) obj).amount_wood)&#xA;                    &amp;&amp; this.amount_crops&#xA;                    .equals(((ResourceValue) obj).amount_crops);&#xA;        } else {&#xA;            return false;&#xA;        }&#xA;    }</specialMethod>
+      <specialMethod>@Override&#xA;    public int hashCode() {&#xA;        return amount_gold.hashCode() + amount_stone.hashCode()&#xA;                + amount_wood.hashCode() + amount_crops.hashCode();&#xA;    }</specialMethod>
+    </entities>
     <entities name="BuildAction" superClass="//@models.0/@entities.0">
       <members name="concerns" complexType="//@models.0/@entities.6" persistenceRelation="ManyToOne"/>
     </entities>
@@ -92,8 +154,64 @@
       <specialMethod>@Override&#xA;&#x9;public Integer getLevel() {&#xA;&#x9;&#x9;return id.level;&#xA;&#x9;}</specialMethod>
     </entities>
     <entities name="LevelBase" persistenceSuperclass="true" noID="true">
+      <members name="upgradeDuration" type="Long">
+        <column/>
+      </members>
+      <members name="upkeepCosts" complexType="//@models.0/@entities.4">
+        <attributeOverride>
+          <attributeOverrides name="amount_gold" column="production_gold"/>
+          <attributeOverrides name="amount_stone" column="production_stone"/>
+          <attributeOverrides name="amount_wood" column="production_wood"/>
+          <attributeOverrides name="amount_crops" column="production_crops"/>
+        </attributeOverride>
+      </members>
+      <members name="buildCosts" complexType="//@models.0/@entities.4">
+        <attributeOverride>
+          <attributeOverrides name="amount_gold" column="production_gold"/>
+          <attributeOverrides name="amount_stone" column="production_stone"/>
+          <attributeOverrides name="amount_wood" column="production_wood"/>
+          <attributeOverrides name="amount_crops" column="production_crops"/>
+        </attributeOverride>
+      </members>
       <specialMethod>public abstract Integer getLevel();</specialMethod>
     </entities>
+    <entities name="Map">
+      <members name="maxUsers" type="Integer">
+        <column/>
+      </members>
+      <members name="url" type="String">
+        <column/>
+      </members>
+      <members name="consistsOf" complexType="//@models.0/@entities.2" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="map" persistenceOptional="true"/>
+    </entities>
+    <entities name="Troop"/>
+    <entities name="Statistic">
+      <members name="name" type="String">
+        <column/>
+      </members>
+      <members name="entries" complexType="//@models.0/@entities.14" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="statistics" persistenceFetchType="FetchType.EAGER" persistenceOptional="true"/>
+    </entities>
+    <entities name="StatisticEntry" specialID="">
+      <members name="statistic" complexType="//@models.0/@entities.13" persistenceRelation="ManyToOne">
+        <joincolumn name="statisticId"/>
+      </members>
+      <members name="player" complexType="//@models.0/@entities.1" persistenceRelation="ManyToOne"/>
+      <members name="score" type="Integer">
+        <column/>
+      </members>
+      <embeddedId name="Id">
+        <members name="statisticId" type="Long"/>
+        <members name="ranking" type="Integer"/>
+      </embeddedId>
+      <specialConstructor>public StatisticEntry(Statistic statistic, int ranking) {&#xA;&#x9;&#x9;this.statistic = statistic;&#xA;&#x9;&#x9;this.id.statisticId = statistic.getId();&#xA;&#x9;&#x9;this.id.ranking = ranking;&#xA;&#xA;&#x9;&#x9;statistic.getEntries().add(this);&#xA;&#x9;}</specialConstructor>
+    </entities>
+    <enums name="ResourceType">
+      <items value="STONE"/>
+      <items value="WOOD"/>
+      <items value="CROPS"/>
+      <items value="GOLD"/>
+      <items value="NONE"/>
+    </enums>
   </models>
   <models name="swag49.model.user" isContainerManaged="true">
     <entities name="Address" persistenceEmbeddable="true" persistenceTableName="">
