@@ -202,12 +202,12 @@
     </tr>
 </table>
 
-<script type="text/javascript">
-    $(".contentLink").live("click", function () {
-        $.get($(this).attr("href"),function (result) {
-            $("#content").html(result);
-        });
+<%--<script type="text/javascript">--%>
+    <%--$(".contentLink").live("click", function () {--%>
+        <%--$.get($(this).attr("href"),function (result) {--%>
+            <%--$("#content").html(result);--%>
+        <%--});--%>
 
-        return false;
-    });
-</script>
+        <%--return false;--%>
+    <%--});--%>
+<%--</script>--%>
