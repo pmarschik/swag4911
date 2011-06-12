@@ -552,6 +552,9 @@ public class MapController {
         tileInfo.setSpecialResource(specialResourceString);
 
         model.addAttribute("tileInfo", tileInfo);
+        model.addAttribute("message", new String(""));
+        model.addAttribute("x", x);
+        model.addAttribute("y", y);
 
         return "tile";
     }
@@ -573,6 +576,8 @@ public class MapController {
     @Transactional("swag49.map")
     public String getUpgradeBuilding(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
                                      @RequestParam(value = "position", defaultValue = "-1") int position,
+                                     @RequestParam(value = "x", defaultValue = "-1") int x,
+                                     @RequestParam(value = "y", defaultValue = "-1") int y,
                                      Model model) {
         lazyInit();
 
@@ -580,10 +585,10 @@ public class MapController {
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         player = playerDAO.get(player.getId());
-        Building building = buildingDAO.get(new Square.Id(baseId, position));
-        if (building != null) {
+        Building building2 = buildingDAO.get(new Square.Id(baseId, position));
+        if (building2 != null) {
             try {
-                mapLogic.upgradeBuilding(building);
+                mapLogic.upgradeBuilding(building2);
             } catch (NotEnoughMoneyException e) {
                 return NOTENOUGHRESOURCES;
             } catch (Exception e) {
@@ -591,7 +596,119 @@ public class MapController {
                 return ERROR;
             }
 
-            return "redirect: ../troopoverview";
+            Tile tile = new Tile(map, x, y);
+
+            tile = tileDAO.get(tile.getId());
+
+            TileOverviewDTOFull tileInfo = new TileOverviewDTOFull(tile.getId().getX(), tile.getId().getY());
+            tileInfo.setBase(tile.getBase());
+            tileInfo.setTroops(Sets.<TroopDTO>newHashSet(Collections2.transform(tile.getTroops(),
+                    new Function<Troop, TroopDTO>() {
+                        @Override
+                        public TroopDTO apply(@Nullable Troop input) {
+                            if (input == null) return null;
+
+                            return new TroopDTO(input.getType().getName(), input.getIsOfLevel().getLevel(),
+                                    input.getIsOfLevel().getStrength(), input.getIsOfLevel().getDefense(),
+                                    input.getIsOfLevel().getSpeed(), input.getIsOfLevel().getCargo_capacity(),
+                                    input.getId(), input.getActive());
+                        }
+                    })));
+
+            if (tile.getBase() != null) {
+//            tileInfo.setHasBase(true);
+
+                Base base = tile.getBase();
+                if (base.getOwner().getUserId().equals(player.getUserId())) {
+                    tileInfo.setEnemyTerritory(false);
+
+                    List<SquareDTO> squareDTOList = new ArrayList<SquareDTO>();
+
+                    for (Square square : base.getConsistsOf()) {
+                        SquareDTO dto = new SquareDTO();
+
+                        dto.setBaseId(square.getId().getBaseId());
+                        dto.setPosition(square.getId().getPosition());
+
+                        Building building = square.getBuilding();
+                        if (building != null) {
+                            BuildingDTO buildingDTO = new BuildingDTO();
+                            buildingDTO.setLevel(building.getIsOfLevel().getLevel());
+                            buildingDTO.setResourceProduction(new ResourceValueDTO(building.getIsOfLevel().getResourceProduction().getAmount_gold(),
+                                    building.getIsOfLevel().getResourceProduction().getAmount_wood(),
+                                    building.getIsOfLevel().getResourceProduction().getAmount_stone(),
+                                    building.getIsOfLevel().getResourceProduction().getAmount_crops()));
+
+                            buildingDTO.setUpkeepCosts(new ResourceValueDTO(building.getIsOfLevel().getUpkeepCosts().getAmount_gold(),
+                                    building.getIsOfLevel().getUpkeepCosts().getAmount_wood(),
+                                    building.getIsOfLevel().getUpkeepCosts().getAmount_stone(),
+                                    building.getIsOfLevel().getUpkeepCosts().getAmount_crops()));
+
+                            buildingDTO.setName(building.getType().getName());
+
+                            buildingDTO.setCanUpgrade(building.getActive());
+
+                            BuildingLevel nextLevel = buildingLevelDAO.get(new BuildingLevel.Id(building.getIsOfLevel().getLevel() + 1, building.getType().getId()));
+
+                            if (nextLevel != null) {
+                                buildingDTO.setUpgradeCosts(new ResourceValueDTO(nextLevel.getBuildCosts().getAmount_gold(),
+                                        nextLevel.getBuildCosts().getAmount_wood(),
+                                        nextLevel.getBuildCosts().getAmount_stone(),
+                                        nextLevel.getBuildCosts().getAmount_crops()));
+
+                                buildingDTO.setUpgradeDuration(nextLevel.getUpgradeDuration());
+                            }
+
+                            dto.setBuilding(buildingDTO);
+                        } else {
+                            dto.setBuilding(null);
+                        }
+
+                        squareDTOList.add(dto);
+                    }
+
+                    Collections.sort(squareDTOList, new Comparator<SquareDTO>() {
+                        @Override
+                        public int compare(SquareDTO o1, SquareDTO o2) {
+                            return o1.getPosition() - o2.getPosition();
+                        }
+                    });
+
+                    tileInfo.setSquares(squareDTOList);
+                } else {
+                    tileInfo.setEnemyTerritory(true);
+                }
+
+                tileInfo.setBaseId(base.getId());
+            } else {
+//              tileInfo.setHasBase(false);
+                tileInfo.setEnemyTerritory(false);
+            }
+
+
+            if (tile.getTroops() != null) {
+//            if(!tile.getTroops().isEmpty())
+//                tileInfo.setHasTroops(true);
+//            else
+//                tileInfo.setHasTroops(false);
+            } else {
+//            tileInfo.setHasTroops(true);
+            }
+
+            ResourceType specialResource = tile.getSpecial();
+            if (specialResource == null)
+                specialResource = ResourceType.NONE;
+            String specialResourceString = specialResource.toString();
+            tileInfo.setSpecialResource(specialResourceString);
+
+            model.addAttribute("tileInfo", tileInfo);
+            model.addAttribute("x", x);
+            model.addAttribute("y", y);
+            model.addAttribute("showLastBase", false);
+            model.addAttribute("message", new String("Building upgrade progress started"));
+//            model.addAttribute("showLastBase", true);
+
+            return "tile";
         } else {
             return "error";
         }

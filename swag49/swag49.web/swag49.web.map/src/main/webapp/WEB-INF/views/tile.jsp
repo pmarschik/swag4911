@@ -3,7 +3,11 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <spring:url value="/resources" var="resourcePath"/>
 
+
 <c:choose>
+    <c:when test="${showLastBase}">
+        <jsp:include page="ownbaseview.jsp"/>
+    </c:when>
     <c:when test="${tileInfo.hasBase && tileInfo.enemyTerritory}">
         <jsp:include page="enemybaseview.jsp"/>
     </c:when>
