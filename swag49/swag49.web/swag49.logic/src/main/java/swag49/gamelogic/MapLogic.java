@@ -58,9 +58,17 @@ public class MapLogic {
     private DataAccessObject<BuildingLevel, BuildingLevel.Id> buildingLevelDAO;
 
     @Autowired
+    @Qualifier("troopUpgradeActionDAO")
+    private DataAccessObject<TroopUpgradeAction, Long> troopUpgradeActionDAO;
+
+
+    @Autowired
     @Qualifier("troopLevelDAO")
     private DataAccessObject<TroopLevel, TroopLevel.Id> troopLevelDAO;
 
+    @Autowired
+    @Qualifier("troopBuildActionDAO")
+    private DataAccessObject<TroopBuildAction, Long> troopBuildActionDAO;
 
     @Autowired
     @Qualifier("buildActionDAO")
@@ -72,10 +80,10 @@ public class MapLogic {
 
     private static final int RANDOMTRIES = 1000;
 
-    private static final int START_AMOUNT_WOOD = 100;
-    private static final int START_AMOUNT_STONE = 100;
-    private static final int START_AMOUNT_GOLD = 100;
-    private static final int START_AMOUNT_CROPS = 100;
+    private static final int START_AMOUNT_WOOD = 1000;
+    private static final int START_AMOUNT_STONE = 1000;
+    private static final int START_AMOUNT_GOLD = 1000;
+    private static final int START_AMOUNT_CROPS = 1000;
 
     private static final int DISTANCEFACTOR = 600;
 
@@ -133,6 +141,12 @@ public class MapLogic {
             troopDAO.update(troop);
 
             TroopUpgradeAction action = new TroopUpgradeAction(player, troop, troopLevel, duration);
+
+            action.setTarget(troop.getPosition());
+            action.setIsAbortable(Boolean.TRUE);
+            action.setStartDate(new Date());
+
+            action = troopUpgradeActionDAO.create(action);
         } else {
             throw new NotEnoughMoneyException();
         }
@@ -186,6 +200,10 @@ public class MapLogic {
             playerDAO.update(player);
 
             TroopBuildAction action = new TroopBuildAction(player, baseTile, type, level, amount, duration);
+            action.setStartDate(new Date());
+            action.setIsAbortable(Boolean.TRUE);
+
+            action = troopBuildActionDAO.create(action);
         } else {
             throw new NotEnoughMoneyException();
         }
@@ -223,7 +241,8 @@ public class MapLogic {
     @Transactional("swag49.map")
     public void build(Square square, BuildingType type) throws Exception {
         if (square.getBuilding() != null) {
-            throw new Exception("Square not empty");
+            //    throw new Exception("Square not empty");
+            return;
         } else {
             Player player = square.getBase().getOwner();
             //get first level
@@ -237,6 +256,8 @@ public class MapLogic {
             }
 
             ResourceValueHelper.remove(player.getResources(), levelOne.getBuildCosts());
+
+            playerDAO.update(player);
 
             Building constructionYard = new Building(square);
 
@@ -291,6 +312,8 @@ public class MapLogic {
 
         //reduce resources
         ResourceValueHelper.remove(player.getResources(), levelOne.getBuildCosts());
+
+        playerDAO.update(player);
 
 
         building.setActive(Boolean.FALSE);
@@ -537,9 +560,17 @@ public class MapLogic {
                 if (canBuildBase && !tile.getBase().isHome()) {
                     //take base
                     Base base = tile.getBase();
+                    Player oldOwner = base.getOwner();
                     base.setOwner(action.getPlayer());
                     base = baseDAO.update(base);
-                    //TODO: write msg to both players
+                    //write msg to both players
+                    sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
+                            "You have captured a new base as  (" + tile.getId().getX() + "," + tile.getId().getY() +
+                                    ").");
+
+                    sendMessage(oldOwner, oldOwner, SUBJECT_BUILDBASE,
+                            "Player " + action.getPlayer().getId() + " has taken your base at  (" + tile.getId().getX() + "," + tile.getId().getY() +
+                                    ").");
                 } else {
                     //rob base
                     ResourceValue booty = calculateBooty(tile.getBase().getOwner(), action.getConcerns());
@@ -574,7 +605,13 @@ public class MapLogic {
                             Base base = tile.getBase();
                             base.setOwner(action.getPlayer());
                             base = baseDAO.update(base);
-                            //TODO: write msg to both players
+                             sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
+                            "You have captured a new base as  (" + tile.getId().getX() + "," + tile.getId().getY() +
+                                    ").");
+
+                    sendMessage(enemyOwner, enemyOwner, SUBJECT_BUILDBASE,
+                            "Player " + action.getPlayer().getId() + " has taken your base at  (" + tile.getId().getX() + "," + tile.getId().getY() +
+                                    ").");
                         } else {
                             sendHome(attackers, action.getSource());
                         }

@@ -314,10 +314,10 @@ public class MapController {
         for (Troop troop : troops) {
             Tile tile = troop.getPosition();
 
-            if(tile == null)       //then the troops are moving
+            if (tile == null)       //then the troops are moving
                 continue;
 
-            if(troop.getActive() == false)    //troops are upgrading
+            if (troop.getActive() == false)    //troops are upgrading
                 continue;
 
             SendTroopDTO troopDTO = new SendTroopDTO();
@@ -567,21 +567,20 @@ public class MapController {
         Troop troop = troopDAO.get(troopId);
         if (troop != null) {
             //get next Level
-            TroopLevel.Id id = new TroopLevel.Id(troop.getIsOfLevel().getLevel(), troop.getType().getId());
+            TroopLevel.Id id = new TroopLevel.Id(troop.getIsOfLevel().getLevel() + 1, troop.getType().getId());
 
             TroopLevel nextLevel = troopLevelDAO.get(id);
-            if (!ResourceValueHelper.geq(player.getResources(), nextLevel.getBuildCosts())) {
-                return NOTENOUGHRESOURCES;
-            }
 
             try {
                 mapLogic.upgradeTroop(player, troop, nextLevel);
+            } catch (NotEnoughMoneyException nem) {
+                return NOTENOUGHRESOURCES;
             } catch (Exception e) {
                 logger.error("Error during /troopupgrade", e);
                 return ERROR;
             }
 
-            return "troopoverview";
+            return "troopoverview.html?baseId=" + troop.getPosition().getBase().getId();
         } else {
             return ERROR;
         }
@@ -641,14 +640,8 @@ public class MapController {
             return ERROR;
         }
 
-        TroopType type = new TroopType();
-        type.setId(troopTypeId);
-        List<TroopType> typeList = troopTypeDAO.queryByExample(type);
-        if (typeList == null || typeList.size() != 1) {
-            return ERROR;
-        } else {
-            type = typeList.get(0);
-        }
+        TroopType type = troopTypeDAO.get(Long.valueOf(troopTypeId));
+
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
 
@@ -661,7 +654,10 @@ public class MapController {
 
         try {
             mapLogic.buildTroop(player, type, level, base.getLocatedOn(), 1);
-        } catch (NotEnoughMoneyException e) {
+        } catch (NotEnoughMoneyException e2) {
+            logger.error("Error during train", e2);
+            return ERROR;
+        } catch (Exception e) {
             logger.error("Error during train", e);
             return ERROR;
         }
@@ -711,8 +707,9 @@ public class MapController {
                 TroopUpgradeActionDTO dto = new TroopUpgradeActionDTO();
                 dto.setDestination_x(action.getTarget().getId().getX());
                 dto.setDestination_y(action.getTarget().getId().getY());
-                dto.setAbortable(action.getIsAbortable());
+                dto.setIsAbortable(action.getIsAbortable());
                 dto.setTroopName(action.getTroop().getType().getName());
+                dto.setEndDate(action.getEndDate());
                 dto.setLevel(action.getTroopLevel().getLevel());
                 dto.setId(action.getId());
 
@@ -883,6 +880,8 @@ public class MapController {
 
         model.addAttribute("troops", troops);
         model.addAttribute("baseId", baseId);
+        model.addAttribute("back_x", base.getLocatedOn().getId().getX());
+        model.addAttribute("back_y", base.getLocatedOn().getId().getY());
 
         return "troopoverview";
     }
@@ -984,6 +983,7 @@ public class MapController {
                 x_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getX() + VIEWSIZE + 1);
                 y_low = Math.max(0, homeBase.getLocatedOn().getId().getY() - VIEWSIZE);
                 y_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getY() + VIEWSIZE + 1);
+
             } else {
                 x_low = 0;
                 y_low = 0;
@@ -1096,7 +1096,9 @@ public class MapController {
         map = mapDAO.get(map.getId());
 
         //default values
-        if (x_low == x_high && y_low == y_high && y_low == x_low && x_low == -1) {
+        if ((x_low == x_high && y_low == y_high && y_low == x_low && x_low == -1)
+                || (x_high - x_low < 3) || (y_high - y_low < 3)
+                ) {
             //focus on home base
             Base homeBase = null;
             if (player.getOwns() != null && !player.getOwns().isEmpty()) {
@@ -1107,7 +1109,7 @@ public class MapController {
                     }
                 }
 
-                int maxVal = homeBase.getLocatedOn().getId().getX() + VIEWSIZE + 1;
+                int maxVal = homeBase.getLocatedOn().getId().getX() + VIEWSIZE;
                 Tile.Id id = new Tile.Id(map.getId(), maxVal, 0);
                 Tile testTile = tileDAO.get(id);
                 while (testTile == null && maxVal > 0) {
@@ -1117,16 +1119,18 @@ public class MapController {
                 }
 
                 x_low = Math.max(0, homeBase.getLocatedOn().getId().getX() - VIEWSIZE);
-                x_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getX() + VIEWSIZE + 1);
+                x_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getX() + VIEWSIZE);
                 y_low = Math.max(0, homeBase.getLocatedOn().getId().getY() - VIEWSIZE);
-                y_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getY() + VIEWSIZE + 1);
+                y_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getY() + VIEWSIZE);
             } else {
                 x_low = 0;
                 y_low = 0;
-                x_high = 2 * VIEWSIZE + 1;
-                y_high = 2 * VIEWSIZE + 1;
+                x_high = 2 * VIEWSIZE;
+                y_high = 2 * VIEWSIZE;
             }
         }
+
+
         model.addAttribute("xLow", x_low);
         model.addAttribute("yLow", y_low);
         model.addAttribute("xHigh", x_high);

@@ -51,11 +51,11 @@ public class TroopUpgradeActionDTO {
         this.destination_y = destination_y;
     }
 
-    public boolean isAbortable() {
+    public boolean getIsAbortable() {
         return isAbortable;
     }
 
-    public void setAbortable(boolean abortable) {
+    public void setIsAbortable(boolean abortable) {
         isAbortable = abortable;
     }
 
