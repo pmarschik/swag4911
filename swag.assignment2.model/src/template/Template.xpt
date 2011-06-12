@@ -53,9 +53,14 @@
 				«e»
 			«ENDFOREACH»
 			
-			«EXPAND entityClassIdGetter FOR this»
+			«IF specialID == null»
+				«EXPAND entityClassIdGetter FOR this»
+				«EXPAND entityClassIdSetter FOR this»
+			«ELSE»
+				«specialID»
+			«ENDIF»
+			
 			«EXPAND entityClassMemberGetter FOREACH members»
-			«EXPAND entityClassIdSetter FOR this»
 			«EXPAND entityClassMemberSetter FOREACH members»
 			«FOREACH specialMethod AS e-»
 				«e»
@@ -90,6 +95,10 @@
 			
 			public «embeddedId.name»() {
 			}
+			
+			«FOREACH embeddedId.specialConstructor AS e-»
+				«e»
+			«ENDFOREACH»
 			
 			«EXPAND entityClassMemberGetter FOREACH embeddedId.members»
 			«EXPAND entityClassMemberSetter FOREACH embeddedId.members»
@@ -196,29 +205,13 @@
 				javax.persistence.«pc-»«ENDFOREACH-»}
 		«ENDIF-»)
 	«ENDIF»
-	«IF column != null»
-		@javax.persistence.Column(
-		«IF column.persistenceNullable == false-»
-			nullable = «column.persistenceNullable-»	
-		«ENDIF-»
-		«IF column.persistenceNullable == false && column.persistenceUnique == true-»
-			,
-		«ENDIF-»
-		«IF column.persistenceUnique == true-»
-			unique = «column.persistenceUnique-»
-		«ENDIF-»
-		«IF (column.persistenceNullable == false || column.persistenceUnique == true) &&
-			column.persistenceLength > 0-»
-			,
-		«ENDIF-»
-		«IF column.persistenceLength > 0-»
-			length = «column.persistenceLength-»
-		«ENDIF-»
-		)
-	«ENDIF»
-	«IF joincolumn != null»
-		@javax.persistence.JoinColumn(name = "«joincolumn.name»", 
-			insertable = «joincolumn.persistenceInsertable», updatable = «joincolumn.persistenceUpdateable»)
+	«EXPAND getColumn FOR column-»
+	«IF joincolumns == null-»
+		«EXPAND getJoinColumn FOR joincolumn-»
+	«ELSE-»
+		«FOREACH joincolumns.column AS column SEPARATOR  ','»
+			«EXPAND getJoinColumn FOR column»
+		«ENDFOREACH»
 	«ENDIF»
 	«IF index != null»
 		@org.hibernate.annotations.Index(name = "«index.name»")
@@ -230,6 +223,36 @@
 	«ENDIF»
 	«IF type == "java.util.Date"-»
 		@javax.persistence.Temporal(javax.persistence.TemporalType.TIMESTAMP)
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE getJoinColumn FOR PersistenceJoinColumn»
+	«IF this != null»
+		@javax.persistence.JoinColumn(name = "«name»", 
+			insertable = «persistenceInsertable», updatable = «persistenceUpdateable»)
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE getColumn FOR PersistenceColumn»
+	«IF this != null»
+		@javax.persistence.Column(
+		«IF persistenceNullable == false-»
+			nullable = «persistenceNullable-»	
+		«ENDIF-»
+		«IF persistenceNullable == false && persistenceUnique == true-»
+			,
+		«ENDIF-»
+		«IF persistenceUnique == true-»
+			unique = «persistenceUnique-»
+		«ENDIF-»
+		«IF (persistenceNullable == false || persistenceUnique == true) &&
+			persistenceLength > 0-»
+			,
+		«ENDIF-»
+		«IF persistenceLength > 0-»
+			length = «persistenceLength-»
+		«ENDIF-»
+		)
 	«ENDIF»
 «ENDDEFINE»
 

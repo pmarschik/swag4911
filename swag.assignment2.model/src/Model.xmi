@@ -34,6 +34,22 @@
     </entities>
     <entities name="Square"/>
     <entities name="ResourceValue" persistenceEmbeddable="true"/>
+    <entities name="BuildAction" superClass="//@models.0/@entities.0">
+      <members name="concerns" complexType="//@models.0/@entities.7" persistenceRelation="ManyToOne"/>
+    </entities>
+    <entities name="Building"/>
+    <entities name="Square">
+      <members name="base" type="" complexType="//@models.0/@entities.3" persistenceRelation="ManyToOne">
+        <joincolumn name="baseId"/>
+      </members>
+      <members name="building" complexType="//@models.0/@entities.7" persistenceRelation="OneToOne" persistenceMappedBy="square" persistenceOptional="true"/>
+      <embeddedId name="Id">
+        <members name="baseId" type="Long"/>
+        <members name="position" type="Integer"/>
+        <specialConstructor>public Id(long baseId, int position) {&#xA;            super();&#xA;            this.baseId = baseId;&#xA;            this.position = position;&#xA;        }&#xA;</specialConstructor>
+      </embeddedId>
+      <specialConstructor>public Square(Base base, int position) {&#xA;        this.base = base;&#xA;        this.id.baseId = base.getId();&#xA;        this.id.position = position;&#xA;&#xA;        base.getConsistsOf().add(this);&#xA;    }</specialConstructor>
+    </entities>
   </models>
   <models name="swag49.model.user" isContainerManaged="true">
     <entities name="Address" persistenceEmbeddable="true" persistenceTableName="">
