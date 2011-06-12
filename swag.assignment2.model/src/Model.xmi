@@ -21,8 +21,8 @@
       </members>
       <members name="owner" complexType="//@models.0/@entities.1" persistenceRelation="ManyToOne" persistenceMappedBy=""/>
       <members name="locatedOn" complexType="//@models.0/@entities.2" persistenceRelation="OneToOne" persistenceMappedBy=""/>
-      <members name="consistsOf" complexType="//@models.0/@entities.4" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="base" persistenceOptional="true"/>
-      <members name="resourceProduction" complexType="//@models.0/@entities.5">
+      <members name="consistsOf" complexType="//@models.0/@entities.7" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="base" persistenceOptional="true"/>
+      <members name="resourceProduction" complexType="//@models.0/@entities.4">
         <attributeOverride>
           <attributeOverrides name="amount_gold" column="production_gold"/>
           <attributeOverrides name="amount_stone" column="production_stone"/>
@@ -32,24 +32,39 @@
       </members>
       <specialConstructor>public Base(Tile tile) {&#xA;        this();&#xA;        this.locatedOn = tile;&#xA;    }</specialConstructor>
     </entities>
-    <entities name="Square"/>
     <entities name="ResourceValue" persistenceEmbeddable="true"/>
     <entities name="BuildAction" superClass="//@models.0/@entities.0">
-      <members name="concerns" complexType="//@models.0/@entities.7" persistenceRelation="ManyToOne"/>
+      <members name="concerns" complexType="//@models.0/@entities.6" persistenceRelation="ManyToOne"/>
     </entities>
-    <entities name="Building"/>
+    <entities name="Building" persistenceTableName="" specialID="@javax.persistence.EmbeddedId&#xA;    private Square.Id id = new Square.Id();">
+      <members name="square" complexType="//@models.0/@entities.7" persistenceRelation="OneToOne">
+        <persistenceCascadeType>CascadeType.MERGE</persistenceCascadeType>
+        <joincolumns>
+          <column name="baseId"/>
+          <column name="position"/>
+        </joincolumns>
+      </members>
+      <members name="type" complexType="//@models.0/@entities.8" persistenceRelation="ManyToOne"/>
+      <members name="isOfLevel" complexType="//@models.0/@entities.9" persistenceRelation="ManyToOne"/>
+      <members name="active" type="Boolean"/>
+      <specialConstructor>public Building(Square square) {&#xA;        this.square = square;&#xA;        this.id = new Square.Id(square.getBase().getId(), square.getPosition());&#xA;&#xA;        //&#x9;square.setBuilding(this);&#xA;    }</specialConstructor>
+      <specialMethod>public Square.Id getId() {&#xA;        return id;&#xA;    }</specialMethod>
+    </entities>
     <entities name="Square">
       <members name="base" type="" complexType="//@models.0/@entities.3" persistenceRelation="ManyToOne">
         <joincolumn name="baseId"/>
       </members>
-      <members name="building" complexType="//@models.0/@entities.7" persistenceRelation="OneToOne" persistenceMappedBy="square" persistenceOptional="true"/>
+      <members name="building" complexType="//@models.0/@entities.6" persistenceRelation="OneToOne" persistenceMappedBy="square" persistenceOptional="true"/>
       <embeddedId name="Id">
         <members name="baseId" type="Long"/>
         <members name="position" type="Integer"/>
         <specialConstructor>public Id(long baseId, int position) {&#xA;            super();&#xA;            this.baseId = baseId;&#xA;            this.position = position;&#xA;        }&#xA;</specialConstructor>
       </embeddedId>
       <specialConstructor>public Square(Base base, int position) {&#xA;        this.base = base;&#xA;        this.id.baseId = base.getId();&#xA;        this.id.position = position;&#xA;&#xA;        base.getConsistsOf().add(this);&#xA;    }</specialConstructor>
+      <specialMethod>public Integer getPosition() {&#xA;        return id.position;&#xA;    }</specialMethod>
     </entities>
+    <entities name="BuildingType"/>
+    <entities name="BuildingLevel"/>
   </models>
   <models name="swag49.model.user" isContainerManaged="true">
     <entities name="Address" persistenceEmbeddable="true" persistenceTableName="">
