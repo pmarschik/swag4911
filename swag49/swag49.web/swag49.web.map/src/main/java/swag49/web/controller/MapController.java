@@ -127,10 +127,8 @@ public class MapController {
     private int mapLength;
 
     @Transactional("swag49.map")
-    public boolean loggedIn()
-    {
-        if(this.userID == null)
-        {
+    public boolean loggedIn() {
+        if (this.userID == null) {
             return false;
         }
         return true;
@@ -303,9 +301,9 @@ public class MapController {
     public String messaging() {
         lazyInit();
 
-        if(!loggedIn())
+        if (!loggedIn())
 //            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
-              return "NotLoggedIn";
+            return "NotLoggedIn";
 
         //buildTest();
         return "redirect:../messaging/";
@@ -315,7 +313,7 @@ public class MapController {
     public String statistics() {
         lazyInit();
 
-                if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         return "redirect:../statistics/";
@@ -331,7 +329,7 @@ public class MapController {
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
 
-                if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         Troop sampleTroop = new Troop();
@@ -407,7 +405,7 @@ public class MapController {
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
 
-                if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         if (bingBindingResult.hasErrors()) {
@@ -420,8 +418,7 @@ public class MapController {
 
         for (TileDTO tileDto : troopsPerTile.getTileList()) {
             for (SendTroopDTO sendTroopDto : tileDto.getTroops()) {
-                if(sendTroopDto.getSendMe() == true)
-                {
+                if (sendTroopDto.getSendMe() == true) {
                     Troop sendTroop = troopDAO.get(sendTroopDto.getId());
                     troopsToSend.add(sendTroop);
                 }
@@ -446,7 +443,7 @@ public class MapController {
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
 
-                if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         Tile tile = new Tile(map, x, y);
@@ -579,7 +576,7 @@ public class MapController {
                                      Model model) {
         lazyInit();
 
-                if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         player = playerDAO.get(player.getId());
@@ -606,19 +603,19 @@ public class MapController {
                                    Model model) {
         lazyInit();
 
-                if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         player = playerDAO.get(player.getId());
-        Troop troop = troopDAO.get(troopId);
-        if (troop != null) {
+        Troop troop2 = troopDAO.get(troopId);
+        if (troop2 != null) {
             //get next Level
-            TroopLevel.Id id = new TroopLevel.Id(troop.getIsOfLevel().getLevel() + 1, troop.getType().getId());
+            TroopLevel.Id id2 = new TroopLevel.Id(troop2.getIsOfLevel().getLevel() + 1, troop2.getType().getId());
 
-            TroopLevel nextLevel = troopLevelDAO.get(id);
+            TroopLevel nextLevel2 = troopLevelDAO.get(id2);
 
             try {
-                mapLogic.upgradeTroop(player, troop, nextLevel);
+                mapLogic.upgradeTroop(player, troop2, nextLevel2);
             } catch (NotEnoughMoneyException nem) {
                 return NOTENOUGHRESOURCES;
             } catch (Exception e) {
@@ -626,7 +623,52 @@ public class MapController {
                 return ERROR;
             }
 
-            return "redirect: ../troopoverview.html?baseId=" + troop.getPosition().getBase().getId();
+        Base base = baseDAO.get(troop2.getPosition().getBase().getId());
+
+        if (base == null || !base.getOwner().getId().equals(player.getId())) {
+            return ERROR;
+        }
+
+
+        ArrayList<TroopDTO> troops = new ArrayList<TroopDTO>();
+
+        for (Troop troop : base.getLocatedOn().getTroops()) {
+            TroopDTO dto = new TroopDTO(troop.getType().getName(), troop.getIsOfLevel().getLevel(),
+                    troop.getIsOfLevel().getStrength(), troop.getIsOfLevel().getDefense(),
+                    troop.getIsOfLevel().getSpeed(), troop.getIsOfLevel().getCargo_capacity(), troop.getId(),
+                    troop.getActive());
+
+            //set upgrade
+            //get current TroopTypeLevel
+            TroopLevel currentLevel = troop.getIsOfLevel();
+
+            //get next Level
+            TroopLevel.Id id = new TroopLevel.Id(currentLevel.getLevel() + 1, currentLevel.getId().getTroopTypeId());
+
+            TroopLevel nextLevel = troopLevelDAO.get(id);
+
+            if (nextLevel == null || troop.getActive() != Boolean.TRUE)
+                dto.setCanUpgrade(false);
+            else {
+                dto.setCanUpgrade(true);
+                dto.setUpgradeCost(new ResourceValueDTO(nextLevel.getBuildCosts().getAmount_gold(),
+                        nextLevel.getBuildCosts().getAmount_wood(), nextLevel.getBuildCosts().getAmount_stone(),
+                        nextLevel.getBuildCosts().getAmount_crops()));
+            }
+
+            troops.add(dto);
+        }
+
+        model.addAttribute("troops", troops);
+
+        model.addAttribute("back_x", base.getLocatedOn().getId().getX());
+        model.addAttribute("back_y", base.getLocatedOn().getId().getY());
+
+            model.addAttribute("baseId", troop2.getPosition().getBase().getId());
+            model.addAttribute("message", new String("Upgrade progress started"));
+            return "troopoverview";
+
+//            return "redirect: ../troopoverview.html?baseId=" + troop.getPosition().getBase().getId();
         } else {
             return ERROR;
         }
@@ -638,7 +680,7 @@ public class MapController {
                                         Model model) {
         lazyInit();
 
-                if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         Base base = baseDAO.get(baseId);
@@ -686,7 +728,7 @@ public class MapController {
                                         Model model) {
         lazyInit();
 
-                if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         Base base = baseDAO.get(baseId);
@@ -724,7 +766,7 @@ public class MapController {
     public String getActionOverview(Model model) {
         lazyInit();
 
-                if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         Date now = new Date();
@@ -860,7 +902,7 @@ public class MapController {
     @RequestMapping(value = "/canceltroopaction", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String cancelTroopAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
-                        if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
         TroopAction action = troopActionDAO.get(Long.valueOf(id));
         if (action == null) {
@@ -895,7 +937,7 @@ public class MapController {
     @Transactional("swag49.map")
     public String cancelTroopUpgradeAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
 
-                if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         TroopUpgradeAction action = troopUpgradeActionDAO.get(id);
@@ -928,7 +970,7 @@ public class MapController {
     @Transactional("swag49.map")
     public String cancelBuildAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
 
-                if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         BuildAction action = buildActionDAO.get(Long.valueOf(id));
@@ -972,7 +1014,7 @@ public class MapController {
     public String getTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId, Model model) {
         lazyInit();
 
-                if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
 
@@ -998,7 +1040,7 @@ public class MapController {
             TroopLevel currentLevel = troop.getIsOfLevel();
 
             //get next Level
-            TroopLevel.Id id = new TroopLevel.Id(currentLevel.getLevel()+1, currentLevel.getId().getTroopTypeId());
+            TroopLevel.Id id = new TroopLevel.Id(currentLevel.getLevel() + 1, currentLevel.getId().getTroopTypeId());
 
             TroopLevel nextLevel = troopLevelDAO.get(id);
 
@@ -1018,6 +1060,7 @@ public class MapController {
         model.addAttribute("baseId", baseId);
         model.addAttribute("back_x", base.getLocatedOn().getId().getX());
         model.addAttribute("back_y", base.getLocatedOn().getId().getY());
+        model.addAttribute("message", new String(""));
 
         return "troopoverview";
     }
@@ -1030,7 +1073,7 @@ public class MapController {
                                Model model) {
         lazyInit();
 
-                if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         //TODO: besser machen
@@ -1094,7 +1137,7 @@ public class MapController {
                               @RequestParam(value = "yHigh", defaultValue = "-1") int y_high, Model model,
                               Map<String, Object> tempMap) {
         lazyInit();
-                if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         tempMap.put("userID", this.userID);
@@ -1109,7 +1152,7 @@ public class MapController {
         map = mapDAO.get(map.getId());
 
 
-       //default values
+        //default values
         if ((x_low == x_high && y_low == y_high && y_low == x_low && x_low == -1)
                 ) {
             //focus on home base
@@ -1273,7 +1316,7 @@ public class MapController {
                                  @RequestParam(value = "yHigh", defaultValue = "-1") int y_high, Model model) {
         lazyInit();
 
-                if(!loggedIn())
+        if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         //TODO: besser machen

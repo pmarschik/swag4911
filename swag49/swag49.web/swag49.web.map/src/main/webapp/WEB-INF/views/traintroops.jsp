@@ -5,6 +5,11 @@
 <spring:url value="/resources" var="resourcePath"/>
 
 <c:if test="${troops != null && fn:length(troops)>0 }">
+   <div id="actionMessage">
+     <c:if test="${message != null}">
+        ${message}
+     </c:if>
+ </div>
     <h2>Available Troops:</h2>
     <table>
         <c:forEach items="${troops}" var="troop">
