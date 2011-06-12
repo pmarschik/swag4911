@@ -2,9 +2,6 @@
 
 
 <table border="0">
-    <tr>
-        <td colspan="2">TODO: BILD</td>
-    </tr>
     <tr></tr>
     <tr>
         <td colspan="2">Coordinates:</td>

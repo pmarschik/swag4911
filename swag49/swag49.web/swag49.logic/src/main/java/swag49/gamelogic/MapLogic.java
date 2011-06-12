@@ -620,6 +620,14 @@ public class MapLogic {
                     otherPlayer.getOwns().remove(base);
                     playerDAO.update(otherPlayer);
 
+                    tile.getTroops().addAll(action.getConcerns());
+                    for (Troop troop : action.getConcerns()) {
+                        troop.setPosition(tile);
+                        troopDAO.update(troop);
+                    }
+
+                    tileDAO.update(tile);
+
                     //write msg to both players
                     sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
                             "You have captured a new base as  (" + tile.getId().getX() + "," + tile.getId().getY() +
@@ -665,6 +673,7 @@ public class MapLogic {
                         playerDAO.update(action.getPlayer());
                         playerDAO.update(otherPlayer);
 
+
                         if (canBuildBase && !tile.getBase().isHome()) {
                             Base base = tile.getBase();
 
@@ -675,6 +684,14 @@ public class MapLogic {
                             base = baseDAO.update(base);
                             playerDAO.update(action.getPlayer());
                             playerDAO.update(otherPlayer);
+
+                            tile.getTroops().addAll(attackers);
+                            for (Troop troop : attackers) {
+                                troop.setPosition(tile);
+                                troopDAO.update(troop);
+                            }
+
+                            tileDAO.update(tile);
 
 
                             sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
@@ -689,6 +706,15 @@ public class MapLogic {
                         }
                     } else if (canBuildBase) {
                         Base base = createBase(tile, action.getPlayer());
+
+                        tile.getTroops().addAll(action.getConcerns());
+                        for (Troop troop : action.getConcerns()) {
+                            troop.setPosition(tile);
+                            troopDAO.update(troop);
+                        }
+
+                        tileDAO.update(tile);
+
                         //write msg to player
                         sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
                                 "You have successfully found a new base at tile (" + tile.getId().getX() + "," +
