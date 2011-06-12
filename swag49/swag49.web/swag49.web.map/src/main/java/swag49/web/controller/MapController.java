@@ -826,6 +826,7 @@ public class MapController {
 
         model.addAttribute("troops", troopTypeDTOList);
         model.addAttribute("baseId", baseId);
+        model.addAttribute("message", new String(""));
         return "traintroops";
     }
 
@@ -840,25 +841,25 @@ public class MapController {
         if (!loggedIn())
             return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
-        Base base = baseDAO.get(baseId);
-        if (base == null || !base.getOwner().getId().equals(player.getId())) {
+        Base base2 = baseDAO.get(baseId);
+        if (base2 == null || !base2.getOwner().getId().equals(player.getId())) {
             return ERROR;
         }
 
-        TroopType type = troopTypeDAO.get(Long.valueOf(troopTypeId));
+        TroopType type2 = troopTypeDAO.get(Long.valueOf(troopTypeId));
 
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
 
-        TroopLevel.Id id = new TroopLevel.Id(1, type.getId());
-        TroopLevel level = troopLevelDAO.get(id);
+        TroopLevel.Id id = new TroopLevel.Id(1, type2.getId());
+        TroopLevel level2 = troopLevelDAO.get(id);
 
-        if (!ResourceValueHelper.geq(player.getResources(), level.getBuildCosts())) {
+        if (!ResourceValueHelper.geq(player.getResources(), level2.getBuildCosts())) {
             return NOTENOUGHRESOURCES;
         }
 
         try {
-            mapLogic.buildTroop(player, type, level, base.getLocatedOn(), 1);
+            mapLogic.buildTroop(player, type2, level2, base2.getLocatedOn(), 1);
         } catch (NotEnoughMoneyException e2) {
             logger.error("Error during train", e2);
             return ERROR;
@@ -867,7 +868,43 @@ public class MapController {
             return ERROR;
         }
 
-        return "redirect: ../traintroops";
+        Base base = baseDAO.get(baseId);
+        if (base == null || !base.getOwner().getId().equals(player.getId())) {
+            return ERROR;
+        }
+
+        player = playerDAO.get(player.getId());
+        map = mapDAO.get(map.getId());
+
+        TroopType troopTypeExample = new TroopType();
+        troopTypeExample.setLevels(null);
+        List<TroopType> troopTypes = troopTypeDAO.queryByExample(troopTypeExample);
+
+        List<TroopTypeDTO> troopTypeDTOList = new ArrayList<TroopTypeDTO>();
+
+        for (TroopType type : troopTypes) {
+            TroopTypeDTO dto = new TroopTypeDTO(type.getName(), type.getCanFoundBase(), null, type.getId());
+
+            ResourceValueDTO costs = null;
+            for (TroopLevel level : type.getLevels()) {
+                if (level.getLevel() == 1) {
+                    costs = new ResourceValueDTO(level.getBuildCosts().getAmount_gold(),
+                            level.getBuildCosts().getAmount_wood(), level.getBuildCosts().getAmount_stone(),
+                            level.getBuildCosts().getAmount_crops());
+                    break;
+                }
+            }
+
+            dto.setCosts(costs);
+
+            troopTypeDTOList.add(dto);
+        }
+
+        model.addAttribute("troops", troopTypeDTOList);
+        model.addAttribute("baseId", baseId);
+        model.addAttribute("message", new String("Training process started"));
+
+        return "traintroops";
     }
 
     @RequestMapping(value = "/actions", method = RequestMethod.GET)
