@@ -1,4 +1,4 @@
-drop table log_log4j;
+-- drop table log_log4j;
 CREATE TABLE log_log4j (
 	LogDate TIMESTAMP,
 	Logger VARCHAR (4000),
