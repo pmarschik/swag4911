@@ -500,7 +500,9 @@ That means if that we reach an availability of $99,99\%$ if we have at least 5 n
 To test the demo application you have to follow these steps:
 
 \begin{enumerate}
+\item Set the environment variable \texttt{TOMCAT\_HOME} to the installation directory of tomcat.
 \item Create an empty database as denoted above.
+\item Execute \texttt{mvn install -P -no-test} to ensure the artifacts are deployed to the local maven repo.
 \item Execute \texttt{ant deploy} to deploy the application to tomcat.
 \item Execute \texttt{ant setup} to prepare the database.
 \item Start tomcat. You will have to set the max. memory of the JVM at least to 512 MB.
