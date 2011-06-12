@@ -41,7 +41,6 @@ public abstract class StatisticCalculatorBase implements StatisticCalculator {
 
         Statistic statistic = new Statistic();
         statistic.setName(getStatisticName());
-        statistic.setEntries(null);
         Collection<Statistic> statistics = statisticDAO.queryByExample(statistic);
         assert statistics.size() <= 1;
         if (statistics.size() == 1)
