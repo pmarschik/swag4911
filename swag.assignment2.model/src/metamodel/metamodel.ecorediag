@@ -91,6 +91,10 @@
         <element xmi:type="ecore:EAttribute" href="metamodel.ecore#//DAO/persistenceInjection"/>
         <layoutConstraint xmi:type="notation:Location" xmi:id="_J2e1sWXhEeCYE66s2wwiuw"/>
       </children>
+      <children xmi:type="notation:Node" xmi:id="_Wj5hQZT5EeCaB8Iq7VEgXw" type="2001">
+        <element xmi:type="ecore:EAttribute" href="metamodel.ecore#//DAO/pk"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_Wj5hQpT5EeCaB8Iq7VEgXw"/>
+      </children>
       <styles xmi:type="notation:DrawerStyle" xmi:id="_NRc3smTkEeCTjukSfUq6zg"/>
       <styles xmi:type="notation:SortingStyle" xmi:id="_NRc3s2TkEeCTjukSfUq6zg"/>
       <styles xmi:type="notation:FilteringStyle" xmi:id="_NRc3tGTkEeCTjukSfUq6zg"/>

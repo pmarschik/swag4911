@@ -422,7 +422,7 @@
 		«ELSE-»
 			@Transactional("swag49.map")
 		«ENDIF»
-		public class «name» extends AbstractDataAccessObject<«daoFor.name», String> {
+		public class «name» extends AbstractDataAccessObject<«daoFor.name», «pk»> {
 			«IF modelName == "swag49.model.user"-»
     			@PersistenceContext(unitName = "swag49.user")
     		«ELSE-»
