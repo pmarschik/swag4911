@@ -1039,7 +1039,7 @@ public class MapController {
 
         }
 
-        return "redirect:../../actions/";
+        return "redirect:actions/";
     }
 
 
