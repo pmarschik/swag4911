@@ -3,6 +3,7 @@ package swag49.web.controller;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
+import com.sun.javaws.jnl.XMLFormat;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -355,7 +356,7 @@ public class MapController {
 
             boolean existed = false;
             for (TileDTO exTile : tileList) {
-                if (exTile.equals(exTile)) {
+                if (exTile.equals(tile)) {
                     exTile.getTroops().add(troopDTO);
                     existed = true;
                 }
@@ -370,20 +371,9 @@ public class MapController {
                 newTile.setTroops(sendTroops);
                 tileList.add(newTile);
             }
-
-//            if (troopsPerTile.containsKey(tile.getId())) {
-//                ArrayList<Troop> tmpTroops = troopsPerTile.get(tile.getId());
-//                tmpTroops.add(troop);
-//                troopsPerTile.put(tile.getId(), tmpTroops);
-//            } else {
-//                ArrayList<Troop> tmpTroops = new ArrayList<Troop>();
-//                tmpTroops.add(troop);
-//                troopsPerTile.put(tile.getId(), tmpTroops);
-//            }
         }
 
-//        TroopsPerTileDTO dto = new TroopsPerTileDTO();
-//        dto.setTroopsPerTile(troopsPerTile);
+
 
         TroopsPerTileDTO dto = new TroopsPerTileDTO();
         dto.setTileList(tileList);
@@ -400,7 +390,8 @@ public class MapController {
     @Transactional("swag49.map")
     public String handleSendTroops(@ModelAttribute("troopsPerTile") TroopsPerTileDTO troopsPerTile,
                                    BindingResult bingBindingResult,
-                                   Map<String, Object> modelMap) {
+                                   Map<String, Object> modelMap,
+                                   Model model) {
 
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
@@ -430,7 +421,8 @@ public class MapController {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        return "redirect:map";
+        //return getMapOverview(-1,-1,-1,-1, model);
+        return "redirect:";
     }
 
 

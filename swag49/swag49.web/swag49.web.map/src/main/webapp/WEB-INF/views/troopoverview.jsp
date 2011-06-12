@@ -84,5 +84,5 @@
 
 <c:if test="${troops == null || fn:length(troops)==0 }">
     Sorry, but you have no troops here!
-    <a href="tile/?x=${back_x}&y=${back_y}">back</a>
+    <a class="contentLink" href="tile/?x=${back_x}&y=${back_y}">back</a>
 </c:if>
