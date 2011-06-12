@@ -63,8 +63,37 @@
       <specialConstructor>public Square(Base base, int position) {&#xA;        this.base = base;&#xA;        this.id.baseId = base.getId();&#xA;        this.id.position = position;&#xA;&#xA;        base.getConsistsOf().add(this);&#xA;    }</specialConstructor>
       <specialMethod>public Integer getPosition() {&#xA;        return id.position;&#xA;    }</specialMethod>
     </entities>
-    <entities name="BuildingType"/>
-    <entities name="BuildingLevel"/>
+    <entities name="BuildingType">
+      <members name="name" type="String">
+        <column/>
+      </members>
+      <members name="levels" complexType="//@models.0/@entities.9" hasMultipleValues="true" persistenceRelation="OneToMany">
+        <persistenceCascadeType>CascadeType.ALL</persistenceCascadeType>
+      </members>
+    </entities>
+    <entities name="BuildingLevel" superClass="//@models.0/@entities.10" persistenceTableName="">
+      <members name="buildingType" complexType="//@models.0/@entities.8" persistenceRelation="ManyToOne">
+        <joincolumn name="buildingTypeId"/>
+      </members>
+      <members name="resourceProduction" complexType="//@models.0/@entities.4">
+        <attributeOverride>
+          <attributeOverrides name="amount_gold" column="production_gold"/>
+          <attributeOverrides name="amount_stone" column="production_stone"/>
+          <attributeOverrides name="amount_wood" column="production_wood"/>
+          <attributeOverrides name="amount_crops" column="production_crops"/>
+        </attributeOverride>
+      </members>
+      <embeddedId name="Id">
+        <members name="level" type="Integer"/>
+        <members name="buildingTypeId" type="Long"/>
+        <specialConstructor>public Id(int level, long buildingTypeId) {&#xA;&#x9;&#x9;&#x9;this.level = level;&#xA;&#x9;&#x9;&#x9;this.buildingTypeId = buildingTypeId;&#xA;&#x9;&#x9;}</specialConstructor>
+      </embeddedId>
+      <specialConstructor>public BuildingLevel(BuildingType buildingType, int level) {&#xA;&#x9;&#x9;this.buildingType = buildingType;&#xA;&#xA;&#x9;&#x9;this.id.buildingTypeId = buildingType.getId();&#xA;&#x9;&#x9;this.id.level = level;&#xA;&#xA;&#x9;&#x9;this.buildingType.getLevels().add(this);&#xA;&#x9;}</specialConstructor>
+      <specialMethod>@Override&#xA;&#x9;public Integer getLevel() {&#xA;&#x9;&#x9;return id.level;&#xA;&#x9;}</specialMethod>
+    </entities>
+    <entities name="LevelBase" persistenceSuperclass="true" noID="true">
+      <specialMethod>public abstract Integer getLevel();</specialMethod>
+    </entities>
   </models>
   <models name="swag49.model.user" isContainerManaged="true">
     <entities name="Address" persistenceEmbeddable="true" persistenceTableName="">

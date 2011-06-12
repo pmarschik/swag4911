@@ -41,7 +41,7 @@
 			«ENDIF»
 		«ENDIF»
 		
-			«IF specialID == null»
+			«IF specialID == null || noID == true»
 				«EXPAND entityClassId FOR this»
 			«ENDIF»
 			«EXPAND entityClassMemberDefinition FOREACH members»
@@ -55,11 +55,13 @@
 				«e»
 			«ENDFOREACH»
 			
-			«IF specialID == null»
-				«EXPAND entityClassIdGetter FOR this»
-				«EXPAND entityClassIdSetter FOR this»
-			«ELSE»
-				«specialID»
+			«IF noID == false»
+				«IF specialID == null»
+					«EXPAND entityClassIdGetter FOR this»
+					«EXPAND entityClassIdSetter FOR this»
+				«ELSE»
+					«specialID»
+				«ENDIF»
 			«ENDIF»
 			
 			«EXPAND entityClassMemberGetter FOREACH members»
@@ -166,6 +168,8 @@
 	«memberVisibility(this)» «memberType(this)» «name»
 		«IF complexType != null && hasMultipleValues == true-»
 			= new java.util.HashSet<«complexType.name»>()
+		«ELSEIF attributeOverride != null-»
+			= new «memberType(this)»()
 		«ENDIF-»
 	;
 «ENDDEFINE»
