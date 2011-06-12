@@ -12,7 +12,7 @@ public class TroopBuildAction extends Action {
     @ManyToOne(optional = false)
     private TroopLevel troopLevel;
 
-    private int amount;
+    private Integer amount;
 
     public TroopLevel getTroopLevel() {
         return troopLevel;
@@ -32,7 +32,7 @@ public class TroopBuildAction extends Action {
         this.setTarget(tile);
         this.setDuration(duration);
         this.setTroopType(type);
-        this.setAmount(amount);
+        this.setAmount(Integer.valueOf(amount));
         this.setTroopLevel(level);
 
     }
@@ -45,11 +45,11 @@ public class TroopBuildAction extends Action {
         this.troopType = troopType;
     }
 
-    public int getAmount() {
+    public Integer getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(Integer amount) {
         this.amount = amount;
     }
 }

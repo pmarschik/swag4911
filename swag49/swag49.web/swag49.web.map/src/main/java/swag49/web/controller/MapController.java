@@ -594,7 +594,7 @@ public class MapController {
                 return ERROR;
             }
 
-            return "redirect: ./troopoverview";
+            return "redirect: ../troopoverview";
         } else {
             return "error";
         }
@@ -626,7 +626,7 @@ public class MapController {
                 return ERROR;
             }
 
-            return "redirect: ./troopoverview.html?baseId=" + troop.getPosition().getBase().getId();
+            return "redirect: ../troopoverview.html?baseId=" + troop.getPosition().getBase().getId();
         } else {
             return ERROR;
         }
@@ -716,7 +716,7 @@ public class MapController {
             return ERROR;
         }
 
-        return "redirect: ./traintroops";
+        return "redirect: ../traintroops";
     }
 
     @RequestMapping(value = "/actions", method = RequestMethod.GET)
@@ -742,7 +742,7 @@ public class MapController {
             if (action.getEndDate().after(now)) {
                 TroopActionDTO dto = new TroopActionDTO();
 
-                dto.setDestionation(action.getSource().getId().getX(), action.getSource().getId().getX());
+                dto.setDestination(action.getSource().getId().getX(), action.getSource().getId().getX());
                 dto.setIsAbortable(action.getIsAbortable());
                 dto.setStartDate(action.getStartDate());
                 dto.setEndDate(action.getEndDate());
@@ -832,6 +832,12 @@ public class MapController {
     }
 
 
+      @RequestMapping(value = "/test1", method = RequestMethod.GET)
+      public String test1(Model model)
+      {
+          return "redirect:../../map/"  ;
+      }
+
     @RequestMapping(value = "/canceltroopbuildaction", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String cancelTroopBuildAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
@@ -853,7 +859,7 @@ public class MapController {
 
         }
 
-        return "redirect: ./actions";
+        return "redirect: ../actions";
     }
 
 
@@ -878,6 +884,8 @@ public class MapController {
             newAction.setShouldFoundBase(Boolean.FALSE);
             newAction.setIsAbortable(Boolean.FALSE);
             newAction.setDuration(now.getTime() - action.getStartDate().getTime());
+            newAction.setTarget(action.getSource());
+            newAction.setSource(action.getSource());
 
             newAction = troopActionDAO.create(newAction);
 
@@ -885,7 +893,7 @@ public class MapController {
         }
 
 
-        return "redirect: ./actions";
+        return "redirect: ../actions";
     }
 
 
@@ -918,7 +926,7 @@ public class MapController {
 
         }
 
-        return "redirect: ./actions";
+        return "redirect: ../actions";
     }
 
 
@@ -961,7 +969,7 @@ public class MapController {
         }
 
 
-        return "redirect: ./actions";
+        return "redirect: ../actions";
     }
 
 

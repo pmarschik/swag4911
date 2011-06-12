@@ -74,8 +74,8 @@ public class MapHelper implements ApplicationListener<ContextRefreshedEvent>, Ap
                 map.setConsistsOf(Sets.<Tile>newHashSet());
                 Set<Tile> tiles = Sets.newHashSet();
                 map = mapDAO.create(map);
-                for (int i = 0; i < 50; i++) {
-                    for (int j = 0; j < 50; j++) {
+                for (int i = 0; i < 10; i++) {
+                    for (int j = 0; j < 10; j++) {
                         Tile tile = new Tile(map, i, j);
 
                         double d = rnd.nextDouble();
@@ -118,8 +118,8 @@ public class MapHelper implements ApplicationListener<ContextRefreshedEvent>, Ap
                 map.setMaxUsers(100);
                 Set<Tile> tiles = Sets.newHashSet();
                 map = mapDAO.create(map);
-                for (int i = 0; i < 50; i++) {
-                    for (int j = 0; j < 50; j++) {
+                for (int i = 0; i < 10; i++) {
+                    for (int j = 0; j < 10; j++) {
                         Tile tile = new Tile(map, i, j);
                         double d = rnd.nextDouble();
 

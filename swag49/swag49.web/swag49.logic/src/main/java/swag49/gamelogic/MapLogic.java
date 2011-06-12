@@ -85,7 +85,7 @@ public class MapLogic {
     private static final int START_AMOUNT_GOLD = 1000;
     private static final int START_AMOUNT_CROPS = 1000;
 
-    private static final int DISTANCEFACTOR = 600;
+    private static final int DISTANCEFACTOR = 60000;
 
     private static final int NO_SQUARES = 10;
     private static final int INCOME_WOOD = 15;
@@ -577,7 +577,7 @@ public class MapLogic {
         Set<Troop> defenders = tile.getTroops();
 
         if (!defenders.isEmpty() && !defenders.iterator().next().getOwner().equals(action.getPlayer())) {
-            enemyTerritory = false;
+            enemyTerritory = true;
             otherPlayer = defenders.iterator().next().getOwner();
         }
 
@@ -904,10 +904,14 @@ public class MapLogic {
     }
 
     private void sendMessage(Player sender, Player receiver, String subject, String content) {
-        MessageDTO message = new MessageDTO(null, subject, content, sender.getUserId(), null, receiver.getUserId(),
-                null, new Date(), new Date(), sender.getPlays().getUrl());
+        try {
+            MessageDTO message = new MessageDTO(null, subject, content, sender.getUserId(), null, receiver.getUserId(),
+                    null, new Date(), new Date(), sender.getPlays().getUrl());
 
-        restTemplate.put("http://localhost:8080/messaging/send", message);
+            restTemplate.put("http://localhost:8080/messaging/send", message);
+        } catch (Exception e) {
+            logger.error("Error during messaging", e);
+        }
     }
 
 }
