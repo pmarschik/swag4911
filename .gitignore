@@ -12,3 +12,6 @@ assignment3.out
 assignment3.synctex.gz
 assignment3.toc
 bin
+*.vpp~*
+
+

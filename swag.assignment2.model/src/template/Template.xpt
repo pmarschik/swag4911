@@ -41,7 +41,9 @@
 			«ENDIF»
 		«ENDIF»
 		
-			«EXPAND entityClassId FOR this»
+			«IF specialID == null»
+				«EXPAND entityClassId FOR this»
+			«ENDIF»
 			«EXPAND entityClassMemberDefinition FOREACH members»
 			
 			«IF persistenceSuperclass == false»
@@ -49,10 +51,22 @@
 				}
 			«ENDIF»
 			
-			«EXPAND entityClassIdGetter FOR this»
+			«FOREACH specialConstructor AS e-»
+				«e»
+			«ENDFOREACH»
+			
+			«IF specialID == null»
+				«EXPAND entityClassIdGetter FOR this»
+				«EXPAND entityClassIdSetter FOR this»
+			«ELSE»
+				«specialID»
+			«ENDIF»
+			
 			«EXPAND entityClassMemberGetter FOREACH members»
-			«EXPAND entityClassIdSetter FOR this»
 			«EXPAND entityClassMemberSetter FOREACH members»
+			«FOREACH specialMethod AS e-»
+				«e»
+			«ENDFOREACH»
 		}
 	«ENDFILE»
 «ENDDEFINE»
@@ -68,6 +82,9 @@
 		«IF persistenceSuperclass == true»
 			@javax.persistence.Inheritance(strategy = javax.persistence.InheritanceType.TABLE_PER_CLASS)
 		«ENDIF»
+		«IF persistenceListener != null»
+			@javax.persistence.EntityListeners(«persistenceListener».class)
+		«ENDIF»
 	«ENDIF»
 «ENDDEFINE»
 
@@ -80,6 +97,10 @@
 			
 			public «embeddedId.name»() {
 			}
+			
+			«FOREACH embeddedId.specialConstructor AS e-»
+				«e»
+			«ENDFOREACH»
 			
 			«EXPAND entityClassMemberGetter FOREACH embeddedId.members»
 			«EXPAND entityClassMemberSetter FOREACH embeddedId.members»
@@ -156,14 +177,14 @@
 			@javax.persistence.ElementCollection
 	«ELSEIF enumType != null»
 		@javax.persistence.Enumerated(javax.persistence.EnumType.STRING)
-	«ELSEIF complexType != null && complexType.persistenceEmbeddable == true && persistenceRelation == PersistenceRelationType::none»
+	«ELSEIF complexType != null && complexType.persistenceEmbeddable == true && persistenceRelation == PersistenceRelationType::none && attributeOverride == null»
 		@javax.persistence.Embedded
 	«ELSEIF complexType != null && persistenceRelation != PersistenceRelationType::none»
 		@javax.persistence.«persistenceRelation»(
 		«IF persistenceOptional == false && persistenceRelation != PersistenceRelationType::OneToMany-»
 			optional = false
 		«ENDIF-»
-		«IF persistenceOptional == false && persistenceRelation != PersistenceRelationType::OneToMany && persistenceMappedBy != null-»
+		«IF persistenceOptional == false && persistenceRelation != PersistenceRelationType::OneToMany && persistenceMappedBy != null && persistenceMappedBy.length > 0-»
 			,
 		«ENDIF-»
 		«IF persistenceMappedBy != null && persistenceMappedBy.length > 0-»
@@ -186,29 +207,14 @@
 				javax.persistence.«pc-»«ENDFOREACH-»}
 		«ENDIF-»)
 	«ENDIF»
-	«IF column != null»
-		@javax.persistence.Column(
-		«IF column.persistenceNullable == false-»
-			nullable = «column.persistenceNullable-»	
-		«ENDIF-»
-		«IF column.persistenceNullable == false && column.persistenceUnique == true-»
-			,
-		«ENDIF-»
-		«IF column.persistenceUnique == true-»
-			unique = «column.persistenceUnique-»
-		«ENDIF-»
-		«IF (column.persistenceNullable == false || column.persistenceUnique == true) &&
-			column.persistenceLength > 0-»
-			,
-		«ENDIF-»
-		«IF column.persistenceLength > 0-»
-			length = «column.persistenceLength-»
-		«ENDIF-»
-		)
-	«ENDIF»
-	«IF joincolumn != null»
-		@javax.persistence.JoinColumn(name = "«joincolumn.name»", 
-			insertable = «joincolumn.persistenceInsertable», updatable = «joincolumn.persistenceUpdateable»)
+	«EXPAND getColumn FOR column-»
+	«IF joincolumns == null-»
+		«EXPAND getJoinColumn FOR joincolumn-»
+	«ELSE-»
+		@javax.persistence.JoinColumns(value = {
+		«FOREACH joincolumns.column AS column SEPARATOR  ','-»
+			«EXPAND getJoinColumn FOR column-»
+		«ENDFOREACH-»})
 	«ENDIF»
 	«IF index != null»
 		@org.hibernate.annotations.Index(name = "«index.name»")
@@ -217,6 +223,39 @@
 		@javax.persistence.AttributeOverrides({
 		«EXPAND singleAttributeOverride FOREACH attributeOverride.attributeOverrides-»
 		})
+	«ENDIF»
+	«IF type == "java.util.Date"-»
+		@javax.persistence.Temporal(javax.persistence.TemporalType.TIMESTAMP)
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE getJoinColumn FOR PersistenceJoinColumn»
+	«IF this != null-»
+		@javax.persistence.JoinColumn(name = "«name»", 
+			insertable = «persistenceInsertable», updatable = «persistenceUpdateable»)
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE getColumn FOR PersistenceColumn»
+	«IF this != null»
+		@javax.persistence.Column(
+		«IF persistenceNullable == false-»
+			nullable = «persistenceNullable-»	
+		«ENDIF-»
+		«IF persistenceNullable == false && persistenceUnique == true-»
+			,
+		«ENDIF-»
+		«IF persistenceUnique == true-»
+			unique = «persistenceUnique-»
+		«ENDIF-»
+		«IF (persistenceNullable == false || persistenceUnique == true) &&
+			persistenceLength > 0-»
+			,
+		«ENDIF-»
+		«IF persistenceLength > 0-»
+			length = «persistenceLength-»
+		«ENDIF-»
+		)
 	«ENDIF»
 «ENDDEFINE»
 
