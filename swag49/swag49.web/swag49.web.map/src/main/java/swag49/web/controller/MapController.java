@@ -412,7 +412,7 @@ public class MapController {
 
         if (bingBindingResult.hasErrors()) {
             modelMap.put("view", false);
-            return "redirect:../../map/";
+            return "redirect:map";
         }
 
         Tile tile = tileDAO.get(new Tile.Id(map.getId(), troopsPerTile.getX(), troopsPerTile.getY()));
@@ -433,7 +433,7 @@ public class MapController {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        return "redirect:../../map/";
+        return "redirect:map";
     }
 
 
