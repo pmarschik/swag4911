@@ -102,6 +102,11 @@ public class MapController {
     private DataAccessObject<Building, Square.Id> buildingDAO;
 
     @Autowired
+    @Qualifier("troopBuildActionDAO")
+    private DataAccessObject<TroopBuildAction, Long> troopBuildActionDAO;
+
+
+    @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
@@ -119,6 +124,17 @@ public class MapController {
     //TODO: GET MAP AND PLAYER
     private swag49.model.Map map;
     private Player player;
+    private int mapLength;
+
+    @Transactional("swag49.map")
+    public boolean loggedIn()
+    {
+        if(this.userID == null)
+        {
+            return false;
+        }
+        return true;
+    }
 
     //@PostConstruct
     @Transactional("swag49.map")
@@ -131,6 +147,8 @@ public class MapController {
         Collection<swag49.model.Map> maps = mapDAO.queryByExample(example);
         if (maps != null && maps.size() == 1) {
             map = maps.iterator().next();
+            mapLength = (int) Math.sqrt(map.getConsistsOf().size());
+
             logger.debug("Map with id " + map.getId() + " found");
         } else {
             logger.error("Error while finding map");
@@ -284,6 +302,11 @@ public class MapController {
     @Transactional("swag49.map")
     public String messaging() {
         lazyInit();
+
+        if(!loggedIn())
+//            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+              return "NotLoggedIn";
+
         //buildTest();
         return "redirect:../messaging/";
     }
@@ -291,6 +314,10 @@ public class MapController {
     @RequestMapping(value = "/statistics", method = RequestMethod.GET)
     public String statistics() {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         return "redirect:../statistics/";
     }
 
@@ -303,6 +330,9 @@ public class MapController {
         //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         Troop sampleTroop = new Troop();
         sampleTroop.setOwner(player);
@@ -374,9 +404,11 @@ public class MapController {
                                    BindingResult bingBindingResult,
                                    Map<String, Object> modelMap) {
 
-        //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         if (bingBindingResult.hasErrors()) {
             modelMap.put("view", false);
@@ -388,12 +420,15 @@ public class MapController {
 
         for (TileDTO tileDto : troopsPerTile.getTileList()) {
             for (SendTroopDTO sendTroopDto : tileDto.getTroops()) {
-                Troop sendTroop = troopDAO.get(sendTroopDto.getId());
-                troopsToSend.add(sendTroop);
+                if(sendTroopDto.getSendMe() == true)
+                {
+                    Troop sendTroop = troopDAO.get(sendTroopDto.getId());
+                    troopsToSend.add(sendTroop);
+                }
             }
         }
         try {
-            mapLogic.sendTroops(tile, troopsToSend);
+            mapLogic.sendTroops(tile, troopsToSend, troopsPerTile.isFoundBase());
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -410,6 +445,9 @@ public class MapController {
         //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
 
         Tile tile = new Tile(map, x, y);
 
@@ -540,6 +578,10 @@ public class MapController {
                                      @RequestParam(value = "position", defaultValue = "-1") int position,
                                      Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         player = playerDAO.get(player.getId());
         Building building = buildingDAO.get(new Square.Id(baseId, position));
         if (building != null) {
@@ -563,6 +605,10 @@ public class MapController {
     public String getUpgradeTroops(@RequestParam(value = "troopId", defaultValue = "-1") long troopId,
                                    Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         player = playerDAO.get(player.getId());
         Troop troop = troopDAO.get(troopId);
         if (troop != null) {
@@ -591,6 +637,10 @@ public class MapController {
     public String getTrainTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId,
                                         Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         Base base = baseDAO.get(baseId);
         if (base == null || !base.getOwner().getId().equals(player.getId())) {
             return ERROR;
@@ -635,6 +685,10 @@ public class MapController {
                                         @RequestParam(value = "troopTypeId", defaultValue = "-1") long troopTypeId,
                                         Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         Base base = baseDAO.get(baseId);
         if (base == null || !base.getOwner().getId().equals(player.getId())) {
             return ERROR;
@@ -669,6 +723,10 @@ public class MapController {
     @Transactional("swag49.map")
     public String getActionOverview(Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         Date now = new Date();
 
         player = playerDAO.get(player.getId());
@@ -741,12 +799,59 @@ public class MapController {
             }
         }
 
+        //troops in training
+        TroopBuildAction troopBuildAction = new TroopBuildAction();
+        troopBuildAction.setPlayer(player);
+        List<TroopBuildAction> troopBuildActionsList = troopBuildActionDAO.queryByExample(troopBuildAction);
+
+        List<TroopBuildActionDTO> buildBuildDTOList = new ArrayList<TroopBuildActionDTO>();
+
+        for (TroopBuildAction action : troopBuildActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopBuildActionDTO dto = new TroopBuildActionDTO();
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setTroopName(action.getTroopType().getName());
+                dto.setEndDate(action.getEndDate());
+                dto.setAmount(action.getAmount());
+                dto.setId(action.getId());
+
+                buildBuildDTOList.add(dto);
+            }
+        }
+
         model.addAttribute("troopActions", troopActionDTOList);
 
         model.addAttribute("troopUpgradeActions", troopUpgradeActionDTOList);
 
         model.addAttribute("baseActions", buildActionDTOList);
+        model.addAttribute("troopBuildActions", buildBuildDTOList);
 
+        return "actions";
+    }
+
+
+    @RequestMapping(value = "/canceltroopbuildaction", method = RequestMethod.GET)
+    @Transactional("swag49.map")
+    public String cancelTroopBuildAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
+        TroopBuildAction action = troopBuildActionDAO.get(id);
+        if (action == null) {
+            logger.error("Action with id " + id + " not found");
+            return ERROR;
+        }
+
+        if (action.getIsAbortable()) {
+
+            //give 50% of resources back
+            ResourceValue fiftyPerCent = action.getTroopLevel().getBuildCosts();
+            ResourceValueHelper.multiply(fiftyPerCent, 0.5);
+            ResourceValueHelper.add(action.getPlayer().getResources(), fiftyPerCent);
+            playerDAO.update(action.getPlayer());
+
+            troopBuildActionDAO.delete(action);
+
+        }
 
         return "actions";
     }
@@ -755,7 +860,8 @@ public class MapController {
     @RequestMapping(value = "/canceltroopaction", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String cancelTroopAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
-
+                        if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
         TroopAction action = troopActionDAO.get(Long.valueOf(id));
         if (action == null) {
             logger.error("Action with id " + id + " not found");
@@ -786,6 +892,10 @@ public class MapController {
     @RequestMapping(value = "/canceltroopupgradeaction", method = RequestMethod.GET)
     @Transactional("swag49.map")
     public String cancelTroopUpgradeAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         TroopUpgradeAction action = troopUpgradeActionDAO.get(id);
         if (action == null) {
             logger.error("Action with id " + id + " not found");
@@ -797,6 +907,12 @@ public class MapController {
             troop.setActive(Boolean.TRUE);
 
             troopDAO.update(troop);
+
+            //give 50% of resources back
+            ResourceValue fiftyPerCent = action.getTroopLevel().getBuildCosts();
+            ResourceValueHelper.multiply(fiftyPerCent, 0.5);
+            ResourceValueHelper.add(action.getPlayer().getResources(), fiftyPerCent);
+            playerDAO.update(action.getPlayer());
 
             troopUpgradeActionDAO.delete(action);
 
@@ -810,6 +926,9 @@ public class MapController {
     @Transactional("swag49.map")
     public String cancelBuildAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
 
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         BuildAction action = buildActionDAO.get(Long.valueOf(id));
         if (action == null) {
             logger.error("Action with id " + id + " not found");
@@ -819,6 +938,16 @@ public class MapController {
         if (action.getIsAbortable()) {
 
             Building building = action.getConcerns();
+
+            //give 50% of resources back
+            BuildingLevel.Id blId = new BuildingLevel.Id(building.getIsOfLevel().getLevel() + 1, building.getType().getId());
+            BuildingLevel nextLevel = buildingLevelDAO.get(blId);
+
+            ResourceValue fiftyPerCent = nextLevel.getBuildCosts();
+            ResourceValueHelper.multiply(fiftyPerCent, 0.5);
+            ResourceValueHelper.add(action.getPlayer().getResources(), fiftyPerCent);
+
+            playerDAO.update(action.getPlayer());
 
             if (building.getIsOfLevel().getLevel().equals(0)) {
                 //delete construction yard
@@ -840,6 +969,11 @@ public class MapController {
     @Transactional("swag49.map")
     public String getTroopOverview(@RequestParam(value = "baseId", defaultValue = "-1") long baseId, Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
+
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
         Base base = baseDAO.get(baseId);
@@ -893,6 +1027,10 @@ public class MapController {
                                @RequestParam(value = "buildingTypeId", defaultValue = "-1") long buildingTypeId,
                                Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
@@ -954,6 +1092,9 @@ public class MapController {
                               @RequestParam(value = "yHigh", defaultValue = "-1") int y_high, Model model,
                               Map<String, Object> tempMap) {
         lazyInit();
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         tempMap.put("userID", this.userID);
 
         if (userID == null) {
@@ -966,8 +1107,9 @@ public class MapController {
         map = mapDAO.get(map.getId());
 
 
-        //default values
-        if (x_low == x_high && y_low == y_high && y_low == x_low && x_low == -1) {
+       //default values
+        if ((x_low == x_high && y_low == y_high && y_low == x_low && x_low == -1)
+                ) {
             //focus on home base
             Base homeBase = null;
             if (player.getOwns() != null && !player.getOwns().isEmpty()) {
@@ -977,20 +1119,51 @@ public class MapController {
                         break;
                     }
                 }
-                int maxVal = (int) Math.sqrt(map.getConsistsOf().size());
+
 
                 x_low = Math.max(0, homeBase.getLocatedOn().getId().getX() - VIEWSIZE);
-                x_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getX() + VIEWSIZE + 1);
-                y_low = Math.max(0, homeBase.getLocatedOn().getId().getY() - VIEWSIZE);
-                y_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getY() + VIEWSIZE + 1);
+                x_high = x_low + 2 * VIEWSIZE;
 
+                if (x_high > mapLength) {
+                    x_high = mapLength;
+                    x_low = Math.max(0, x_high - 2 * VIEWSIZE);
+                }
+
+                y_low = Math.max(0, homeBase.getLocatedOn().getId().getY() - VIEWSIZE);
+                y_high = y_low + 2 * VIEWSIZE;
+
+                if (y_high > mapLength) {
+                    y_high = mapLength;
+                    y_low = Math.max(0, y_high - 2 * VIEWSIZE);
+                }
             } else {
                 x_low = 0;
                 y_low = 0;
-                x_high = 2 * VIEWSIZE + 1;
-                y_high = 2 * VIEWSIZE + 1;
+                x_high = 2 * VIEWSIZE;
+                y_high = 2 * VIEWSIZE;
             }
         }
+
+        //mind 2* viewsize  als ansichtsgroesze
+        if ((x_high - x_low) < (2 * VIEWSIZE)) {
+            x_high = x_low + 2 * VIEWSIZE;
+
+            if (x_high > mapLength) {
+                x_high = mapLength;
+                x_low = Math.max(0, x_high - 2 * VIEWSIZE);
+            }
+        }
+
+        if ((y_high - y_low) < (2 * VIEWSIZE)) {
+            y_high = y_low + 2 * VIEWSIZE;
+
+            if (y_high > mapLength) {
+                y_high = mapLength;
+                y_low = Math.max(0, y_high - 2 * VIEWSIZE);
+            }
+        }
+
+
         model.addAttribute("xLow", x_low);
         model.addAttribute("yLow", y_low);
         model.addAttribute("xHigh", x_high);
@@ -1074,11 +1247,17 @@ public class MapController {
         //  model.addAttribute("amount_wood", player.getResources().getAmount_wood());
         //  model.addAttribute("amount_stone", player.getResources().getAmount_stone());
         //  model.addAttribute("amount_crops", player.getResources().getAmount_crops());
-        ResourceValueDTO resourceValue =
-                new ResourceValueDTO(player.getResources().getAmount_gold(), player.getResources().getAmount_wood(),
-                        player.getResources().getAmount_stone(), player.getResources().getAmount_crops());
+        ResourceValue amountValue = player.getResources();
+        ResourceValue incomeValue = player.getIncome();
+        ResourceValue upkeepValue = player.getUpkeep();
+
+        ResourceTableDTO resourceTable = new ResourceTableDTO();
+        resourceTable.setAmount(amountValue);
+        resourceTable.setIncome(incomeValue);
+        resourceTable.setUpkeep(upkeepValue);
+
         model.addAttribute("tiles", displayedTiles);
-        model.addAttribute("resources", resourceValue);
+        model.addAttribute("resources", resourceTable);
 
         return "home";
     }
@@ -1091,13 +1270,16 @@ public class MapController {
                                  @RequestParam(value = "xHigh", defaultValue = "-1") int x_high,
                                  @RequestParam(value = "yHigh", defaultValue = "-1") int y_high, Model model) {
         lazyInit();
+
+                if(!loggedIn())
+            return "redirect:" + nodeContext.getUserNodeUrl() + "/swag/user/";
+
         //TODO: besser machen
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
 
         //default values
         if ((x_low == x_high && y_low == y_high && y_low == x_low && x_low == -1)
-                || (x_high - x_low < 3) || (y_high - y_low < 3)
                 ) {
             //focus on home base
             Base homeBase = null;
@@ -1109,19 +1291,22 @@ public class MapController {
                     }
                 }
 
-                int maxVal = homeBase.getLocatedOn().getId().getX() + VIEWSIZE;
-                Tile.Id id = new Tile.Id(map.getId(), maxVal, 0);
-                Tile testTile = tileDAO.get(id);
-                while (testTile == null && maxVal > 0) {
-                    maxVal--;
-                    id.setX(maxVal);
-                    testTile = tileDAO.get(id);
-                }
 
                 x_low = Math.max(0, homeBase.getLocatedOn().getId().getX() - VIEWSIZE);
-                x_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getX() + VIEWSIZE);
+                x_high = x_low + 2 * VIEWSIZE;
+
+                if (x_high > mapLength) {
+                    x_high = mapLength;
+                    x_low = Math.max(0, x_high - 2 * VIEWSIZE);
+                }
+
                 y_low = Math.max(0, homeBase.getLocatedOn().getId().getY() - VIEWSIZE);
-                y_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getY() + VIEWSIZE);
+                y_high = y_low + 2 * VIEWSIZE;
+
+                if (y_high > mapLength) {
+                    y_high = mapLength;
+                    y_low = Math.max(0, y_high - 2 * VIEWSIZE);
+                }
             } else {
                 x_low = 0;
                 y_low = 0;
@@ -1130,11 +1315,31 @@ public class MapController {
             }
         }
 
+        //mind 2* viewsize  als ansichtsgroesze
+        if ((x_high - x_low) < (2 * VIEWSIZE)) {
+            x_high = x_low + 2 * VIEWSIZE;
+
+            if (x_high > mapLength) {
+                x_high = mapLength;
+                x_low = Math.max(0, x_high - 2 * VIEWSIZE);
+            }
+        }
+
+        if ((y_high - y_low) < (2 * VIEWSIZE)) {
+            y_high = y_low + 2 * VIEWSIZE;
+
+            if (y_high > mapLength) {
+                y_high = mapLength;
+                y_low = Math.max(0, y_high - 2 * VIEWSIZE);
+            }
+        }
+
 
         model.addAttribute("xLow", x_low);
         model.addAttribute("yLow", y_low);
         model.addAttribute("xHigh", x_high);
         model.addAttribute("yHigh", y_high);
+
         ArrayList<ArrayList<TileOverviewDTO>> displayedTiles = new ArrayList<ArrayList<TileOverviewDTO>>();
 
         // get all visible tiles
@@ -1150,8 +1355,6 @@ public class MapController {
 
                     dto.setSpecialResource(swag49.transfer.model.ResourceType.values()[tile.getSpecial().ordinal()]);
 
-                    // TODO: TOOLTIP Java Script???
-
                     // create info
                     StringBuilder sb = new StringBuilder();
 
@@ -1163,17 +1366,27 @@ public class MapController {
                         } else {
                             sb.append("Your base!");
                         }
-                        sb.append("<br/>");
-                    }
+                    } else if (!tile.getTroops().isEmpty()) {               // check for troops
 
-                    // check for troops
-                    if (!tile.getTroops().isEmpty()) {
+                        int strength = 0;
+                        int defense = 0;
                         for (Troop troop : tile.getTroops()) {
-                            sb.append("TODO");
-                            sb.append("<br/>");
+                            strength += troop.getIsOfLevel().getStrength();
+                            defense += troop.getIsOfLevel().getDefense();
                         }
 
-                        sb.append("<br/>");
+                        if (tile.getTroops().iterator().next().getOwner().getId().equals(player.getId())) {
+                            sb.append("Your troops! Strength: ");
+                            sb.append(strength);
+                            sb.append(" , Defense: ");
+                            sb.append(defense);
+                        } else {
+                            sb.append("Enemy troops! Strength: ");
+                            sb.append(strength);
+                            sb.append(" , Defense: ");
+                            sb.append(defense);
+                        }
+
                     }
 
                     // check for special resources
@@ -1228,9 +1441,16 @@ public class MapController {
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
 
-        ResourceValue resourceValue = player.getResources();
+        ResourceValue amountValue = player.getResources();
+        ResourceValue incomeValue = player.getIncome();
+        ResourceValue upkeepValue = player.getUpkeep();
 
-        model.addAttribute("resources", resourceValue);
+        ResourceTableDTO resourceTable = new ResourceTableDTO();
+        resourceTable.setAmount(amountValue);
+        resourceTable.setIncome(incomeValue);
+        resourceTable.setUpkeep(upkeepValue);
+
+        model.addAttribute("resources", resourceTable);
 
         return "playerresources";
     }

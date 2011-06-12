@@ -55,4 +55,11 @@ public class ResourceValueHelper {
 
         return true;
     }
+
+    public static void multiply(ResourceValue value, double factor) {
+        value.setAmount_crops((int) (value.getAmount_crops() * factor));
+        value.setAmount_stone((int) (value.getAmount_stone() * factor));
+        value.setAmount_gold((int) (value.getAmount_gold() * factor));
+        value.setAmount_wood((int) (value.getAmount_wood() * factor));
+    }
 }
