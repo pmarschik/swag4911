@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 import swag49.model.ResourceValue;
 import swag49.model.TroopLevel;
 import swag49.model.TroopType;
@@ -27,6 +28,7 @@ public class TroopLevelDAOTest {
 	private DataAccessObject<TroopType, Long> troopTypeDAO;
 
 	@Test
+    @Transactional("swag49.map")
 	public void create_shouldCreate() throws Exception {
 
 		TroopType troopType = new TroopType();
@@ -49,6 +51,7 @@ public class TroopLevelDAOTest {
 	}
 
 	@Test
+    @Transactional("swag49.map")
 	public void delete_shouldDelete() throws Exception {
 		TroopType troopType = new TroopType();
 		troopType.setName("Mutalisk");
@@ -72,6 +75,7 @@ public class TroopLevelDAOTest {
 	}
 
 	@Test
+    @Transactional("swag49.map")
 	public void update_shouldUpdate() throws Exception {
 		TroopType troopType = new TroopType();
 		troopType.setName("Mutalisk");

@@ -41,7 +41,7 @@ public class StatisticDAOTest {
 
 
     @Test
-
+    @Transactional("swag49.map")
     public void create_shouldCreate() throws Exception {
         Statistic statistic = new Statistic();
         statistic.setName("Most defeats");
@@ -52,6 +52,7 @@ public class StatisticDAOTest {
     }
 
     @Test
+    @Transactional("swag49.map")
     public void update_shouldUpdate() throws Exception {
         Statistic statistic = new Statistic();
         statistic.setName("Most defeats");
@@ -65,6 +66,7 @@ public class StatisticDAOTest {
     }
 
     @Test
+    @Transactional("swag49.map")
     public void delete_shouldDelete() throws Exception {
         Statistic statistic = new Statistic();
         statistic.setName("Most defeats");

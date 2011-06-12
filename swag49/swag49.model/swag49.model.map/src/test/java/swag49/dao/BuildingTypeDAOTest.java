@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 import swag49.model.BuildingType;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -23,6 +24,7 @@ public class BuildingTypeDAOTest {
     private DataAccessObject<BuildingType, Long> buildingTypeDAO;
 
     @Test
+    @Transactional("swag49.map")
     public void create_shouldCreate() throws Exception {
         BuildingType buildingType = new BuildingType();
 
@@ -34,6 +36,7 @@ public class BuildingTypeDAOTest {
     }
 
     @Test
+    @Transactional("swag49.map")
     public void delete_shouldDelete() throws Exception {
         BuildingType buildingType = new BuildingType();
 
@@ -45,6 +48,7 @@ public class BuildingTypeDAOTest {
     }
 
     @Test
+    @Transactional("swag49.map")
     public void get_shouldReturnBuildingType() throws Exception {
         BuildingType buildingType = new BuildingType();
 
@@ -60,11 +64,13 @@ public class BuildingTypeDAOTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @Transactional("swag49.map")
     public void get_shouldThrowException() throws Exception {
         buildingTypeDAO.get(null);
     }
 
     @Test
+    @Transactional("swag49.map")
     public void update_shouldUpdate() throws Exception {
         BuildingType buildingType = new BuildingType();
 

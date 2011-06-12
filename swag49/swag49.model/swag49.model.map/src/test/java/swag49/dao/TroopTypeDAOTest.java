@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 import swag49.model.TroopType;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -17,6 +18,7 @@ public class TroopTypeDAOTest {
     private DataAccessObject<TroopType, Long> troopTypeDAO;
 
     @Test
+    @Transactional("swag49.map")
     public void create_shouldCreate() throws Exception {
         TroopType troopType = new TroopType();
 
@@ -26,6 +28,7 @@ public class TroopTypeDAOTest {
     }
 
     @Test
+    @Transactional("swag49.map")
     public void delete_shouldDelete() throws Exception {
         TroopType troopType = new TroopType();
 
@@ -37,6 +40,7 @@ public class TroopTypeDAOTest {
     }
 
     @Test
+    @Transactional("swag49.map")
     public void update_shouldUpdate() throws Exception {
         TroopType troopType = new TroopType();
 

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import org.springframework.transaction.annotation.Transactional;
 import swag49.model.ResourceValue;
 import swag49.model.Tile;
 import swag49.model.Troop;
@@ -37,6 +38,7 @@ public class TroopDAOTest {
 	private Tile position2 = null;
 
 	@Test
+    @Transactional("swag49.map")
 	public void create_shouldCreate() throws Exception {
 
 		Troop troop = new Troop();
@@ -69,6 +71,7 @@ public class TroopDAOTest {
 	}
 
 	@Test
+    @Transactional("swag49.map")
 	public void delete_shouldDelete() throws Exception {
 
 		Troop troop = new Troop();
@@ -87,6 +90,7 @@ public class TroopDAOTest {
 	}
 
 	@Test
+    @Transactional("swag49.map")
 	public void update_shouldUpdate() throws Exception {
 
 		Troop troop = new Troop();

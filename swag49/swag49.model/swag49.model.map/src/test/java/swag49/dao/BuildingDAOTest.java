@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 import swag49.model.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -39,6 +40,7 @@ public class BuildingDAOTest {
     private DataAccessObject<Player, Long> playerDAO;
 
     @Test
+    @Transactional("swag49.map")
     public void create_shouldCreate() throws Exception {
 
 		Map map = new Map();

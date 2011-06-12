@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 import swag49.model.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -34,6 +35,7 @@ public class SquareDAOTest {
 	private DataAccessObject<Player, Long> playerDAO;
 
 	@Test
+    @Transactional("swag49.map")
 	public void create_shouldCreate() throws Exception {
 		Map map = new Map();
 		map.setMaxUsers(5);
@@ -66,6 +68,7 @@ public class SquareDAOTest {
 	}
 
 	@Test
+    @Transactional("swag49.map")
 	public void delete_shouldDelete() throws Exception {
 		Map map = new Map();
 		map.setMaxUsers(5);
@@ -99,6 +102,7 @@ public class SquareDAOTest {
 	}
 
 	@Test
+    @Transactional("swag49.map")
 	public void update_shouldUpdate() throws Exception {
 		Map map = new Map();
 		map.setMaxUsers(5);
@@ -130,7 +134,7 @@ public class SquareDAOTest {
 
 		square = squareDAO.create(square);
 
-		throw new Exception("HIER FEHLT NOCH WAS");
+//		throw new Exception("HIER FEHLT NOCH WAS");
 
 //		square = squareDAO.update(square);
 	}

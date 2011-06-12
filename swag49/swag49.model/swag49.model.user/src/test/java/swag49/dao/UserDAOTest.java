@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 import swag49.model.User;
 
 import java.util.Date;
@@ -18,6 +19,7 @@ public class UserDAOTest {
     private DataAccessObject<User, String> userDAO;
 
     @Test
+    @Transactional("swag49.user")
     public void create_shouldCreate() throws Exception {
 		User user = new User();
 		user.setLastName("test");
@@ -31,6 +33,7 @@ public class UserDAOTest {
     }
 
     @Test
+    @Transactional("swag49.user")
     public void delete_shouldDelete() throws Exception {
 		User user = new User();
 		user.setLastName("test2");
@@ -47,6 +50,7 @@ public class UserDAOTest {
     }
 
     @Test
+    @Transactional("swag49.user")
     public void update_shouldUpdate() throws Exception{
 		User user = new User();
 		user.setLastName("test3");
