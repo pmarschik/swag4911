@@ -98,6 +98,7 @@ public class MapLogic {
     private static final String SUBJECT_FIGHTRESULT = "[Fight Result]";
     private Long systemUserId;
     private static final String SUBJECT_BUILDBASE = "[Base founded]";
+    private static final double RESOURCEFACTOR = 1.2;
 
     @Transactional("swag49.map")
     public Base initializePlayer(Map map, Player player) {
@@ -124,7 +125,7 @@ public class MapLogic {
 
 
     @Transactional("swag49.map")
-    public void upgradeTroop(Player player, Troop troop, TroopLevel troopLevel) throws NotEnoughMoneyException {
+    public void upgradeTroop(Player player, Troop troop, TroopLevel troopLevel) throws Exception {
 
         //calculate cost
         ResourceValue cost = new ResourceValue(troopLevel.getBuildCosts());
@@ -516,11 +517,35 @@ public class MapLogic {
             ResourceValueHelper.add(player.getUpkeep(), nextLevel.getUpkeepCosts());
 
             // update income
-            ResourceValueHelper.remove(player.getIncome(), currentLevel.getUpkeepCosts());
-            ResourceValueHelper.add(player.getIncome(), nextLevel.getUpkeepCosts());
+            if (building.getSquare().getBase().getLocatedOn().getSpecial() != ResourceType.NONE) {
+                ResourceValueHelper.remove(player.getIncome(), specialResourceFactor(currentLevel.getResourceProduction(), building.getSquare().getBase().getLocatedOn().getSpecial()));
+                ResourceValueHelper.add(player.getIncome(), specialResourceFactor(nextLevel.getResourceProduction(), building.getSquare().getBase().getLocatedOn().getSpecial()));
+            } else {
+                ResourceValueHelper.remove(player.getIncome(), currentLevel.getResourceProduction());
+                ResourceValueHelper.add(player.getIncome(), nextLevel.getResourceProduction());
+            }
 
             playerDAO.update(player);
         }
+    }
+
+    private ResourceValue specialResourceFactor(ResourceValue value, ResourceType type) {
+        ResourceValue result = new ResourceValue(value);
+        switch (type) {
+            case WOOD:
+                result.setAmount_wood(Integer.valueOf((int) (result.getAmount_wood() * RESOURCEFACTOR)));
+            case GOLD:
+                result.setAmount_gold(Integer.valueOf((int) (result.getAmount_gold() * RESOURCEFACTOR)));
+            case STONE:
+
+                result.setAmount_stone(Integer.valueOf((int) (result.getAmount_stone() * RESOURCEFACTOR)));
+            case CROPS:
+                result.setAmount_crops(Integer.valueOf((int) (result.getAmount_crops() * RESOURCEFACTOR)));
+            default:
+            case NONE:
+                break;
+        }
+        return result;
     }
 
 
