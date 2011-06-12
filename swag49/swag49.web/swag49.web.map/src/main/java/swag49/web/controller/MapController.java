@@ -623,46 +623,46 @@ public class MapController {
                 return ERROR;
             }
 
-        Base base = baseDAO.get(troop2.getPosition().getBase().getId());
+            Base base = baseDAO.get(troop2.getPosition().getBase().getId());
 
-        if (base == null || !base.getOwner().getId().equals(player.getId())) {
-            return ERROR;
-        }
-
-
-        ArrayList<TroopDTO> troops = new ArrayList<TroopDTO>();
-
-        for (Troop troop : base.getLocatedOn().getTroops()) {
-            TroopDTO dto = new TroopDTO(troop.getType().getName(), troop.getIsOfLevel().getLevel(),
-                    troop.getIsOfLevel().getStrength(), troop.getIsOfLevel().getDefense(),
-                    troop.getIsOfLevel().getSpeed(), troop.getIsOfLevel().getCargo_capacity(), troop.getId(),
-                    troop.getActive());
-
-            //set upgrade
-            //get current TroopTypeLevel
-            TroopLevel currentLevel = troop.getIsOfLevel();
-
-            //get next Level
-            TroopLevel.Id id = new TroopLevel.Id(currentLevel.getLevel() + 1, currentLevel.getId().getTroopTypeId());
-
-            TroopLevel nextLevel = troopLevelDAO.get(id);
-
-            if (nextLevel == null || troop.getActive() != Boolean.TRUE)
-                dto.setCanUpgrade(false);
-            else {
-                dto.setCanUpgrade(true);
-                dto.setUpgradeCost(new ResourceValueDTO(nextLevel.getBuildCosts().getAmount_gold(),
-                        nextLevel.getBuildCosts().getAmount_wood(), nextLevel.getBuildCosts().getAmount_stone(),
-                        nextLevel.getBuildCosts().getAmount_crops()));
+            if (base == null || !base.getOwner().getId().equals(player.getId())) {
+                return ERROR;
             }
 
-            troops.add(dto);
-        }
 
-        model.addAttribute("troops", troops);
+            ArrayList<TroopDTO> troops = new ArrayList<TroopDTO>();
 
-        model.addAttribute("back_x", base.getLocatedOn().getId().getX());
-        model.addAttribute("back_y", base.getLocatedOn().getId().getY());
+            for (Troop troop : base.getLocatedOn().getTroops()) {
+                TroopDTO dto = new TroopDTO(troop.getType().getName(), troop.getIsOfLevel().getLevel(),
+                        troop.getIsOfLevel().getStrength(), troop.getIsOfLevel().getDefense(),
+                        troop.getIsOfLevel().getSpeed(), troop.getIsOfLevel().getCargo_capacity(), troop.getId(),
+                        troop.getActive());
+
+                //set upgrade
+                //get current TroopTypeLevel
+                TroopLevel currentLevel = troop.getIsOfLevel();
+
+                //get next Level
+                TroopLevel.Id id = new TroopLevel.Id(currentLevel.getLevel() + 1, currentLevel.getId().getTroopTypeId());
+
+                TroopLevel nextLevel = troopLevelDAO.get(id);
+
+                if (nextLevel == null || troop.getActive() != Boolean.TRUE)
+                    dto.setCanUpgrade(false);
+                else {
+                    dto.setCanUpgrade(true);
+                    dto.setUpgradeCost(new ResourceValueDTO(nextLevel.getBuildCosts().getAmount_gold(),
+                            nextLevel.getBuildCosts().getAmount_wood(), nextLevel.getBuildCosts().getAmount_stone(),
+                            nextLevel.getBuildCosts().getAmount_crops()));
+                }
+
+                troops.add(dto);
+            }
+
+            model.addAttribute("troops", troops);
+
+            model.addAttribute("back_x", base.getLocatedOn().getId().getX());
+            model.addAttribute("back_y", base.getLocatedOn().getId().getY());
 
             model.addAttribute("baseId", troop2.getPosition().getBase().getId());
             model.addAttribute("message", new String("Upgrade progress started"));
@@ -1095,7 +1095,34 @@ public class MapController {
                 return ERROR;
             }
 
-            return "buildSuccess";
+            ArrayList<BuildingTypeDTO> availableBuildings = new ArrayList<BuildingTypeDTO>();
+
+            for (BuildingType building : buildings) {
+                BuildingTypeDTO buildingType2 = new BuildingTypeDTO(building.getId(), building.getName());
+
+
+                Set<BuildingLevel> levels = building.getLevels();
+
+                ResourceValue costs = new ResourceValue();
+                for (BuildingLevel level : levels) {
+                    if (level.getLevel() == 1) {
+                        costs = level.getBuildCosts();
+                    }
+                }
+
+                buildingType2.setCosts(
+                        new ResourceValueDTO(costs.getAmount_gold(), costs.getAmount_wood(), costs.getAmount_stone(),
+                                costs.getAmount_crops()));
+                availableBuildings.add(buildingType2);
+            }
+
+            model.addAttribute("buildings", availableBuildings);
+            model.addAttribute("baseId", baseId);
+            model.addAttribute("position", position);
+            model.addAttribute("message", new String("Build progress started"));
+
+
+            return "build";
         }
 
 //        ResourceValue resources = player.getResources();
@@ -1124,6 +1151,7 @@ public class MapController {
         model.addAttribute("buildings", availableBuildings);
         model.addAttribute("baseId", baseId);
         model.addAttribute("position", position);
+        model.addAttribute("message", new String(""));
 
         return "build";
     }

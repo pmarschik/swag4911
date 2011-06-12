@@ -4,6 +4,11 @@
 
 <spring:url value="/resources" var="resourcePath"/>
 
+ <div id="actionMessage">
+     <c:if test="${message != null}">
+        ${message}
+     </c:if>
+ </div>
 <c:if test="${buildings != null && fn:length(buildings)>0 }">
     <h2>Buildings available:</h2>
     <table>
