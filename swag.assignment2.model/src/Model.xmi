@@ -15,6 +15,25 @@
     </entities>
     <entities name="Player"/>
     <entities name="Tile"/>
+    <entities name="Base">
+      <members name="home" type="Boolean">
+        <column/>
+      </members>
+      <members name="owner" complexType="//@models.0/@entities.1" persistenceRelation="ManyToOne" persistenceMappedBy=""/>
+      <members name="locatedOn" complexType="//@models.0/@entities.2" persistenceRelation="OneToOne" persistenceMappedBy=""/>
+      <members name="consistsOf" complexType="//@models.0/@entities.4" hasMultipleValues="true" persistenceRelation="OneToMany" persistenceMappedBy="base" persistenceOptional="true"/>
+      <members name="resourceProduction" complexType="//@models.0/@entities.5">
+        <attributeOverride>
+          <attributeOverrides name="amount_gold" column="production_gold"/>
+          <attributeOverrides name="amount_stone" column="production_stone"/>
+          <attributeOverrides name="amount_wood" column="production_wood"/>
+          <attributeOverrides name="amount_crops" column="production_crops"/>
+        </attributeOverride>
+      </members>
+      <specialConstructor>public Base(Tile tile) {&#xA;        this();&#xA;        this.locatedOn = tile;&#xA;    }</specialConstructor>
+    </entities>
+    <entities name="Square"/>
+    <entities name="ResourceValue" persistenceEmbeddable="true"/>
   </models>
   <models name="swag49.model.user" isContainerManaged="true">
     <entities name="Address" persistenceEmbeddable="true" persistenceTableName="">

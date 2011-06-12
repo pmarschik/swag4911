@@ -49,6 +49,10 @@
 				}
 			«ENDIF»
 			
+			«FOREACH specialConstructor AS e-»
+				«e»
+			«ENDFOREACH»
+			
 			«EXPAND entityClassIdGetter FOR this»
 			«EXPAND entityClassMemberGetter FOREACH members»
 			«EXPAND entityClassIdSetter FOR this»
@@ -162,14 +166,14 @@
 			@javax.persistence.ElementCollection
 	«ELSEIF enumType != null»
 		@javax.persistence.Enumerated(javax.persistence.EnumType.STRING)
-	«ELSEIF complexType != null && complexType.persistenceEmbeddable == true && persistenceRelation == PersistenceRelationType::none»
+	«ELSEIF complexType != null && complexType.persistenceEmbeddable == true && persistenceRelation == PersistenceRelationType::none && attributeOverride == null»
 		@javax.persistence.Embedded
 	«ELSEIF complexType != null && persistenceRelation != PersistenceRelationType::none»
 		@javax.persistence.«persistenceRelation»(
 		«IF persistenceOptional == false && persistenceRelation != PersistenceRelationType::OneToMany-»
 			optional = false
 		«ENDIF-»
-		«IF persistenceOptional == false && persistenceRelation != PersistenceRelationType::OneToMany && persistenceMappedBy != null-»
+		«IF persistenceOptional == false && persistenceRelation != PersistenceRelationType::OneToMany && persistenceMappedBy != null && persistenceMappedBy.length > 0-»
 			,
 		«ENDIF-»
 		«IF persistenceMappedBy != null && persistenceMappedBy.length > 0-»
