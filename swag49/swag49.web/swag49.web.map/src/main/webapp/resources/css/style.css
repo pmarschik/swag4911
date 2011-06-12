@@ -61,6 +61,7 @@ img.tilePic
 {
 	float:left;
 	text-align:left;
+    padding:25px;
 }
 
 #resourceTable
