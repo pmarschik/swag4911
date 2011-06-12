@@ -404,7 +404,7 @@ That means if that we reach an availability of $99,99\%$ if we have at least 5 n
 	\textbf{Argument} & The job approach has the advantage that the result of the action is visible as soon as the action finishes. So there is no need to store temporary action results and we don't have to care about issues that arise when actions should be canceled. In this case the scheduled job would simply be deleted. Existing job scheduling libraries also offer the possibility to store the job and trigger data in database, which would be needed in a distributed environment.  \\
 	\hline
 	\cellcolor[gray]{0.9}
-	\textbf{Implications} & The job scheduling library must support clustered execution of jobs, since action execution is one of the most performance crucial parts of the whole system. Therefore this task can't be handled by a single server.
+	\textbf{Implications} & The job scheduling library must support clustered execution of jobs, since action execution is one of the most performance crucial parts of the whole system. Therefore this task can't be handled by a single server.\\
 	\hline
 	\cellcolor[gray]{0.9}
 	\textbf{Related decisions} & D-5 \\
