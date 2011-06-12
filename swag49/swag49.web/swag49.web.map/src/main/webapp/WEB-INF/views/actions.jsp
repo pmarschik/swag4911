@@ -105,3 +105,38 @@
     </c:when>
     <c:otherwise>You have currently no buildings in progress</c:otherwise>
 </c:choose>
+
+
+<h2>Troops in Training</h2>
+<c:choose>
+    <c:when test="${troopBuildActions != null && fn:length(troopBuildActions)>0 }">
+        <table>
+            <tr>
+                <td>Name</td>
+                <td>Location</td>
+                <td>Amount</td>
+                <td>End Date</td>
+            </tr>
+            <c:forEach items="${troopBuildActions}" var="action">
+                <tr>
+                    <td>${action.troopName}</td>
+                    <td>${action.destination_x},${action.destination_y} </td>
+                    <td>${action.amount}</td>
+                    <td>${action.endDate}</td>
+                    <c:choose>
+                        <c:when test="${action.isAbortable}">
+                            <td><a href="canceltroopbuildaction.html?id=${action.id}"><img
+                                    src="${resourcesUrl}<spring:theme code='theme.image.misc.cancel'/>"
+                                    alt="Cancel" height="30"> </a>
+                            </td>
+                        </c:when>
+                        <c:otherwise>
+                            <td></td>
+                        </c:otherwise>
+                    </c:choose>
+                </tr>
+            </c:forEach>
+        </table>
+    </c:when>
+    <c:otherwise>You have currently no troop trainings in progress</c:otherwise>
+</c:choose>

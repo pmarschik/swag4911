@@ -102,6 +102,11 @@ public class MapController {
     private DataAccessObject<Building, Square.Id> buildingDAO;
 
     @Autowired
+    @Qualifier("troopBuildActionDAO")
+    private DataAccessObject<TroopBuildAction, Long> troopBuildActionDAO;
+
+
+    @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
@@ -119,6 +124,7 @@ public class MapController {
     //TODO: GET MAP AND PLAYER
     private swag49.model.Map map;
     private Player player;
+    private int mapLength;
 
     //@PostConstruct
     @Transactional("swag49.map")
@@ -131,6 +137,8 @@ public class MapController {
         Collection<swag49.model.Map> maps = mapDAO.queryByExample(example);
         if (maps != null && maps.size() == 1) {
             map = maps.iterator().next();
+            mapLength = (int) Math.sqrt(map.getConsistsOf().size());
+
             logger.debug("Map with id " + map.getId() + " found");
         } else {
             logger.error("Error while finding map");
@@ -741,12 +749,59 @@ public class MapController {
             }
         }
 
+        //troops in training
+        TroopBuildAction troopBuildAction = new TroopBuildAction();
+        troopBuildAction.setPlayer(player);
+        List<TroopBuildAction> troopBuildActionsList = troopBuildActionDAO.queryByExample(troopBuildAction);
+
+        List<TroopBuildActionDTO> buildBuildDTOList = new ArrayList<TroopBuildActionDTO>();
+
+        for (TroopBuildAction action : troopBuildActionsList) {
+            if (action.getEndDate().after(now)) {
+                TroopBuildActionDTO dto = new TroopBuildActionDTO();
+                dto.setDestination_x(action.getTarget().getId().getX());
+                dto.setDestination_y(action.getTarget().getId().getY());
+                dto.setIsAbortable(action.getIsAbortable());
+                dto.setTroopName(action.getTroopType().getName());
+                dto.setEndDate(action.getEndDate());
+                dto.setAmount(action.getAmount());
+                dto.setId(action.getId());
+
+                buildBuildDTOList.add(dto);
+            }
+        }
+
         model.addAttribute("troopActions", troopActionDTOList);
 
         model.addAttribute("troopUpgradeActions", troopUpgradeActionDTOList);
 
         model.addAttribute("baseActions", buildActionDTOList);
+        model.addAttribute("troopBuildActions", buildBuildDTOList);
 
+        return "actions";
+    }
+
+
+    @RequestMapping(value = "/canceltroopbuildaction", method = RequestMethod.GET)
+    @Transactional("swag49.map")
+    public String cancelTroopBuildAction(@RequestParam(value = "id", defaultValue = "-1") long id, Model model) {
+        TroopBuildAction action = troopBuildActionDAO.get(id);
+        if (action == null) {
+            logger.error("Action with id " + id + " not found");
+            return ERROR;
+        }
+
+        if (action.getIsAbortable()) {
+
+            //give 50% of resources back
+            ResourceValue fiftyPerCent = action.getTroopLevel().getBuildCosts();
+            ResourceValueHelper.multiply(fiftyPerCent, 0.5);
+            ResourceValueHelper.add(action.getPlayer().getResources(), fiftyPerCent);
+            playerDAO.update(action.getPlayer());
+
+            troopBuildActionDAO.delete(action);
+
+        }
 
         return "actions";
     }
@@ -798,6 +853,12 @@ public class MapController {
 
             troopDAO.update(troop);
 
+            //give 50% of resources back
+            ResourceValue fiftyPerCent = action.getTroopLevel().getBuildCosts();
+            ResourceValueHelper.multiply(fiftyPerCent, 0.5);
+            ResourceValueHelper.add(action.getPlayer().getResources(), fiftyPerCent);
+            playerDAO.update(action.getPlayer());
+
             troopUpgradeActionDAO.delete(action);
 
         }
@@ -819,6 +880,16 @@ public class MapController {
         if (action.getIsAbortable()) {
 
             Building building = action.getConcerns();
+
+            //give 50% of resources back
+            BuildingLevel.Id blId = new BuildingLevel.Id(building.getIsOfLevel().getLevel() + 1, building.getType().getId());
+            BuildingLevel nextLevel = buildingLevelDAO.get(blId);
+
+            ResourceValue fiftyPerCent = nextLevel.getBuildCosts();
+            ResourceValueHelper.multiply(fiftyPerCent, 0.5);
+            ResourceValueHelper.add(action.getPlayer().getResources(), fiftyPerCent);
+
+            playerDAO.update(action.getPlayer());
 
             if (building.getIsOfLevel().getLevel().equals(0)) {
                 //delete construction yard
@@ -966,8 +1037,9 @@ public class MapController {
         map = mapDAO.get(map.getId());
 
 
-        //default values
-        if (x_low == x_high && y_low == y_high && y_low == x_low && x_low == -1) {
+       //default values
+        if ((x_low == x_high && y_low == y_high && y_low == x_low && x_low == -1)
+                ) {
             //focus on home base
             Base homeBase = null;
             if (player.getOwns() != null && !player.getOwns().isEmpty()) {
@@ -977,20 +1049,51 @@ public class MapController {
                         break;
                     }
                 }
-                int maxVal = (int) Math.sqrt(map.getConsistsOf().size());
+
 
                 x_low = Math.max(0, homeBase.getLocatedOn().getId().getX() - VIEWSIZE);
-                x_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getX() + VIEWSIZE + 1);
-                y_low = Math.max(0, homeBase.getLocatedOn().getId().getY() - VIEWSIZE);
-                y_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getY() + VIEWSIZE + 1);
+                x_high = x_low + 2 * VIEWSIZE;
 
+                if (x_high > mapLength) {
+                    x_high = mapLength;
+                    x_low = Math.max(0, x_high - 2 * VIEWSIZE);
+                }
+
+                y_low = Math.max(0, homeBase.getLocatedOn().getId().getY() - VIEWSIZE);
+                y_high = y_low + 2 * VIEWSIZE;
+
+                if (y_high > mapLength) {
+                    y_high = mapLength;
+                    y_low = Math.max(0, y_high - 2 * VIEWSIZE);
+                }
             } else {
                 x_low = 0;
                 y_low = 0;
-                x_high = 2 * VIEWSIZE + 1;
-                y_high = 2 * VIEWSIZE + 1;
+                x_high = 2 * VIEWSIZE;
+                y_high = 2 * VIEWSIZE;
             }
         }
+
+        //mind 2* viewsize  als ansichtsgroesze
+        if ((x_high - x_low) < (2 * VIEWSIZE)) {
+            x_high = x_low + 2 * VIEWSIZE;
+
+            if (x_high > mapLength) {
+                x_high = mapLength;
+                x_low = Math.max(0, x_high - 2 * VIEWSIZE);
+            }
+        }
+
+        if ((y_high - y_low) < (2 * VIEWSIZE)) {
+            y_high = y_low + 2 * VIEWSIZE;
+
+            if (y_high > mapLength) {
+                y_high = mapLength;
+                y_low = Math.max(0, y_high - 2 * VIEWSIZE);
+            }
+        }
+
+
         model.addAttribute("xLow", x_low);
         model.addAttribute("yLow", y_low);
         model.addAttribute("xHigh", x_high);
@@ -1097,7 +1200,6 @@ public class MapController {
 
         //default values
         if ((x_low == x_high && y_low == y_high && y_low == x_low && x_low == -1)
-                || (x_high - x_low < 3) || (y_high - y_low < 3)
                 ) {
             //focus on home base
             Base homeBase = null;
@@ -1109,19 +1211,22 @@ public class MapController {
                     }
                 }
 
-                int maxVal = homeBase.getLocatedOn().getId().getX() + VIEWSIZE;
-                Tile.Id id = new Tile.Id(map.getId(), maxVal, 0);
-                Tile testTile = tileDAO.get(id);
-                while (testTile == null && maxVal > 0) {
-                    maxVal--;
-                    id.setX(maxVal);
-                    testTile = tileDAO.get(id);
-                }
 
                 x_low = Math.max(0, homeBase.getLocatedOn().getId().getX() - VIEWSIZE);
-                x_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getX() + VIEWSIZE);
+                x_high = x_low + 2 * VIEWSIZE;
+
+                if (x_high > mapLength) {
+                    x_high = mapLength;
+                    x_low = Math.max(0, x_high - 2 * VIEWSIZE);
+                }
+
                 y_low = Math.max(0, homeBase.getLocatedOn().getId().getY() - VIEWSIZE);
-                y_high = Math.min(maxVal, homeBase.getLocatedOn().getId().getY() + VIEWSIZE);
+                y_high = y_low + 2 * VIEWSIZE;
+
+                if (y_high > mapLength) {
+                    y_high = mapLength;
+                    y_low = Math.max(0, y_high - 2 * VIEWSIZE);
+                }
             } else {
                 x_low = 0;
                 y_low = 0;
@@ -1130,11 +1235,31 @@ public class MapController {
             }
         }
 
+        //mind 2* viewsize  als ansichtsgroesze
+        if ((x_high - x_low) < (2 * VIEWSIZE)) {
+            x_high = x_low + 2 * VIEWSIZE;
+
+            if (x_high > mapLength) {
+                x_high = mapLength;
+                x_low = Math.max(0, x_high - 2 * VIEWSIZE);
+            }
+        }
+
+        if ((y_high - y_low) < (2 * VIEWSIZE)) {
+            y_high = y_low + 2 * VIEWSIZE;
+
+            if (y_high > mapLength) {
+                y_high = mapLength;
+                y_low = Math.max(0, y_high - 2 * VIEWSIZE);
+            }
+        }
+
 
         model.addAttribute("xLow", x_low);
         model.addAttribute("yLow", y_low);
         model.addAttribute("xHigh", x_high);
         model.addAttribute("yHigh", y_high);
+
         ArrayList<ArrayList<TileOverviewDTO>> displayedTiles = new ArrayList<ArrayList<TileOverviewDTO>>();
 
         // get all visible tiles
@@ -1150,8 +1275,6 @@ public class MapController {
 
                     dto.setSpecialResource(swag49.transfer.model.ResourceType.values()[tile.getSpecial().ordinal()]);
 
-                    // TODO: TOOLTIP Java Script???
-
                     // create info
                     StringBuilder sb = new StringBuilder();
 
@@ -1163,17 +1286,27 @@ public class MapController {
                         } else {
                             sb.append("Your base!");
                         }
-                        sb.append("<br/>");
-                    }
+                    } else if (!tile.getTroops().isEmpty()) {               // check for troops
 
-                    // check for troops
-                    if (!tile.getTroops().isEmpty()) {
+                        int strength = 0;
+                        int defense = 0;
                         for (Troop troop : tile.getTroops()) {
-                            sb.append("TODO");
-                            sb.append("<br/>");
+                            strength += troop.getIsOfLevel().getStrength();
+                            defense += troop.getIsOfLevel().getDefense();
                         }
 
-                        sb.append("<br/>");
+                        if (tile.getTroops().iterator().next().getOwner().getId().equals(player.getId())) {
+                            sb.append("Your troops! Strength: ");
+                            sb.append(strength);
+                            sb.append(" , Defense: ");
+                            sb.append(defense);
+                        } else {
+                            sb.append("Enemy troops! Strength: ");
+                            sb.append(strength);
+                            sb.append(" , Defense: ");
+                            sb.append(defense);
+                        }
+
                     }
 
                     // check for special resources

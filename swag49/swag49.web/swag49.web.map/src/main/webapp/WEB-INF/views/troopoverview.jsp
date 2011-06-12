@@ -6,10 +6,14 @@
 
 <c:if test="${troops != null && fn:length(troops)>0 }">
 <h2>Troops stationed at Base with ID ${baseId}</h2>
-    <table>
+    <table border="1">
+         <tr>
+             <td>Type</td><td>Level</td> <td>Attributes</td>   <td colspan="2">Upgrade Costs</td>
+             </tr>
         <c:forEach items="${troops}" var="troop">
             <tr>
                 <td>${troop.name}</td>
+                <td>${troop.level}</td>
                 <td>
                     <table>
                         <tr>

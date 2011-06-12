@@ -336,9 +336,8 @@ public class MapLogic {
         action = buildActionDao.create(action);
     }
 
-
     @Transactional("swag49.map")
-    public void sendTroops(Tile target, Set<Troop> troops) throws Exception {
+    public void sendTroops(Tile target, Set<Troop> troops, boolean shouldFoundBase) throws Exception {
 
         if (troops.isEmpty())
             throw new Exception("Troops must not be empty");
@@ -359,6 +358,8 @@ public class MapLogic {
         action.setSource(source);
         action.setTarget(target);
 
+        action.setShouldFoundBase(Boolean.valueOf(shouldFoundBase));
+
         //remove troop location of troops
         for (Troop troop : troops) {
 
@@ -368,6 +369,11 @@ public class MapLogic {
         }
 
         action = troopActionDAO.create(action);
+    }
+
+    @Transactional("swag49.map")
+    public void sendTroops(Tile target, Set<Troop> troops) throws Exception {
+        sendTroops(target, troops, false);
     }
 
     @Transactional("swag49.map")
