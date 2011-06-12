@@ -776,7 +776,7 @@ public class MapController {
         //troop actions
         TroopAction troopAction = new TroopAction();
         troopAction.setPlayer(player);
-        List<TroopAction> troopActionsList = troopActionDAO.queryByExample(troopAction);
+        Set<TroopAction> troopActionsList = new HashSet<TroopAction>(troopActionDAO.queryByExample(troopAction));
 
         List<TroopActionDTO> troopActionDTOList = new ArrayList<TroopActionDTO>();
 
