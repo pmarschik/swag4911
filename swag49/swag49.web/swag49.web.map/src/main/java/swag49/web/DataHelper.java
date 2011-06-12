@@ -98,7 +98,7 @@ public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, A
 
                 BuildingLevel level_3 = new BuildingLevel(goldMineType, 3);
                 level_3.setResourceProduction(new ResourceValue(0, 0, 150, 0));
-                level_3.setUpgradeDuration(Long.valueOf(0));
+                level_3.setUpgradeDuration(Long.valueOf(1800000));
                 level_3.setBuildCosts(new ResourceValue(50, 00, 50, 50));
                 level_3.setUpkeepCosts(new ResourceValue());
 
@@ -297,7 +297,7 @@ public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, A
             moneyBoyType.setLevels(null);
 
             if (troopTypeDAO.queryByExample(moneyBoyType).isEmpty()) {
-                moneyBoyType.setCanFoundBase(true);
+                moneyBoyType.setCanFoundBase(Boolean.TRUE);
                 moneyBoyType.setLevels(Sets.<TroopLevel>newHashSet());
 
                 moneyBoyType = troopTypeDAO.create(moneyBoyType);
@@ -309,7 +309,7 @@ public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, A
                 troopLevel.setStrength(5);
                 troopLevel.setDefense(5);
                 troopLevel.setUpkeepCosts(new ResourceValue(2, 2, 2, 2));
-                troopLevel.setUpgradeDuration(Long.valueOf(3600000));
+                troopLevel.setUpgradeDuration(Long.valueOf(30000));
 
                 troopLevel = troopLevelDAO.create(troopLevel);
                 moneyBoyType.getLevels().add(troopLevel);
@@ -321,7 +321,7 @@ public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, A
             swordsmanType.setName("Swordsman");
             swordsmanType.setLevels(null);
             if (troopTypeDAO.queryByExample(swordsmanType).isEmpty()) {
-                swordsmanType.setCanFoundBase(false);
+                swordsmanType.setCanFoundBase(Boolean.FALSE);
                 swordsmanType.setLevels(Sets.<TroopLevel>newHashSet());
 
                 swordsmanType = troopTypeDAO.create(swordsmanType);
@@ -371,7 +371,7 @@ public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, A
             knightType.setLevels(null);
 
             if (troopTypeDAO.queryByExample(knightType).isEmpty()) {
-                knightType.setCanFoundBase(false);
+                knightType.setCanFoundBase(Boolean.FALSE);
                 knightType.setLevels(Sets.<TroopLevel>newHashSet());
 
                 knightType = troopTypeDAO.create(knightType);
@@ -421,7 +421,7 @@ public class DataHelper implements ApplicationListener<ContextRefreshedEvent>, A
             samuraiType.setLevels(null);
 
             if (troopTypeDAO.queryByExample(samuraiType).isEmpty()) {
-                samuraiType.setCanFoundBase(false);
+                samuraiType.setCanFoundBase(Boolean.FALSE);
                 samuraiType.setLevels(Sets.<TroopLevel>newHashSet());
 
                 samuraiType = troopTypeDAO.create(samuraiType);

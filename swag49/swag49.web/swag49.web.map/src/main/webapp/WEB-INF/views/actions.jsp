@@ -6,14 +6,14 @@
 
 <h2>Troop Movements</h2>
 <c:choose>
-    <c:when test="${movementActions != null && fn:length(movementActions)>0 }">
-        <table>
+    <c:when test="${troopActions != null && fn:length(troopActions)>0 }">
+        <table border="1">
             <tr>
                 <td>Destination</td>
                 <td>Started</td>
                 <td>End Date</td>
             </tr>
-            <c:forEach items="${movementActions}" var="action">
+            <c:forEach items="${troopActions}" var="action">
                 <tr>
                     <td>${action.destination_x},${action.destination_y} </td>
                     <td>${action.startDate}</td>
@@ -39,7 +39,7 @@
 <h2>Troops in Upgrade Process</h2>
 <c:choose>
     <c:when test="${troopUpgradeActions != null && fn:length(troopUpgradeActions)>0 }">
-        <table>
+        <table  border="1">
             <tr>
                 <td>Building</td>
                 <td>Base</td>
@@ -73,7 +73,7 @@
 <h2>Building Actions</h2>
 <c:choose>
     <c:when test="${baseActions != null && fn:length(baseActions)>0 }">
-        <table>
+        <table border="1">
             <tr>
                 <td>Building</td>
                 <td>Base</td>
@@ -110,7 +110,7 @@
 <h2>Troops in Training</h2>
 <c:choose>
     <c:when test="${troopBuildActions != null && fn:length(troopBuildActions)>0 }">
-        <table>
+        <table border="1">
             <tr>
                 <td>Name</td>
                 <td>Location</td>

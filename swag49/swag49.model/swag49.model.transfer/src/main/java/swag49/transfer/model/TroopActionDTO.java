@@ -41,11 +41,10 @@ public class TroopActionDTO {
         this.destination_y = destination_y;
     }
 
-    public boolean getAbortable() {
+    public boolean getIsAbortable() {
         return isAbortable;
     }
-
-    public void setAbortable(boolean abortable) {
+    public void setIsAbortable(boolean abortable) {
         isAbortable = abortable;
     }
 
@@ -69,12 +68,12 @@ public class TroopActionDTO {
         //To change body of created methods use File | Settings | File Templates.
     }
 
-    public void setDestionation(Integer x, Integer y) {
+    public void setDestination(Integer x, Integer y) {
         this.destination_x = x;
         this.destination_y = y;
     }
 
     public void setIsAbortable(Boolean isAbortable) {
-        this.isAbortable = isAbortable;
+        this.isAbortable = isAbortable.booleanValue();
     }
 }
