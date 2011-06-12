@@ -626,7 +626,7 @@ public class MapController {
                 return ERROR;
             }
 
-            return "redirect: ../troopoverview.html?baseId=" + troop.getPosition().getBase().getId();
+            return "redirect:../troopoverview.html?baseId=" + troop.getPosition().getBase().getId();
         } else {
             return ERROR;
         }
