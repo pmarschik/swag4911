@@ -27,6 +27,9 @@ public class StatisticsController {
     private RestTemplate restTemplate;
 
     @Autowired
+    private MapController mapController;
+
+    @Autowired
     @Qualifier("statisticDAO")
     private DataAccessObject<Statistic, Long> statisticDAO;
 
@@ -35,6 +38,7 @@ public class StatisticsController {
     @PostConstruct
     @Transactional("swag49.map")
     public void init() {
+
         statistics = Maps.newHashMap();
         Statistic statisticExample = new Statistic();
         statisticExample.setEntries(null);
@@ -60,6 +64,8 @@ public class StatisticsController {
 
     @RequestMapping(value = "/")
     public String handle(Map<String, Object> map) {
+    map.put("user", mapController.getUserName());
+
         map.put("statistics", statistics.values());
 
         return "statistics";
@@ -67,11 +73,17 @@ public class StatisticsController {
 
     @RequestMapping(value = "/index")
     public String statistics() {
+        if (mapController.getUserID() == null)
+            return "redirect:./";
+
         return "redirect:./";
     }
 
     @RequestMapping(value = "/{id}")
     public String show(@PathVariable("id") String id, Map<String, Object> map) {
+        if (mapController.getUserID() == null)
+            return "redirect:./";
+
         map.put("statistic", getStatistic(id));
 
         return "statistic";
