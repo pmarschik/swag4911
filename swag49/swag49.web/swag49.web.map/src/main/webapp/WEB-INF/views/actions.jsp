@@ -20,7 +20,7 @@
                     <td>${action.endDate}</td>
                     <c:choose>
                         <c:when test="${action.isAbortable}">
-                            <td><a href="canceltroopaction.html?id=${action.id}"><img
+                            <td><a class="contentLink" href="canceltroopaction.html?id=${action.id}"><img
                                     src="${resourcesUrl}<spring:theme code='theme.image.misc.cancel'/>"
                                     alt="Cancel" height="30"> </a>
                             </td>
@@ -54,7 +54,7 @@
                     <td>${action.endDate}</td>
                     <c:choose>
                         <c:when test="${action.isAbortable}">
-                            <td><a href="canceltroopupgradeaction.html?id=${action.id}"><img
+                            <td><a class="contentLink" href="canceltroopupgradeaction.html?id=${action.id}"><img
                                     src="${resourcesUrl}<spring:theme code='theme.image.misc.cancel'/>"
                                     alt="Cancel" height="30"> </a>
                             </td>
@@ -90,7 +90,7 @@
                     <td>${action.endDate}</td>
                     <c:choose>
                         <c:when test="${action.isAbortable}">
-                            <td><a href="cancelbuildaction.html?id=${action.id}"><img
+                            <td><a class="contentLink" href="cancelbuildaction.html?id=${action.id}"><img
                                     src="${resourcesUrl}<spring:theme code='theme.image.misc.cancel'/>"
                                     alt="Cancel" height="30"> </a>
                             </td>
@@ -125,7 +125,7 @@
                     <td>${action.endDate}</td>
                     <c:choose>
                         <c:when test="${action.isAbortable}">
-                            <td><a href="canceltroopbuildaction.html?id=${action.id}"><img
+                            <td><a class="contentLink" href="canceltroopbuildaction.html?id=${action.id}"><img
                                     src="${resourcesUrl}<spring:theme code='theme.image.misc.cancel'/>"
                                     alt="Cancel" height="30"> </a>
                             </td>
