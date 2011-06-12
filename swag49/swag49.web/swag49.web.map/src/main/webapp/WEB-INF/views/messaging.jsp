@@ -15,20 +15,20 @@
 <c:if test="${user != null}">
     <h3>You are logged in as: ${user}</h3>
     <ul class="messagingMenu">
-        <li><a class="messageLink" href="../messaging/incoming.html">Incoming Messages</a></li>
-        <li><a href="../messaging/outgoing.html">Outgoing Messages</a></li>
-        <li><a class="messageLink" href="../messaging/message.html">New message</a></li>
+        <li><a class="contentLink" href="../messaging/incoming.html">Incoming Messages</a></li>
+        <li><a class="contentLink" href="../messaging/outgoing.html">Outgoing Messages</a></li>
+        <li><a class="contentLink" href="../messaging/message.html">New message</a></li>
     </ul>
 </c:if>
-<script type="text/javascript">
-    $("a").live("click", function () {
-        $.get($(this).attr("href"),function (result) {
-            $("#content").html(result);
-        });
+<%--<script type="text/javascript">--%>
+    <%--$("a").live("click", function () {--%>
+        <%--$.get($(this).attr("href"),function (result) {--%>
+            <%--$("#content").html(result);--%>
+        <%--});--%>
 
-        return false;
-    });
-</script>
+        <%--return false;--%>
+    <%--});--%>
+<%--</script>--%>
 
 </body>
 </html>

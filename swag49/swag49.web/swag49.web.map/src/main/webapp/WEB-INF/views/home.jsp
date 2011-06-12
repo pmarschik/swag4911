@@ -284,15 +284,15 @@
         return false;
     });
 </script>
-<script type="text/javascript">
-    $("#resourceRefresh").live("click", function () {
-        $.get($(this).attr("href"), function (result) {
-            $("#playerResources").html(result);
-        });
+<%--<script type="text/javascript">--%>
+    <%--$("#resourceRefresh").live("click", function () {--%>
+        <%--$.get($(this).attr("href"), function (result) {--%>
+            <%--$("#playerResources").html(result);--%>
+        <%--});--%>
 
-        return false;
-    });
-</script>
+        <%--return false;--%>
+    <%--});--%>
+<%--</script>--%>
 <script type="text/javascript">
     setInterval(
             function () {
