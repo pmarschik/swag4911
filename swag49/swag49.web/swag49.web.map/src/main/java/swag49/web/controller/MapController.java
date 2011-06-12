@@ -1145,11 +1145,17 @@ public class MapController {
         //  model.addAttribute("amount_wood", player.getResources().getAmount_wood());
         //  model.addAttribute("amount_stone", player.getResources().getAmount_stone());
         //  model.addAttribute("amount_crops", player.getResources().getAmount_crops());
-        ResourceValueDTO resourceValue =
-                new ResourceValueDTO(player.getResources().getAmount_gold(), player.getResources().getAmount_wood(),
-                        player.getResources().getAmount_stone(), player.getResources().getAmount_crops());
+        ResourceValue amountValue = player.getResources();
+        ResourceValue incomeValue = player.getIncome();
+        ResourceValue upkeepValue = player.getUpkeep();
+
+        ResourceTableDTO resourceTable = new ResourceTableDTO();
+        resourceTable.setAmount(amountValue);
+        resourceTable.setIncome(incomeValue);
+        resourceTable.setUpkeep(upkeepValue);
+
         model.addAttribute("tiles", displayedTiles);
-        model.addAttribute("resources", resourceValue);
+        model.addAttribute("resources", resourceTable);
 
         return "home";
     }
@@ -1303,9 +1309,16 @@ public class MapController {
         player = playerDAO.get(player.getId());
         map = mapDAO.get(map.getId());
 
-        ResourceValue resourceValue = player.getResources();
+        ResourceValue amountValue = player.getResources();
+        ResourceValue incomeValue = player.getIncome();
+        ResourceValue upkeepValue = player.getUpkeep();
 
-        model.addAttribute("resources", resourceValue);
+        ResourceTableDTO resourceTable = new ResourceTableDTO();
+        resourceTable.setAmount(amountValue);
+        resourceTable.setIncome(incomeValue);
+        resourceTable.setUpkeep(upkeepValue);
+
+        model.addAttribute("resources", resourceTable);
 
         return "playerresources";
     }
