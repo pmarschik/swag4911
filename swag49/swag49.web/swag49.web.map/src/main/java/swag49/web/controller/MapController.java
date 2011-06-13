@@ -1987,7 +1987,7 @@ public class MapController {
         if (tile.getBase() != null) {
             if (!tile.getBase().getOwner().getId().equals(player.getId())) {
                 sb.append("Enemy base owned by ");
-                sb.append(tile.getBase().getOwner());
+                sb.append(tile.getBase().getOwner().getUserId());
             } else {
                 sb.append("Your base!");
             }
