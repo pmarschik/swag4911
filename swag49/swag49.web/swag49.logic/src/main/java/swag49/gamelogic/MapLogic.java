@@ -4,6 +4,10 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.xml.MarshallingHttpMessageConverter;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -11,8 +15,9 @@ import swag49.dao.DataAccessObject;
 import swag49.gamelogic.exceptions.NotEnoughMoneyException;
 import swag49.model.*;
 import swag49.model.Map;
+import swag49.model.ResourceType;
 import swag49.model.helper.ResourceValueHelper;
-import swag49.transfer.model.MessageDTO;
+import swag49.transfer.model.*;
 import swag49.util.Log;
 
 import java.util.*;
@@ -269,13 +274,13 @@ public class MapLogic {
             square.setBuilding(constructionYard);
 
             constructionYard.setType(type);
+            constructionYard.setActive(Boolean.FALSE);
 
             // get zero-level
             id.setLevel(0);
             BuildingLevel level = buildingLevelDAO.get(id);
 
             constructionYard.setIsOfLevel(level);
-            constructionYard.setActive(Boolean.FALSE);
 
             constructionYard = buildingDAO.create(constructionYard);
 
@@ -496,6 +501,7 @@ public class MapLogic {
     public void handleAction(BuildAction action) {
         action = buildActionDao.get(action.getId());
         Building building = action.getConcerns();
+        logger.info("handling build action {}", action);
 
         // get current level
         BuildingLevel currentLevel = building.getIsOfLevel();
@@ -509,7 +515,7 @@ public class MapLogic {
         if (nextLevel != null) {
             building.setIsOfLevel(nextLevel);
             building.setActive(Boolean.TRUE);
-            buildingDAO.update(building);
+            building = buildingDAO.update(building);
 
             Player player = action.getPlayer();
             // update upkeep
@@ -518,8 +524,11 @@ public class MapLogic {
 
             // update income
             if (building.getSquare().getBase().getLocatedOn().getSpecial() != ResourceType.NONE) {
-                ResourceValueHelper.remove(player.getIncome(), specialResourceFactor(currentLevel.getResourceProduction(), building.getSquare().getBase().getLocatedOn().getSpecial()));
-                ResourceValueHelper.add(player.getIncome(), specialResourceFactor(nextLevel.getResourceProduction(), building.getSquare().getBase().getLocatedOn().getSpecial()));
+                ResourceValueHelper.remove(player.getIncome(),
+                        specialResourceFactor(currentLevel.getResourceProduction(),
+                                building.getSquare().getBase().getLocatedOn().getSpecial()));
+                ResourceValueHelper.add(player.getIncome(), specialResourceFactor(nextLevel.getResourceProduction(),
+                        building.getSquare().getBase().getLocatedOn().getSpecial()));
             } else {
                 ResourceValueHelper.remove(player.getIncome(), currentLevel.getResourceProduction());
                 ResourceValueHelper.add(player.getIncome(), nextLevel.getResourceProduction());
@@ -634,7 +643,8 @@ public class MapLogic {
                                     ").");
 
                     sendMessage(otherPlayer, otherPlayer, SUBJECT_BUILDBASE,
-                            "Player " + action.getPlayer().getId() + " has taken your base at  (" + tile.getId().getX() + "," + tile.getId().getY() +
+                            "Player " + action.getPlayer().getId() + " has taken your base at  (" +
+                                    tile.getId().getX() + "," + tile.getId().getY() +
                                     ").");
                 } else {
                     //rob base
@@ -700,11 +710,13 @@ public class MapLogic {
 
 
                             sendMessage(action.getPlayer(), action.getPlayer(), SUBJECT_BUILDBASE,
-                                    "You have captured a new base as  (" + tile.getId().getX() + "," + tile.getId().getY() +
+                                    "You have captured a new base as  (" + tile.getId().getX() + "," +
+                                            tile.getId().getY() +
                                             ").");
 
                             sendMessage(otherPlayer, otherPlayer, SUBJECT_BUILDBASE,
-                                    "Player " + action.getPlayer().getId() + " has taken your base at  (" + tile.getId().getX() + "," + tile.getId().getY() +
+                                    "Player " + action.getPlayer().getId() + " has taken your base at  (" +
+                                            tile.getId().getX() + "," + tile.getId().getY() +
                                             ").");
                         } else {
                             sendHome(attackers, action.getSource(), tile);
@@ -983,6 +995,19 @@ public class MapLogic {
         try {
             MessageDTO message = new MessageDTO(null, subject, content, sender.getUserId(), null, receiver.getUserId(),
                     null, new Date(), new Date(), sender.getPlays().getUrl());
+
+            if (restTemplate == null) {
+                Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
+                jaxb2Marshaller.setClassesToBeBound(TokenDTO.class, MessageDTO.class, MessageQueryResponse.class,
+                        MessageQueryDTO.class, PlayerDTO.class, StatisticDTO.class, StatisticEntryDTO.class);
+
+                MarshallingHttpMessageConverter messageConverter = new MarshallingHttpMessageConverter
+                        (jaxb2Marshaller, jaxb2Marshaller);
+                messageConverter.setSupportedMediaTypes(Lists.<MediaType>newArrayList(MediaType.APPLICATION_XML));
+
+                restTemplate = new RestTemplate();
+                restTemplate.setMessageConverters(Lists.<HttpMessageConverter<?>>newArrayList(messageConverter));
+            }
 
             restTemplate.put("http://localhost:8080/messaging/send", message);
         } catch (Exception e) {
