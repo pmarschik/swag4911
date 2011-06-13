@@ -29,7 +29,7 @@
     <c:if test="${!tileInfo.enemyTerritory }">
         <h2>Your troops</h2>
     </c:if>
-    <table width="100%" border="0">
+    <table border="0">
         <tr>
             <td>Type</td>
             <td>Level</td>
